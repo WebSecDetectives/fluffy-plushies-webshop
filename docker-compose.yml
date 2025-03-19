@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: docker.io/library/rabbitmq:latest
+    container_name: RabbitMQ
+    restart: 'unless-stopped'
+    hostname: rabbitmq
+    ports: 
+      - 5672:5672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  
+  identity-mysql:
+    image: docker.io/library/mysql:8.4.4
+    container_name: identity-mysql
+    restart: 'unless-stopped'
+    volumes:
+      - identity-mysql:/var/lib/mysql
+    ports:
+      - 33000:3306
+    environment:
+        MYSQL_ROOT_PASSWORD: identity_service
+
+  inventory-mysql:
+    image: docker.io/library/mysql:8.4.4
+    container_name: inventory-mysql
+    restart: 'unless-stopped'
+    volumes:
+      - inventory-mysql:/var/lib/mysql
+    ports:
+      - 33001:3306
+    environment:
+        MYSQL_ROOT_PASSWORD: inventory_service
+
+  phpmyadmin:
+    image: docker.io/library/phpmyadmin:5.2.2
+    container_name: phpmyadmin
+    ports:
+        - 8080:80
+    volumes:
+      - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
+
+  order-mongodb:
+    image: docker.io/mongodb/mongodb-community-server:latest
+    container_name: order-mongodb
+    restart: 'unless-stopped'
+    volumes:
+      - order-mongodb:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: root
+      MONGODB_INITDB_ROOT_PASSWORD: order_service
+
+volumes:
+  rabbitmq_data:
+  identity-mysql:
+  inventory-mysql:
+  order-mongodb:
