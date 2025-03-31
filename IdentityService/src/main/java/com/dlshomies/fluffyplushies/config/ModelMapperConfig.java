@@ -1,6 +1,6 @@
 package com.dlshomies.fluffyplushies.config;
 
-import com.dlshomies.fluffyplushies.dto.UserDto;
+import com.dlshomies.fluffyplushies.dto.UserResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.annotation.Bean;
@@ -17,5 +17,5 @@ public class ModelMapperConfig {
         return new ModelMapper();
     }
 
-    public static final Type LIST_TYPE_USER_DTO = new TypeToken<ArrayList<UserDto>>() {}.getType();
+    public static final Type LIST_TYPE_USER_DTO = new TypeToken<ArrayList<UserResponse>>() {}.getType();
 }

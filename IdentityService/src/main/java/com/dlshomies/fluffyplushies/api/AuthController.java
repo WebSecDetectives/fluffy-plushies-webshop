@@ -1,6 +1,6 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.UserDto;
+import com.dlshomies.fluffyplushies.dto.UserResponse;
 import com.dlshomies.fluffyplushies.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,7 +24,7 @@ public class AuthController {
     private UserService userService;
 
     @GetMapping("")
-    ArrayList<UserDto> getUsers() {
+    ArrayList<UserResponse> getUsers() {
         var users = userService.getUsers();
         return modelMapper.map(users, LIST_TYPE_USER_DTO);
     }
