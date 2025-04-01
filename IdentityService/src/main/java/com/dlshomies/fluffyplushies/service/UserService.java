@@ -12,11 +12,11 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> getUsers() {
-        return userRepository.findAllByDeletedFalse();
-    }
-
     public User registerUser(User user) {
         return userRepository.save(user);
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }

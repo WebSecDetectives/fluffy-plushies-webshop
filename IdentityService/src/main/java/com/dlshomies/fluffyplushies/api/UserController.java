@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+import static com.dlshomies.fluffyplushies.config.ModelMapperConfig.LIST_TYPE_USER_DTO;
+
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
@@ -17,6 +21,11 @@ public class UserController {
 
     UserService userService;
     private final ModelMapper modelMapper;
+
+    @GetMapping("")
+    List<UserResponse> getUsers() {
+        return modelMapper.map(userService.getUsers(), LIST_TYPE_USER_DTO);
+    }
 
     @PostMapping("")
     public UserResponse registerUser(@Valid @RequestBody UserRequest userRequest) {

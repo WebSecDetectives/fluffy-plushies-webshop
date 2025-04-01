@@ -2,7 +2,6 @@ package com.dlshomies.fluffyplushies.entity;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
-
 import lombok.Data;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
