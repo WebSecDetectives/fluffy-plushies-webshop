@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping("")
     public UserResponse registerUser(@Valid @RequestBody UserRequest userRequest) {
-        User user = userService.registerUser(modelMapper.map(userRequest, User.class));
+        User user = userService.registerUser(modelMapper.map(userRequest, User.class), userRequest.getPassword());
         return modelMapper.map(user, UserResponse.class);
     }
 }

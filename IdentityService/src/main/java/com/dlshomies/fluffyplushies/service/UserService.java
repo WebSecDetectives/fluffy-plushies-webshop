@@ -3,6 +3,8 @@ package com.dlshomies.fluffyplushies.service;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,11 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public User registerUser(User user) {
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+    public User registerUser(User user, String password) {
+        user.setEncodedPassword(passwordEncoder.encode(password));
+
         return userRepository.save(user);
     }
 

@@ -3,6 +3,9 @@ package com.dlshomies.fluffyplushies.entity;
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -11,6 +14,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Data
+@SuperBuilder
+@EqualsAndHashCode
+@NoArgsConstructor
 @FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deleted", type = java.lang.Boolean.class))
 @Filter(name = "softDeleteFilter", condition = "deleted = :deleted")
 @MappedSuperclass
