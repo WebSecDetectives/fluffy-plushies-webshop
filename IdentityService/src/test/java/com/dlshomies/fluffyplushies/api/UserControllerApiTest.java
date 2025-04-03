@@ -2,6 +2,7 @@ package com.dlshomies.fluffyplushies.api;
 
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.api.config.FakerTestConfig;
+import com.dlshomies.fluffyplushies.api.util.TestDataUtil;
 import com.dlshomies.fluffyplushies.dto.AddressRequest;
 import com.dlshomies.fluffyplushies.dto.UserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,18 +55,18 @@ class UserControllerApiTest {
     @Test
     void register_givenValidRequestBody_returnOk() throws Exception {
         var addressRequest = AddressRequest.builder()
-                .street(faker.address().streetAddress())
-                .postalCode(faker.address().postcode())
-                .city(faker.address().city())
-                .country(faker.address().country())
+                .street(TestDataUtil.streetAddress())
+                .postalCode(TestDataUtil.postcode())
+                .city(TestDataUtil.city())
+                .country(TestDataUtil.country())
                 .build();
 
         objectMapper.writeValueAsString(addressRequest);
 
         var userRequest = UserRequest.builder()
-                .username(faker.internet().username())
-                .email(faker.internet().emailAddress())
-                .phone(faker.phoneNumber().phoneNumber())
+                .username(TestDataUtil.username())
+                .email(TestDataUtil.emailAddress())
+                .phone(TestDataUtil.phoneNumber())
                 .password("Str0ngP@ssw0rd")
                 .address(addressRequest)
                 .build();
