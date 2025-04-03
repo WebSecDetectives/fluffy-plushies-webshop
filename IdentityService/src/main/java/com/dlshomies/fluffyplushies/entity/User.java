@@ -1,8 +1,7 @@
 package com.dlshomies.fluffyplushies.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,21 +14,22 @@ import lombok.experimental.SuperBuilder;
 @Entity
 public class User extends BaseEntity {
 
-    @NotNull
+    @NotBlank
     @Column(unique = true)
     private String username;
 
-    @NotNull
+    @NotBlank
     @Column(unique = true)
-    @Email
     private String email;
 
-    @NotNull
-    private int phone;
+    @NotBlank
+    private String phone;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @NotBlank
     private String encodedPassword;
 }
