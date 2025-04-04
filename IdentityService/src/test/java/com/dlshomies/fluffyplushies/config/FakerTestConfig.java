@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.api.config;
+package com.dlshomies.fluffyplushies.config;
 
 import net.datafaker.Faker;
 import org.springframework.boot.test.context.TestConfiguration;

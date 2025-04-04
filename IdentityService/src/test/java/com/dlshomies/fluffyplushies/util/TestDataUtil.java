@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.api.util;
+package com.dlshomies.fluffyplushies.util;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
