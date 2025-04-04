@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.util;
 
+import com.dlshomies.fluffyplushies.dto.AddressRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,19 +29,28 @@ public class TestDataUtil {
         return faker.phoneNumber().phoneNumber();
     }
 
-    public static @NotNull String streetAddress() {
+    public static AddressRequest addressRequest() {
+        return AddressRequest.builder()
+                .street(TestDataUtil.streetAddress())
+                .postalCode(TestDataUtil.postcode())
+                .city(TestDataUtil.city())
+                .country(TestDataUtil.country())
+                .build();
+    }
+
+    private static @NotNull String streetAddress() {
         return faker.address().streetAddress();
     }
 
-    public static @NotNull String postcode() {
+    private static @NotNull String postcode() {
         return faker.address().postcode();
     }
 
-    public static @NotNull String city() {
+    private static @NotNull String city() {
         return faker.address().city();
     }
 
-    public static @NotNull String country() {
+    private static @NotNull String country() {
         return faker.address().country();
     }
 }

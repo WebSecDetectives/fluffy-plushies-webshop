@@ -60,7 +60,7 @@ class UserControllerApiTest {
 
     @Test
     void register_givenValidRequestBody_returnOk() throws Exception {
-        var addressRequest = generateAddressRequest();
+        var addressRequest = TestDataUtil.addressRequest();
 
         objectMapper.writeValueAsString(addressRequest);
 
@@ -77,19 +77,10 @@ class UserControllerApiTest {
                 .andExpect(status().isOk());
     }
 
-    private static AddressRequest generateAddressRequest() {
-        return AddressRequest.builder()
-                .street(TestDataUtil.streetAddress())
-                .postalCode(TestDataUtil.postcode())
-                .city(TestDataUtil.city())
-                .country(TestDataUtil.country())
-                .build();
-    }
-
     @ParameterizedTest
     @MethodSource(value = DATA_PROVIDER_PATH + "#nullAndEmptyFieldProvider")
     void register_givenFieldIsNullOrEmpty_returnBadRequest(Consumer<UserRequest.UserRequestBuilder<?, ?>> modifier) throws Exception {
-        var addressRequest = generateAddressRequest();
+        var addressRequest = TestDataUtil.addressRequest();
 
         var builder = UserRequest.builder()
                 .email(TestDataUtil.emailAddress())
@@ -113,7 +104,7 @@ class UserControllerApiTest {
             "usernameOneCharacterTooManyXXXXX"// 32 char
     })
     void register_givenUsernameHasInvalidLength_returnBadRequest(String username) throws Exception {
-        var addressRequest = generateAddressRequest();
+        var addressRequest = TestDataUtil.addressRequest();
 
         var userRequest = UserRequest.builder()
                 .email(TestDataUtil.emailAddress())
@@ -129,4 +120,61 @@ class UserControllerApiTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.username", startsWith("size must be between")));
     }
+
+    @ParameterizedTest
+    @MethodSource(value = DATA_PROVIDER_PATH + "#validEmailAddresses")
+    void register_givenEmailIsValid_returnOk(String email) throws Exception {
+        var addressRequest = TestDataUtil.addressRequest();
+
+        var userRequest = UserRequest.builder()
+                .email(email)
+                .phone(TestDataUtil.phoneNumber())
+                .password("Str0ngP@ssw0rd")
+                .address(addressRequest)
+                .username(TestDataUtil.username())
+                .build();
+
+        mvc.perform(post("/identity/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = DATA_PROVIDER_PATH + "#invalidEmailAddresses")
+    void register_givenEmailContainsInvalidCharacter_returnBadRequest(String email) throws Exception {
+        var addressRequest = TestDataUtil.addressRequest();
+
+        var userRequest = UserRequest.builder()
+                .email(email)
+                .phone(TestDataUtil.phoneNumber())
+                .password("Str0ngP@ssw0rd")
+                .address(addressRequest)
+                .username(TestDataUtil.username())
+                .build();
+
+        mvc.perform(post("/identity/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isBadRequest());
+    }
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "d@k.dk",                                                                           // Local part 1 char
+            "Jfjhkljukkjjhbghfgjdfjnvnhvhvhnvhfjdkdfjhfghghdjcnvhfgjdjxjhvhgh@example.com"      // Local part 64 char
+    })
+    void register_givenEmailHasValidLength_returnOk(String email) throws Exception {
+        var addressRequest = TestDataUtil.addressRequest();
+
+        var userRequest = UserRequest.builder()
+                .email(email)
+                .phone(TestDataUtil.phoneNumber())
+                .password("Str0ngP@ssw0rd")
+                .address(addressRequest)
+                .username(TestDataUtil.username())
+                .build();
+
+        mvc.perform(post("/identity/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                .andExpect(status().isOk());
+    }
+
 }
