@@ -34,7 +34,7 @@ public class UserService {
         if(userExists) {
             throw new UserAlreadyExistsException("username/email", user.getUsername() + " / " + user.getEmail());
         }
-        //TODO:  Handle case where user is soft deleted
+
         setAddress(user);
 
         encodeAndSetPassword(user, password);
