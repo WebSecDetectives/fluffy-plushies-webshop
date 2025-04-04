@@ -53,7 +53,7 @@ class UserControllerApiTest {
 
     @Test
     void register_givenEmptyRequestBody_returnBadRequest() throws Exception {
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -72,7 +72,7 @@ class UserControllerApiTest {
                 .address(addressRequest)
                 .build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk());
     }
@@ -92,7 +92,7 @@ class UserControllerApiTest {
         modifier.accept(builder);
         var userRequest = builder.build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest());
     }
@@ -114,7 +114,7 @@ class UserControllerApiTest {
                 .username(username)
                 .build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -134,7 +134,7 @@ class UserControllerApiTest {
                 .username(TestDataUtil.username())
                 .build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk());
     }
@@ -152,7 +152,7 @@ class UserControllerApiTest {
                 .username(TestDataUtil.username())
                 .build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest());
     }
@@ -172,7 +172,7 @@ class UserControllerApiTest {
                 .username(TestDataUtil.username())
                 .build();
 
-        mvc.perform(post("/identity/users")
+        mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk());
     }

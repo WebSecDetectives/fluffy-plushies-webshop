@@ -16,10 +16,10 @@ import static com.dlshomies.fluffyplushies.config.ModelMapperConfig.LIST_TYPE_US
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/identity/users")
+@RequestMapping("/users")
 public class UserController {
 
-    UserService userService;
+    private UserService userService;
     private final ModelMapper modelMapper;
 
     @GetMapping("")
