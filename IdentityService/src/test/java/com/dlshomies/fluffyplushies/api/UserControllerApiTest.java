@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.function.Consumer;
 
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -100,5 +104,29 @@ class UserControllerApiTest {
         mvc.perform(post("/identity/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "us",
+            "usernameOneCharacterTooManyXXXX", // 31 char
+            "usernameOneCharacterTooManyXXXXX"// 32 char
+    })
+    void register_givenUsernameHasInvalidLength_returnBadRequest(String username) throws Exception {
+        var addressRequest = generateAddressRequest();
+
+        var userRequest = UserRequest.builder()
+                .email(TestDataUtil.emailAddress())
+                .phone(TestDataUtil.phoneNumber())
+                .password("Str0ngP@ssw0rd")
+                .address(addressRequest)
+                .username(username)
+                .build();
+
+        mvc.perform(post("/identity/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.username", startsWith("size must be between")));
     }
 }
