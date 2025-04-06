@@ -1,17 +1,13 @@
 # models/product.rb
-require_relative "../config/mongo"
+require_relative '../config/database'
 
-class Product
-  def self.collection
-    DB[:products]
-  end
+class Product < Sequel::Model
+  plugin :timestamps, update_on_create: true
 
-  def self.all
-    collection.find.map { |doc| doc.transform_keys(&:to_s) }
-  end
-
-  def self.create(data)
-    result = collection.insert_one(data)
-    collection.find(_id: result.inserted_id).first
+  def validate
+    super
+    errors.add(:name, 'cannot be empty') if name.nil? || name.strip.empty?
+    errors.add(:price, 'must be a positive number') if price.nil? || price <= 0
+    errors.add(:stock, 'must be 0 or more') if stock.nil? || stock < 0
   end
 end
