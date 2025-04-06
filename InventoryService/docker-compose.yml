@@ -1,24 +1,4 @@
 services:
-  inventory:
-    build: .
-    container_name: inventoryservice-inventory
-    ports:
-      - "4567:4567"
-    depends_on:
-      - mysql
-      - rabbitmq
-    environment:
-      DB_HOST: mysql
-      DB_USER: inventory
-      DB_PASSWORD: inventorypass
-      DB_NAME: inventorydb
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: user
-      RABBITMQ_PASSWORD: pass
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: bundle exec ruby app.rb
 
   mysql:
     image: mysql:8
