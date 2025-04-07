@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.config;
 
+import com.dlshomies.fluffyplushies.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         //config.setAllowedOrigins(List.of("http://localhost:4200"));
         config.addAllowedOriginPattern("*");
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);

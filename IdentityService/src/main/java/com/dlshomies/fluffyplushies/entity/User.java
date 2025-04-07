@@ -32,4 +32,7 @@ public class User extends BaseEntity {
 
     @NotBlank
     private String encodedPassword;
+
+    @NotNull
+    private Role role = Role.USER;
 }
