@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.security;
 
+import com.dlshomies.fluffyplushies.domain.EncodedJwtToken;
 import com.dlshomies.fluffyplushies.entity.Role;
 import org.springframework.stereotype.Component;
 
@@ -30,10 +31,10 @@ public class JwtUtil {
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
-    public String generateToken(String username, Role role) {
+    public EncodedJwtToken generateToken(String username, Role role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-        return Jwts.builder()
+        var encodedToken = Jwts.builder()
                 .subject(username)
                 .claim("role", role.name())
                 .issuedAt(now)
@@ -41,6 +42,7 @@ public class JwtUtil {
                 .expiration(expiryDate)
                 .signWith(key)
                 .compact();
+        return new EncodedJwtToken(encodedToken, expiryDate.getTime());
     }
 
     public String extractUsername(String token) {
@@ -63,6 +65,7 @@ public class JwtUtil {
             return true;
         }
     }
+    //TODO: create wrapper class that contains the parsed token payload and if needed token header
 
     private Claims getClaims(String token) {
         try {
