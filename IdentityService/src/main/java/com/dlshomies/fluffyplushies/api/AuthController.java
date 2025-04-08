@@ -1,11 +1,11 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.service.UserService;
+import com.dlshomies.fluffyplushies.dto.AuthRequest;
+import com.dlshomies.fluffyplushies.dto.AuthResponse;
+import com.dlshomies.fluffyplushies.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -15,5 +15,11 @@ public class AuthController {
 
     private ModelMapper modelMapper;
 
-    private UserService userService;
+    private AuthService authService;
+
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        var encodedToken = authService.login(authRequest.getUsername(), authRequest.getPassword());
+        return modelMapper.map(encodedToken, AuthResponse.class);
+    }
 }
