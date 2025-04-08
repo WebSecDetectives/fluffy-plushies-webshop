@@ -1,10 +1,10 @@
 package com.dlshomies.fluffyplushies.security;
 
 import com.dlshomies.fluffyplushies.domain.EncodedJwtToken;
+import com.dlshomies.fluffyplushies.domain.ParsedJwtToken;
 import com.dlshomies.fluffyplushies.entity.Role;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +12,6 @@ import io.jsonwebtoken.io.Decoders;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -45,35 +44,16 @@ public class JwtUtil {
         return new EncodedJwtToken(encodedToken, expiryDate.getTime());
     }
 
-    public String extractUsername(String token) {
-        return getClaims(token).getSubject();
-    }
-
-    public Date getTokenExpiration(String token) {
-        return getClaims(token).getExpiration();
-    }
-
-    public boolean isValidToken(String token, UserDetails userDetails) {
-        return userDetails.getUsername().equals(extractUsername(token)) && !isExpiredToken(token);
-    }
-
-    private boolean isExpiredToken(String token) {
+    public ParsedJwtToken parseToken(String token) {
         try {
-            return getClaims(token).getExpiration().before(new Date());
-        } catch (JwtException ex) {
-            log.error("Token expired or invalid: {}", token, ex);
-            return true;
-        }
-    }
-    //TODO: create wrapper class that contains the parsed token payload and if needed token header
-
-    private Claims getClaims(String token) {
-        try {
-            return Jwts.parser()
+            var jwtParser = Jwts.parser()
                     .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+                    .build();
+
+            var claims = jwtParser.parseSignedClaims(token);
+
+            return new ParsedJwtToken(claims.getHeader(), claims.getPayload());
+
         } catch (JwtException ex) {
             log.error("Failed to parse token: {}", token, ex);
             throw new IllegalArgumentException("Invalid token", ex);
