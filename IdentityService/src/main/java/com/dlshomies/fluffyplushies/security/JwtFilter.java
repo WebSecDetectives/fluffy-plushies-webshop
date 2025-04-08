@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.security;
 
+import com.dlshomies.fluffyplushies.domain.ParsedJwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,41 +21,39 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    public static final String BEARER = "Bearer ";
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        log.info("JwtFilter: Processing request for URI: {}", request.getRequestURI());
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = extractToken(request);
-        if (token != null) {
-            processToken(token, request);
-        }
+        processBearerToken(request);
 
         filterChain.doFilter(request, response);
     }
 
-    private String extractToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            log.info("Extracted JWT token: {}", token);
-            return token;
+    private void processBearerToken(HttpServletRequest request) {
+        var authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
+            var token = authorizationHeader.substring(BEARER.length());
+
+            var parsedToken = jwtUtil.parseToken(token);
+
+            setUserDetails(parsedToken, request);
         }
-        return null;
     }
 
-    private void processToken(String token, HttpServletRequest request) {
+    private void setUserDetails(ParsedJwtToken token, HttpServletRequest request) {
         try {
-            String username = jwtUtil.extractUsername(token);
+
+            var username = token.getSubject();
+
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.isValidToken(token, userDetails)) {
-                    setAuthentication(userDetails, request);
-                    log.info("JWT token validated for user: {}", username);
-                }
+                setAuthentication(userDetails, request);
+
             }
         } catch (Exception e) {
             log.error("Failed to process JWT token", e);

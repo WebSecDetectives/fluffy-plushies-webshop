@@ -5,14 +5,13 @@ import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
 public class AuthService {
-    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private JwtUtil jwtUtil;
 
