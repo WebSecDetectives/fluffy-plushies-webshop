@@ -10,7 +10,22 @@ services:
       - 15672:15672
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-  
+
+  email-service:
+    container_name: email-service
+    hostname: email-service
+    depends_on:
+      - rabbitmq
+    build:
+      context: ./EmailService
+      dockerfile: Dockerfile
+      args:
+        AMQP_HOST: ${AMQP_HOST}
+        SMTP_HOST: ${SMTP_HOST}
+        SMTP_PORT: ${SMTP_PORT}
+        SMTP_USER: ${SMTP_USER}
+        SMTP_PASS: ${SMTP_PASS}
+        
   identity-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: identity-mysql
