@@ -1,18 +1,20 @@
 version: '3.8'
 services:
   rabbitmq:
-    image: docker.io/library/rabbitmq:latest
-    container_name: RabbitMQ
-    restart: 'unless-stopped'
+    image: docker.io/library/rabbitmq:management
+    container_name: rabbitmq
     hostname: rabbitmq
+    restart: 'unless-stopped'
     ports: 
       - 5672:5672
+      - 15672:15672
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
   
   identity-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: identity-mysql
+    hostname: identity-mysql
     restart: 'unless-stopped'
     volumes:
       - identity-mysql:/var/lib/mysql
@@ -24,6 +26,7 @@ services:
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: inventory-mysql
+    hostname: inventory-mysql
     restart: 'unless-stopped'
     volumes:
       - inventory-mysql:/var/lib/mysql
@@ -35,6 +38,7 @@ services:
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2
     container_name: phpmyadmin
+    hostname: phpmyadmin
     ports:
         - 8080:80
     volumes:
@@ -43,6 +47,7 @@ services:
   order-mongodb:
     image: docker.io/mongodb/mongodb-community-server:latest
     container_name: order-mongodb
+    hostname: order-mongodb
     restart: 'unless-stopped'
     volumes:
       - order-mongodb:/data/db
