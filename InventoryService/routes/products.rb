@@ -4,6 +4,7 @@ require 'json'
 require_relative '../models/product'
 
 get '/products' do
+  content_type :json
   products = Product.all
   json products.map(&:values)
 end
@@ -23,12 +24,16 @@ post '/products' do
   product = Product.new(
     name:        data['name'],
     price:       data['price'],
-    description: data['description'],
+    #description: data['description'],
     stock:       data['stock']
   )
 
   if product.valid?
     product.save
+    RabbitMQ::Publisher.publish('indexer', {
+      event: 'product_created',
+      product: product.values
+    })
     status 201
     product.to_json
   else
@@ -46,6 +51,10 @@ put '/products/:id' do
 
   if product.valid?
     product.save
+    RabbitMQ::Publisher.publish('indexer', {
+      event: 'product_updated',
+      product: product.values
+    })
     product.to_json
   else
     halt 422, { errors: product.errors.full_messages }.to_json
@@ -56,16 +65,14 @@ delete '/products/:id' do
   product = Product[params[:id]]
   halt 404, { error: 'Product not found' }.to_json unless product
   product.delete
+  RabbitMQ::Publisher.publish('indexer', {
+    event: 'product_deleted',
+    productid: product.values.id
+  })
   status 204
 end
 
 require_relative '../rabbitmq/publisher'
-
-# Inside your POST or PUT routes, after saving/updating:
-RabbitMQ::Publisher.publish('product_events', {
-  event: 'product_created', # or 'product_updated'
-  product: product.values
-})
 
 get '/test-publish' do
   product = {
@@ -77,4 +84,12 @@ get '/test-publish' do
 
   publish_product_created_message(product)
   json message: 'Message sent!'
+end
+
+get '/products/search' do
+  query = params[:query]
+  halt 400, json({ error: "Missing query param" }) unless query
+
+  results = Product.where(Sequel.ilike(:name, "%#{query}%")).all
+  json results.map(&:values)
 end
