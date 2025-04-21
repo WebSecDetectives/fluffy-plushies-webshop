@@ -10,3 +10,4 @@ gem "json"
 gem 'dotenv'
 gem 'puma'
 gem 'rackup'
+gem 'elasticsearch', '~> 8.13'

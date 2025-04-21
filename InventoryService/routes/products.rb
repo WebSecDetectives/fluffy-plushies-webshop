@@ -93,3 +93,18 @@ get '/products/search' do
   results = Product.where(Sequel.ilike(:name, "%#{query}%")).all
   json results.map(&:values)
 end
+
+get '/products/search/:term' do
+  term = params[:term]
+  results = ES_CLIENT.search(index: 'products', body: {
+    query: {
+      multi_match: {
+        query: term,
+        fields: ['name^3', 'description']
+      }
+    }
+  })
+
+  hits = results['hits']['hits'].map { |hit| hit['_source'] }
+  json hits
+end

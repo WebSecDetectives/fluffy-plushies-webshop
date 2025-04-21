@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - default
+
   rabbitmq:
     image: docker.io/library/rabbitmq:management
     container_name: rabbitmq
@@ -55,7 +68,7 @@ services:
       - inventory-mysql
       - rabbitmq
     volumes:
-      - ./InventoryService/data:/app/data
+      - ./InventoryService:/app
 
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2
