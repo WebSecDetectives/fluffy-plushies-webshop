@@ -1,18 +1,20 @@
 version: '3.8'
 services:
   rabbitmq:
-    image: docker.io/library/rabbitmq:latest
-    container_name: RabbitMQ
-    restart: 'unless-stopped'
+    image: docker.io/library/rabbitmq:management
+    container_name: rabbitmq
     hostname: rabbitmq
+    restart: 'unless-stopped'
     ports: 
-      - 5672:5672
+      - 5673:5672
+      - 15673:15672
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
   
   identity-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: identity-mysql
+    hostname: identity-mysql
     restart: 'unless-stopped'
     volumes:
       - identity-mysql:/var/lib/mysql
@@ -24,6 +26,7 @@ services:
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: inventory-mysql
+    hostname: inventory-mysql
     restart: 'unless-stopped'
     volumes:
       - inventory-mysql:/var/lib/mysql
@@ -32,17 +35,41 @@ services:
     environment:
         MYSQL_ROOT_PASSWORD: inventory_service
 
+  inventory:
+    build:
+      context: ./InventoryService
+    container_name: inventory
+    restart: unless-stopped
+    ports:
+      - "4567:4567"
+    environment:
+      DB_HOST: inventory-mysql
+      DB_PORT: 3306
+      DB_NAME: inventorydb
+      DB_USER: root
+      DB_PASSWORD: inventory_service
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - inventory-mysql
+      - rabbitmq
+    volumes:
+      - ./InventoryService/data:/app/data
+
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2
     container_name: phpmyadmin
+    hostname: phpmyadmin
     ports:
-        - 8080:80
+        - 8081:80
     volumes:
       - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
   order-mongodb:
     image: docker.io/mongodb/mongodb-community-server:latest
     container_name: order-mongodb
+    hostname: order-mongodb
     restart: 'unless-stopped'
     volumes:
       - order-mongodb:/data/db
