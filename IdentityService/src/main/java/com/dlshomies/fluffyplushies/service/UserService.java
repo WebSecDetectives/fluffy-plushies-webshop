@@ -1,6 +1,7 @@
 package com.dlshomies.fluffyplushies.service;
 
 import com.dlshomies.fluffyplushies.entity.Address;
+import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.exception.UserAlreadyExistsException;
 import com.dlshomies.fluffyplushies.repository.AddressRepository;
@@ -26,7 +27,15 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public User registerAdminUser(User user, String password) {
+        return registerWithRole(user, password, Role.ADMIN);
+    }
+
     public User registerUser(User user, String password) {
+        return registerWithRole(user, password, Role.USER);
+    }
+
+    private User registerWithRole(User user, String password, Role role) {
         boolean userExists = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
             userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())
         );
@@ -34,9 +43,8 @@ public class UserService {
         if(userExists) {
             throw new UserAlreadyExistsException("username/email", user.getUsername() + " / " + user.getEmail());
         }
-
+        user.setRole(role);
         setAddress(user);
-
         encodeAndSetPassword(user, password);
 
         return userRepository.save(user);

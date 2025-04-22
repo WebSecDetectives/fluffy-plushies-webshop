@@ -1,15 +1,48 @@
 package com.dlshomies.fluffyplushies.util;
 
 import com.dlshomies.fluffyplushies.dto.AddressRequest;
+import com.dlshomies.fluffyplushies.dto.UserRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import net.datafaker.Faker;
 
 public class TestDataUtil {
-    private static final Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
-    public static @NotNull @NotBlank String username() {
+    private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
+
+    public UserRequest userRequestWithDefaults() {
+        return UserRequest.builder()
+                .username(username())
+                .email(emailAddress())
+                .phone(phoneNumber())
+                .password(STRONG_PASSWORD)
+                .address(addressRequest())
+                .build();
+    }
+
+    public UserRequest userRequestWithUsername(String username) {
+        return UserRequest.builder()
+                .username(username)
+                .email(emailAddress())
+                .phone(phoneNumber())
+                .password(STRONG_PASSWORD)
+                .address(addressRequest())
+                .build();
+    }
+
+    public UserRequest userRequestWithEmail(String email) {
+        return UserRequest.builder()
+                .username(username())
+                .email(email)
+                .phone(phoneNumber())
+                .password(STRONG_PASSWORD)
+                .address(addressRequest())
+                .build();
+    }
+
+    public @NotNull @NotBlank String username() {
         var slug = faker.internet().slug();
         slug = slug.replace('.', '_');
         if (slug.length() < 3) {
@@ -21,36 +54,37 @@ public class TestDataUtil {
         return slug;
     }
 
-    public static @NotNull @NotBlank @Email String emailAddress() {
+    public @NotNull @NotBlank @Email String emailAddress() {
         return faker.internet().emailAddress();
     }
 
-    public static @NotNull @NotBlank String phoneNumber() {
+    public @NotNull @NotBlank String phoneNumber() {
         return faker.phoneNumber().phoneNumber();
     }
 
-    public static AddressRequest addressRequest() {
+    public AddressRequest addressRequest() {
         return AddressRequest.builder()
-                .street(TestDataUtil.streetAddress())
-                .postalCode(TestDataUtil.postcode())
-                .city(TestDataUtil.city())
-                .country(TestDataUtil.country())
+                .street(streetAddress())
+                .postalCode(postcode())
+                .city(city())
+                .country(country())
                 .build();
     }
 
-    private static @NotNull String streetAddress() {
+    private @NotNull String streetAddress() {
         return faker.address().streetAddress();
     }
 
-    private static @NotNull String postcode() {
+    private @NotNull String postcode() {
         return faker.address().postcode();
     }
 
-    private static @NotNull String city() {
+    private @NotNull String city() {
         return faker.address().city();
     }
 
-    private static @NotNull String country() {
+    private @NotNull String country() {
         return faker.address().country();
     }
+
 }
