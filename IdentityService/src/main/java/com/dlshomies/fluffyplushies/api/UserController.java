@@ -24,7 +24,7 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     List<UserResponse> getUsers() {
         return modelMapper.map(userService.getUsers(), LIST_TYPE_USER_DTO);
     }
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserResponse registerAdmin(@Valid @RequestBody UserRequest userRequest) {
         User user = userService.registerAdminUser(modelMapper.map(userRequest, User.class), userRequest.getPassword());
         return modelMapper.map(user, UserResponse.class);

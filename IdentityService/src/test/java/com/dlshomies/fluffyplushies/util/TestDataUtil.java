@@ -2,6 +2,8 @@ package com.dlshomies.fluffyplushies.util;
 
 import com.dlshomies.fluffyplushies.dto.AddressRequest;
 import com.dlshomies.fluffyplushies.dto.UserRequest;
+import com.dlshomies.fluffyplushies.entity.Address;
+import com.dlshomies.fluffyplushies.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -42,6 +44,15 @@ public class TestDataUtil {
                 .build();
     }
 
+    public User userWithUsername(String username) {
+        return User.builder()
+                .username(username)
+                .email(emailAddress())
+                .phone(phoneNumber())
+                .address(addressWithDefaults())
+                .build();
+    }
+
     public @NotNull @NotBlank String username() {
         var slug = faker.internet().slug();
         slug = slug.replace('.', '_');
@@ -71,6 +82,14 @@ public class TestDataUtil {
                 .build();
     }
 
+    private Address addressWithDefaults() {
+        return Address.builder()
+                .street(streetAddress())
+                .postalCode(postcode())
+                .city(city())
+                .country(country())
+                .build();
+    }
     private @NotNull String streetAddress() {
         return faker.address().streetAddress();
     }
