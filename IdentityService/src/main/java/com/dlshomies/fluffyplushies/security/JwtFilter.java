@@ -21,23 +21,26 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    public static final String BEARER = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer ";
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+                                    throws ServletException, IOException {
 
-        processBearerToken(request);
+        extractTokenFromHeader(request);
 
         filterChain.doFilter(request, response);
     }
 
-    private void processBearerToken(HttpServletRequest request) {
+    private void extractTokenFromHeader(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
-            var token = authorizationHeader.substring(BEARER.length());
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            var token = authorizationHeader.substring(BEARER_PREFIX.length());
 
             var parsedToken = jwtUtil.parseToken(token);
 
@@ -51,9 +54,9 @@ public class JwtFilter extends OncePerRequestFilter {
             var username = token.getSubject();
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                setAuthentication(userDetails, request);
+                var userDetails = userDetailsService.loadUserByUsername(username);
 
+                setAuthentication(userDetails, request);
             }
         } catch (Exception e) {
             log.error("Failed to process JWT token", e);
@@ -61,9 +64,11 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(UserDetails userDetails, HttpServletRequest request) {
-        UsernamePasswordAuthenticationToken authentication =
+        var authenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }
