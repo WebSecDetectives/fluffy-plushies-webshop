@@ -32,7 +32,7 @@ public class User extends BaseEntity implements UserDetails {
     private String phone;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 

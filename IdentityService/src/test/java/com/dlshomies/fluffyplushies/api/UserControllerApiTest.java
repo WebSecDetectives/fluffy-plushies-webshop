@@ -3,10 +3,14 @@ package com.dlshomies.fluffyplushies.api;
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
+import com.dlshomies.fluffyplushies.entity.Role;
+import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
+import com.dlshomies.fluffyplushies.service.UserService;
 import com.dlshomies.fluffyplushies.util.TestDataUtil;
 import com.dlshomies.fluffyplushies.dto.UserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,6 +52,9 @@ class UserControllerApiTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     @Autowired
@@ -55,6 +63,8 @@ class UserControllerApiTest {
     private static final String DATA_PROVIDER_PATH = "com.dlshomies.fluffyplushies.api.TestDataProvider";
 
     public static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
+    @Autowired
+    private Faker faker;
 
     @BeforeEach
     void setUp() {
@@ -142,19 +152,34 @@ class UserControllerApiTest {
                 .andExpect(status().isOk());
 
     }
-/*
+
     @Test
     void registerAdmin_givenCallerIsAdmin_returnOk() throws Exception {
-        var username = "admin";
-        var userRequest = UserRequest.builder()
-                        .username(username)
-                                .email(TestDataUtil.emailAddress())
+        var currentAdminUsername = "admin1";
+        var currentAdminUser = testDataUtil.userWithUsername(currentAdminUsername);
+        userService.registerAdminUser(currentAdminUser, STRONG_PASSWORD);
+        var newAdminUsername = "admin2";
+        var newAdminUserRequest = testDataUtil.userRequestWithUsername(newAdminUsername);
 
         mvc.perform(post("/users/admin")
-                        .header("Authorization", "Bearer" + jwtUtil.generateToken())
+                        .header("Authorization", "Bearer " + jwtUtil.generateToken(currentAdminUsername, Role.ADMIN).getToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequest)))
+                        .content(objectMapper.writeValueAsString(newAdminUserRequest)))
                 .andExpect(status().isOk());
-    }*/
+    }
 
+    @Test
+    void registerAdmin_givenCallerIsUser_returnIsForbidden() throws Exception {
+        var currentUsername = "user1";
+        var currentUser = testDataUtil.userWithUsername(currentUsername);
+        userService.registerUser(currentUser, STRONG_PASSWORD);
+        var newAdminUsername = "user2";
+        var newAdminUserRequest = testDataUtil.userRequestWithUsername(newAdminUsername);
+
+        mvc.perform(post("/users/admin")
+                        .header("Authorization", "Bearer " + jwtUtil.generateToken(currentUsername, Role.USER).getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newAdminUserRequest)))
+                .andExpect(status().isForbidden());
+    }
 }
