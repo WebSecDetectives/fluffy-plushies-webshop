@@ -2,7 +2,6 @@ package com.dlshomies.fluffyplushies.security;
 
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.exception.UnexpectedUserTypeException;
-import com.dlshomies.fluffyplushies.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +13,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Component("userSecurity")
 public class UserSecurity {
-    private final UserRepository userRepository;
 
     public boolean isSelf(UUID targetUserId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
