@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -45,18 +46,12 @@ public class JwtUtil {
     }
 
     public ParsedJwtToken parseToken(String token) {
-        try {
-            var jwtParser = Jwts.parser()
-                    .verifyWith(key)
-                    .build();
+        var jwtParser = Jwts.parser()
+                .verifyWith(key)
+                .build();
 
-            var claims = jwtParser.parseSignedClaims(token);
+        var claims = jwtParser.parseSignedClaims(token);
 
-            return new ParsedJwtToken(claims.getHeader(), claims.getPayload());
-
-        } catch (JwtException ex) {
-            log.error("Failed to parse token: {}", token, ex);
-            throw new IllegalArgumentException("Invalid token", ex);
-        }
+        return new ParsedJwtToken(claims.getHeader(), claims.getPayload());
     }
 }

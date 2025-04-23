@@ -15,8 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -180,6 +179,33 @@ class UserControllerApiTest {
                         .header("Authorization", "Bearer " + jwtUtil.generateToken(currentUsername, Role.USER).getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newAdminUserRequest)))
+                .andExpect(status().isForbidden());
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @ValueSource(strings = {
+            "Bearer",                     // prefix only
+            "Foo abc.def.ghi",            // wrong scheme
+    })
+    void registerAdmin_givenMalformedOrNoToken_returnUnauthorized(String authHeader) throws Exception {
+
+        var newAdminUserRequest = testDataUtil.userRequestWithDefaults();
+
+        mvc.perform(post("/users/admin")
+                        .header("Authorization", authHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newAdminUserRequest)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void registerAdmin_withoutAuthorizationHeader_returnUnauthorized() throws Exception {
+        var req = post("/users/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin")));
+
+        mvc.perform(req)
                 .andExpect(status().isForbidden());
     }
 }
