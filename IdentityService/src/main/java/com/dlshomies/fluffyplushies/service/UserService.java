@@ -4,10 +4,12 @@ import com.dlshomies.fluffyplushies.entity.Address;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.exception.UserAlreadyExistsException;
+import com.dlshomies.fluffyplushies.exception.UserNotFoundException;
 import com.dlshomies.fluffyplushies.repository.AddressRepository;
 import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.util.SoftDeleteUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -71,5 +74,9 @@ public class UserService {
 
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    public User getUser(UUID id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

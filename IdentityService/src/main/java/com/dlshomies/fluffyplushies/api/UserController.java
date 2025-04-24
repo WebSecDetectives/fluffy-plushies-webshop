@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.dlshomies.fluffyplushies.config.ModelMapperConfig.LIST_TYPE_USER_DTO;
 
@@ -40,5 +41,11 @@ public class UserController {
     public UserResponse registerAdmin(@Valid @RequestBody UserRequest userRequest) {
         User user = userService.registerAdminUser(modelMapper.map(userRequest, User.class), userRequest.getPassword());
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
+    @GetMapping("/{id}")
+    public UserResponse getUser(@PathVariable UUID id) {
+        return modelMapper.map(userService.getUser(id), UserResponse.class);
     }
 }
