@@ -24,7 +24,7 @@ public class UserController {
     private UserService userService;
     private final ModelMapper modelMapper;
 
-    @GetMapping("/admin")
+    @GetMapping("")
     @PreAuthorize("hasAuthority('ADMIN')")
     List<UserResponse> getUsers() {
         return modelMapper.map(userService.getUsers(), LIST_TYPE_USER_DTO);

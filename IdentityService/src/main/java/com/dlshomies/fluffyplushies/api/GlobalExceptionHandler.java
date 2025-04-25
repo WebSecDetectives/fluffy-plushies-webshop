@@ -42,11 +42,4 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(BAD_REQUEST, ex.getMessage()));
     }
-
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidJwt(MalformedJwtException ex) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse("INVALID_TOKEN", ex.getMessage()));
-    }
 }

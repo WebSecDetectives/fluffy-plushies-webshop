@@ -8,6 +8,7 @@ import com.dlshomies.fluffyplushies.exception.UserAlreadyExistsException;
 import com.dlshomies.fluffyplushies.exception.UserDeletedException;
 import com.dlshomies.fluffyplushies.exception.UserNotFoundException;
 import com.dlshomies.fluffyplushies.repository.AddressRepository;
+import com.dlshomies.fluffyplushies.repository.UserHistoryRepository;
 import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.util.SoftDeleteUtil;
 import jakarta.persistence.EntityManager;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserHistoryRepository userHistoryRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final ModelMapper modelMapper;
@@ -100,6 +102,7 @@ public class UserService {
         // create new instance of user history based on the old one
         // persist user history as snapshot
         UserHistory snapshot = modelMapper.map(existingUser, UserHistory.class);
+        userHistoryRepository.save(snapshot);
 
         // update permitted fields explicitly to avoid background magic errors
         updatePermittedFields(user, existingUser);

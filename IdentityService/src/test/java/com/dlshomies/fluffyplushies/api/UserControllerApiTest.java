@@ -3,6 +3,7 @@ package com.dlshomies.fluffyplushies.api;
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
+import com.dlshomies.fluffyplushies.domain.EncodedJwtToken;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
@@ -10,12 +11,14 @@ import com.dlshomies.fluffyplushies.service.UserService;
 import com.dlshomies.fluffyplushies.util.TestDataUtil;
 import com.dlshomies.fluffyplushies.dto.UserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@RequiredArgsConstructor(onConstructor_=@Autowired)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -44,29 +47,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerApiTest {
 
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    JwtUtil jwtUtil;
-
-    @Autowired
-    private TestDataUtil testDataUtil;
-
+    private final MockMvc mvc;
+    private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final TestDataUtil testDataUtil;
     private static final String DATA_PROVIDER_PATH = "com.dlshomies.fluffyplushies.api.TestDataProvider";
-
-    public static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
-    @Autowired
-    private Faker faker;
+    private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
+    private String adminToken;
 
     @BeforeEach
-    void setUp() {
+    void seedAdmin() {
+        var adminRequest = testDataUtil.userRequestWithDefaults();
+        var adminEntity = modelMapper.map(adminRequest, User.class);
+        User savedAdmin = userService.registerAdminUser(adminEntity, adminRequest.getPassword());
+        adminToken = jwtUtil.generateToken(savedAdmin.getUsername(), Role.ADMIN).getToken();
     }
 
     @Test
@@ -161,7 +157,7 @@ class UserControllerApiTest {
         var newAdminUserRequest = testDataUtil.userRequestWithUsername(newAdminUsername);
 
         mvc.perform(post("/users/admin")
-                        .header("Authorization", "Bearer " + jwtUtil.generateToken(currentAdminUsername, Role.ADMIN).getToken())
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newAdminUserRequest)))
                 .andExpect(status().isOk());
