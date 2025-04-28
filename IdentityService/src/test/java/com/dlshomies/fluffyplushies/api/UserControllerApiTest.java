@@ -192,7 +192,7 @@ class UserControllerApiTest {
                         .header("Authorization", authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newAdminUserRequest)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -202,6 +202,6 @@ class UserControllerApiTest {
                 .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin")));
 
         mvc.perform(req)
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

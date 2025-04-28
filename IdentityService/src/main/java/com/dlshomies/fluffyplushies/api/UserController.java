@@ -43,14 +43,14 @@ public class UserController {
         return modelMapper.map(user, UserResponse.class);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     public UserResponse getUser(@PathVariable UUID id) {
         return modelMapper.map(userService.getUser(id), UserResponse.class);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     public UserResponse updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
         User user = userService.updateUser(id, modelMapper.map(userRequest, User.class));
         return modelMapper.map(user, UserResponse.class);
