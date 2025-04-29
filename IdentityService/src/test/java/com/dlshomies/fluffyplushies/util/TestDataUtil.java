@@ -44,6 +44,15 @@ public class TestDataUtil {
                 .build();
     }
 
+    public User userWithDefaults() {
+        return User.builder()
+                .username(username())
+                .email(emailAddress())
+                .phone(phoneNumber())
+                .address(addressWithDefaults())
+                .build();
+    }
+
     public User userWithUsername(String username) {
         return User.builder()
                 .username(username)

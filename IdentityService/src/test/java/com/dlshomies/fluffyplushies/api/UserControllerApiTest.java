@@ -226,5 +226,27 @@ class UserControllerApiTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void updateUser_givenCallerIsSelf_returnOk() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
+
+        mvc.perform(patch("/users/{id}", existingUser.getId())
+                        .header("Authorization", "Bearer " + jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateUser_givenCallerIsNotSelf_returnForbidden() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
+        var currentUser = userService.registerUser(testDataUtil.userWithDefaults(), STRONG_PASSWORD);
+
+        mvc.perform(patch("/users/{id}", currentUser.getId())
+                        .header("Authorization", "Bearer " + jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isForbidden());
+    }
 
 }
