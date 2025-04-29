@@ -87,9 +87,9 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public User updateUser(UUID currentUserId, User user) {
+    public User updateUser(UUID currentUserId, User patch) {
         Optional<User> existingOptional = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
-                userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()));
+                userRepository.findById(currentUserId));
 
         if(existingOptional.isEmpty()) {
             throw new UserNotFoundException();
@@ -99,27 +99,27 @@ public class UserService {
         if(existingUser.isDeleted()) {
             throw new UserDeletedException();
         }
-        // create new instance of user history based on the old one
-        // persist user history as snapshot
-        UserHistory snapshot = modelMapper.map(existingUser, UserHistory.class);
-        userHistoryRepository.save(snapshot);
+        createAndPersistSnapshot(existingUser);
 
-        // update permitted fields explicitly to avoid background magic errors
-        updatePermittedFields(user, existingUser);
+        updatePermittedFields(patch, existingUser);
 
-        // save updated user and return
         return userRepository.save(existingUser);
     }
 
-    private void updatePermittedFields(User user, User existingUser) {
-        if (user.getEmail() != null) {
-            existingUser.setEmail(user.getEmail());
+    private void createAndPersistSnapshot(User existingUser) {
+        userHistoryRepository.save(modelMapper.map(existingUser, UserHistory.class));
+    }
+
+    private void updatePermittedFields(User userReq, User existingUser) {
+        // update permitted fields explicitly to avoid background magic errors
+        if (userReq.getPhone() != null) {
+            existingUser.setPhone(userReq.getPhone());
         }
-        if (user.getPhone() != null) {
-            existingUser.setPhone(user.getPhone());
+        if (userReq.getPassword() != null) {
+            encodeAndSetPassword(existingUser, userReq.getPassword());
         }
-        if (user.getPassword() != null) {
-            encodeAndSetPassword(existingUser, user.getPassword());
+        if (userReq.getAddress() != null) {
+            setAddress(userReq);
         }
     }
 }

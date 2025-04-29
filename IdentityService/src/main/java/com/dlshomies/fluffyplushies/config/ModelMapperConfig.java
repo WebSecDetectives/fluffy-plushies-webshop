@@ -3,6 +3,7 @@ package com.dlshomies.fluffyplushies.config;
 import com.dlshomies.fluffyplushies.dto.UserResponse;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.entity.UserHistory;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.TypeToken;
@@ -19,6 +20,9 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
+
+        mapper.getConfiguration()
+                .setPropertyCondition(Conditions.isNotNull());
 
         TypeMap<User, UserHistory> userToHistory = mapper.createTypeMap(User.class, UserHistory.class);
         userToHistory.addMappings(m -> {

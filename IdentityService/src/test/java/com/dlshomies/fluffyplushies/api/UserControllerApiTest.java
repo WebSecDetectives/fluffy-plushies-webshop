@@ -3,16 +3,15 @@ package com.dlshomies.fluffyplushies.api;
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
-import com.dlshomies.fluffyplushies.domain.EncodedJwtToken;
+import com.dlshomies.fluffyplushies.dto.UpdateUserRequest;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
 import com.dlshomies.fluffyplushies.service.UserService;
 import com.dlshomies.fluffyplushies.util.TestDataUtil;
-import com.dlshomies.fluffyplushies.dto.UserRequest;
+import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -56,13 +55,21 @@ class UserControllerApiTest {
     private static final String DATA_PROVIDER_PATH = "com.dlshomies.fluffyplushies.api.TestDataProvider";
     private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
     private String adminToken;
+    private User existingUser;
 
     @BeforeEach
     void seedAdmin() {
         var adminRequest = testDataUtil.userRequestWithDefaults();
         var adminEntity = modelMapper.map(adminRequest, User.class);
-        User savedAdmin = userService.registerAdminUser(adminEntity, adminRequest.getPassword());
+        var savedAdmin = userService.registerAdminUser(adminEntity, adminRequest.getPassword());
         adminToken = jwtUtil.generateToken(savedAdmin.getUsername(), Role.ADMIN).getToken();
+    }
+
+    @BeforeEach
+    void seedUser() {
+        var userRequest = testDataUtil.userRequestWithDefaults();
+        var userEntity = modelMapper.map(userRequest, User.class);
+        existingUser = userService.registerUser(userEntity, STRONG_PASSWORD);
     }
 
     @Test
@@ -75,14 +82,15 @@ class UserControllerApiTest {
     @Test
     void registerUser_givenValidRequestBody_returnOk() throws Exception {
         mvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(testDataUtil.userRequestWithDefaults())))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithDefaults())))
                 .andExpect(status().isOk());
     }
 
     @ParameterizedTest
     @MethodSource(value = DATA_PROVIDER_PATH + "#nullAndEmptyFieldProvider")
-    void registerUser_givenUsernameIsNullOrEmpty_returnBadRequest(Consumer<UserRequest.UserRequestBuilder<?, ?>> modifier) throws Exception {
-        var builder = UserRequest.builder()
+    void registerUser_givenUsernameIsNullOrEmpty_returnBadRequest(Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>> modifier) throws Exception {
+        var builder = CreateUserRequest.builder()
                 .email(testDataUtil.emailAddress())
                 .phone(testDataUtil.phoneNumber())
                 .password(STRONG_PASSWORD)
@@ -94,7 +102,8 @@ class UserControllerApiTest {
         var userRequest = builder.build();
 
         mvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -143,7 +152,8 @@ class UserControllerApiTest {
         var userRequest = testDataUtil.userRequestWithEmail(email);
 
         mvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk());
 
     }
@@ -204,4 +214,17 @@ class UserControllerApiTest {
         mvc.perform(req)
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void updateUser_givenCallerIsAdmin_returnOk() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
+
+        mvc.perform(patch("/users/{id}", existingUser.getId())
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isOk());
+    }
+
+
 }

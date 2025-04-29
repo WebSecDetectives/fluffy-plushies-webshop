@@ -1,6 +1,7 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.UserRequest;
+import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
+import com.dlshomies.fluffyplushies.dto.UpdateUserRequest;
 import com.dlshomies.fluffyplushies.dto.UserResponse;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.service.UserService;
@@ -31,15 +32,15 @@ public class UserController {
     }
 
     @PostMapping("")
-    public UserResponse registerUser(@Valid @RequestBody UserRequest userRequest) {
-        User user = userService.registerUser(modelMapper.map(userRequest, User.class), userRequest.getPassword());
+    public UserResponse registerUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        User user = userService.registerUser(modelMapper.map(createUserRequest, User.class), createUserRequest.getPassword());
         return modelMapper.map(user, UserResponse.class);
     }
 
     @PostMapping("/admin")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserResponse registerAdmin(@Valid @RequestBody UserRequest userRequest) {
-        User user = userService.registerAdminUser(modelMapper.map(userRequest, User.class), userRequest.getPassword());
+    public UserResponse registerAdmin(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        User user = userService.registerAdminUser(modelMapper.map(createUserRequest, User.class), createUserRequest.getPassword());
         return modelMapper.map(user, UserResponse.class);
     }
 
@@ -51,8 +52,9 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
-    public UserResponse updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
-        User user = userService.updateUser(id, modelMapper.map(userRequest, User.class));
-        return modelMapper.map(user, UserResponse.class);
+    public UserResponse updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        var patch = new User();
+        modelMapper.map(updateUserRequest, patch);
+        return modelMapper.map(userService.updateUser(id, patch), UserResponse.class);
     }
 }
