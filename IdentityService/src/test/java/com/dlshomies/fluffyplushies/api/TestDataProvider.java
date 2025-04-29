@@ -1,6 +1,6 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.UserRequest;
+import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.function.Consumer;
@@ -78,19 +78,19 @@ public class TestDataProvider {
     public static Stream<Arguments> nullAndEmptyFieldProvider() {
         return Stream.of(
                 // For username
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.username(null), "username"),
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.username(""), "username"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.username(null), "username"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.username(""), "username"),
                 // For email
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.email(null), "email"),
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.email(""), "email"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.email(null), "email"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.email(""), "email"),
                 // For phone
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.phone(null), "phone"),
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.phone(""), "phone"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.phone(null), "phone"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.phone(""), "phone"),
                 // For password
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.password(null), "password"),
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.password(""), "password"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.password(null), "password"),
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.password(""), "password"),
                 // For address
-                Arguments.of((Consumer<UserRequest.UserRequestBuilder<?, ?>>) b -> b.address(null), "address")
+                Arguments.of((Consumer<CreateUserRequest.CreateUserRequestBuilder<?, ?>>) b -> b.address(null), "address")
         );
     }
 }

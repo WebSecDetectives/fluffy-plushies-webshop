@@ -1,7 +1,7 @@
 package com.dlshomies.fluffyplushies.util;
 
 import com.dlshomies.fluffyplushies.dto.AddressRequest;
-import com.dlshomies.fluffyplushies.dto.UserRequest;
+import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
 import com.dlshomies.fluffyplushies.entity.Address;
 import com.dlshomies.fluffyplushies.entity.User;
 import jakarta.validation.constraints.Email;
@@ -14,8 +14,8 @@ public class TestDataUtil {
 
     private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
 
-    public UserRequest userRequestWithDefaults() {
-        return UserRequest.builder()
+    public CreateUserRequest userRequestWithDefaults() {
+        return CreateUserRequest.builder()
                 .username(username())
                 .email(emailAddress())
                 .phone(phoneNumber())
@@ -24,8 +24,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public UserRequest userRequestWithUsername(String username) {
-        return UserRequest.builder()
+    public CreateUserRequest userRequestWithUsername(String username) {
+        return CreateUserRequest.builder()
                 .username(username)
                 .email(emailAddress())
                 .phone(phoneNumber())
@@ -34,8 +34,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public UserRequest userRequestWithEmail(String email) {
-        return UserRequest.builder()
+    public CreateUserRequest userRequestWithEmail(String email) {
+        return CreateUserRequest.builder()
                 .username(username())
                 .email(email)
                 .phone(phoneNumber())

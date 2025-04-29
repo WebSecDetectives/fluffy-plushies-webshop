@@ -3,15 +3,18 @@ package com.dlshomies.fluffyplushies.service;
 import com.dlshomies.fluffyplushies.entity.Address;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
+import com.dlshomies.fluffyplushies.entity.UserHistory;
 import com.dlshomies.fluffyplushies.exception.UserAlreadyExistsException;
+import com.dlshomies.fluffyplushies.exception.UserDeletedException;
 import com.dlshomies.fluffyplushies.exception.UserNotFoundException;
 import com.dlshomies.fluffyplushies.repository.AddressRepository;
+import com.dlshomies.fluffyplushies.repository.UserHistoryRepository;
 import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.util.SoftDeleteUtil;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,10 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserHistoryRepository userHistoryRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final ModelMapper modelMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -39,11 +44,7 @@ public class UserService {
     }
 
     private User registerWithRole(User user, String password, Role role) {
-        boolean userExists = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
-            userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())
-        );
-
-        if(userExists) {
+        if(userExists(user)) {
             throw new UserAlreadyExistsException("username/email", user.getUsername() + " / " + user.getEmail());
         }
         user.setRole(role);
@@ -51,6 +52,12 @@ public class UserService {
         encodeAndSetPassword(user, password);
 
         return userRepository.save(user);
+    }
+
+    private Boolean userExists(User user) {
+        return SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
+                userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())
+        );
     }
 
     private void encodeAndSetPassword(User user, String password) {
@@ -78,5 +85,41 @@ public class UserService {
 
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    public User updateUser(UUID currentUserId, User patch) {
+        Optional<User> existingOptional = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
+                userRepository.findById(currentUserId));
+
+        if(existingOptional.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        User existingUser = existingOptional.get();
+
+        if(existingUser.isDeleted()) {
+            throw new UserDeletedException();
+        }
+        createAndPersistSnapshot(existingUser);
+
+        updatePermittedFields(patch, existingUser);
+
+        return userRepository.save(existingUser);
+    }
+
+    private void createAndPersistSnapshot(User existingUser) {
+        userHistoryRepository.save(modelMapper.map(existingUser, UserHistory.class));
+    }
+
+    private void updatePermittedFields(User userReq, User existingUser) {
+        // update permitted fields explicitly to avoid background magic errors
+        if (userReq.getPhone() != null) {
+            existingUser.setPhone(userReq.getPhone());
+        }
+        if (userReq.getPassword() != null) {
+            encodeAndSetPassword(existingUser, userReq.getPassword());
+        }
+        if (userReq.getAddress() != null) {
+            setAddress(userReq);
+        }
     }
 }
