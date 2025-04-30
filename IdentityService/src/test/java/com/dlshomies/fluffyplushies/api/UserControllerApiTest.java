@@ -195,7 +195,6 @@ class UserControllerApiTest {
             "Foo abc.def.ghi",            // wrong scheme
     })
     void registerAdmin_givenMalformedOrNoToken_returnUnauthorized(String authHeader) throws Exception {
-
         var newAdminUserRequest = testDataUtil.userRequestWithDefaults();
 
         mvc.perform(post("/users/admin")
@@ -207,11 +206,9 @@ class UserControllerApiTest {
 
     @Test
     void registerAdmin_withoutAuthorizationHeader_returnUnauthorized() throws Exception {
-        var req = post("/users/admin")
+        mvc.perform(post("/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin")));
-
-        mvc.perform(req)
+                .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin"))))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -249,4 +246,29 @@ class UserControllerApiTest {
                 .andExpect(status().isForbidden());
     }
 
+    @ParameterizedTest
+    @EmptySource
+    @ValueSource(strings = {
+            "Bearer",                     // prefix only
+            "Foo abc.def.ghi",            // wrong scheme
+    })
+    void updateUser_givenMalformedOrNoToken_returnUnauthorized(String authHeader) throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().build();
+
+        mvc.perform(patch("/users/{id}", existingUser.getId())
+            .header("Authorization", authHeader)
+            .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void updateUser_withoutAuthorizationHeader_returnUnauthorized() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().build();
+
+        mvc.perform(patch("/users/{id}", existingUser.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isUnauthorized());
+    }
 }
