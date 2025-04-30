@@ -48,7 +48,7 @@ public class UserService {
             throw new UserAlreadyExistsException("username/email", user.getUsername() + " / " + user.getEmail());
         }
         user.setRole(role);
-        setAddress(user);
+        saveAddress(user);
         encodeAndSetPassword(user, password);
 
         return userRepository.save(user);
@@ -64,19 +64,22 @@ public class UserService {
         user.setEncodedPassword(passwordEncoder.encode(password));
     }
 
-    private void setAddress(User user) {
-        Address reqAddress = user.getAddress();
+    private void saveAddress(User user) {
+        var savedAddress = getOrCreateAddress(user.getAddress());
+        user.setAddress(savedAddress);
+    }
+
+    private Address getOrCreateAddress(Address reqAddress) {
         Optional<Address> existingAddress = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
                 addressRepository.findByStreetAndPostalCodeAndCityAndCountry(reqAddress.getStreet(), reqAddress.getPostalCode(), reqAddress.getCity(), reqAddress.getCountry())
         );
 
         if (existingAddress.isPresent()) {
-            Address activatedAddress = existingAddress.get();
+            var activatedAddress = existingAddress.get();
             activatedAddress.setDeleted(false);
-            user.setAddress(activatedAddress);
-        } else {
-            user.setAddress(addressRepository.save(reqAddress));
+            return activatedAddress;
         }
+        return addressRepository.save(reqAddress);
     }
 
     public List<User> getUsers() {
@@ -88,6 +91,28 @@ public class UserService {
     }
 
     public User updateUser(UUID currentUserId, User patch) {
+        User existingUser = getExistingUser(currentUserId);
+
+        createAndPersistSnapshot(existingUser);
+
+        updatePhone(existingUser, patch.getPhone());
+
+        updateAddress(existingUser, patch.getAddress());
+
+        return userRepository.save(existingUser);
+    }
+
+    public User updatePassword(UUID currentUserId, String password) {
+        User existingUser = getExistingUser(currentUserId);
+
+        createAndPersistSnapshot(existingUser);
+
+        encodeAndSetPassword(existingUser, password);
+
+        return userRepository.save(existingUser);
+    }
+
+    private User getExistingUser(UUID currentUserId) {
         Optional<User> existingOptional = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
                 userRepository.findById(currentUserId));
 
@@ -99,27 +124,23 @@ public class UserService {
         if(existingUser.isDeleted()) {
             throw new UserDeletedException();
         }
-        createAndPersistSnapshot(existingUser);
-
-        updatePermittedFields(patch, existingUser);
-
-        return userRepository.save(existingUser);
+        return existingUser;
     }
 
     private void createAndPersistSnapshot(User existingUser) {
         userHistoryRepository.save(modelMapper.map(existingUser, UserHistory.class));
     }
 
-    private void updatePermittedFields(User userReq, User existingUser) {
-        // update permitted fields explicitly to avoid background magic errors
-        if (userReq.getPhone() != null) {
-            existingUser.setPhone(userReq.getPhone());
+    private void updateAddress(User existingUser, Address patch) {
+        if (patch != null) {
+            existingUser.setAddress(patch);
+            saveAddress(existingUser);
         }
-        if (userReq.getPassword() != null) {
-            encodeAndSetPassword(existingUser, userReq.getPassword());
-        }
-        if (userReq.getAddress() != null) {
-            setAddress(userReq);
+    }
+
+    private void updatePhone(User existingUser, String patch) {
+        if (patch != null) {
+            existingUser.setPhone(patch);
         }
     }
 }

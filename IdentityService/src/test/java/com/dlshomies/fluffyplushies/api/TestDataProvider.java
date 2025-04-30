@@ -16,6 +16,10 @@ public class TestDataProvider {
         return Stream.of(VALID_EMAIL_TEST_CASES);
     }
 
+    public static Stream<String> invalidPasswords() {
+        return Stream.of(INVALID_PASSWORD_TEST_CASES);
+    }
+
     private static final String[] INVALID_EMAIL_TEST_CASES = {
             "plainaddress",
             "@noLocalPart.com",
@@ -73,6 +77,17 @@ public class TestDataProvider {
             "username@domain_name.com",                 // Domain with underscore
             "user@[127.0.0.1]",                         // IPv4 literal domain
             "user@[IPv6:2001:db8:85a3::8a2e:370:7334]", // IPv6 literal domain
+    };
+
+    private static final String [] INVALID_PASSWORD_TEST_CASES = {
+            "alllowercase1!",      // missing uppercase
+            "ALLUPPERCASE1!",      // missing lowercase
+            "MixedCaseNoDigit!",   // missing digit
+            "MixedCase1NoSpecial", // missing special character
+            "TooShort1!",          // too short (11 chars)
+            "tooLONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG1!",
+            "Has White1!",         // contains whitespace
+            ""                     // empty
     };
 
     public static Stream<Arguments> nullAndEmptyFieldProvider() {

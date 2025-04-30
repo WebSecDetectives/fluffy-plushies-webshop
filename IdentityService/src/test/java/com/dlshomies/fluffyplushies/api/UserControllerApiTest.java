@@ -3,14 +3,17 @@ package com.dlshomies.fluffyplushies.api;
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
+import com.dlshomies.fluffyplushies.dto.UpdatePasswordRequest;
 import com.dlshomies.fluffyplushies.dto.UpdateUserRequest;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
+import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
 import com.dlshomies.fluffyplushies.service.UserService;
 import com.dlshomies.fluffyplushies.util.TestDataUtil;
 import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -42,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = FluffyPlushiesIdentityApplication.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Transactional
 @Import({FakerTestConfig.class, TestDataConfig.class})
 @AutoConfigureMockMvc
 class UserControllerApiTest {
@@ -56,6 +61,8 @@ class UserControllerApiTest {
     private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
     private String adminToken;
     private User existingUser;
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void seedAdmin() {
@@ -69,7 +76,7 @@ class UserControllerApiTest {
     void seedUser() {
         var userRequest = testDataUtil.userRequestWithDefaults();
         var userEntity = modelMapper.map(userRequest, User.class);
-        existingUser = userService.registerUser(userEntity, STRONG_PASSWORD);
+        existingUser = userService.registerUser(userEntity, userRequest.getPassword());
     }
 
     @Test
@@ -270,5 +277,42 @@ class UserControllerApiTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void updateUser_givenNonexistentUserId_returnNotFound() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().build();
+
+        mvc.perform(patch("/users/{id}", UUID.randomUUID())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateUser_givenSoftDeletedUser_returnLocked() throws Exception {
+        var updateUserRequest = UpdateUserRequest.builder().build();
+
+        existingUser.setDeleted(true);
+        userRepository.save(existingUser);
+
+        mvc.perform(patch("/users/{id}", existingUser.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateUserRequest)))
+                .andExpect(status().isLocked());
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = DATA_PROVIDER_PATH + "#invalidPasswords")
+    void updatePassword_givenInvalidPassword_returnBadRequest(String password) throws Exception {
+        var updatePasswordRequest = UpdatePasswordRequest.builder().password(password).build();
+
+        mvc.perform(patch("/users/{id}/password", existingUser.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordRequest)))
+                .andExpect(status().isBadRequest());
     }
 }
