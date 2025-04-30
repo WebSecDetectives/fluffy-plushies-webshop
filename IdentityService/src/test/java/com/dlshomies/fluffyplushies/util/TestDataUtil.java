@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import net.datafaker.Faker;
 
+import java.time.Instant;
+
 public class TestDataUtil {
     private final Faker faker = new Faker();
 
@@ -63,19 +65,26 @@ public class TestDataUtil {
     }
 
     public @NotNull @NotBlank String username() {
-        var slug = faker.internet().slug();
-        slug = slug.replace('.', '_');
-        if (slug.length() < 3) {
-            slug += "xxx".substring(0, 3 - slug.length());
+        var slug = faker.internet().slug().replace('.', '_');
+        var stamp = stamp();
+        var maxSlugLength = 30 - stamp.length();
+
+        if (slug.length() > maxSlugLength) {
+            slug = slug.substring(0, maxSlugLength);
         }
-        if (slug.length() > 30) {
-            slug = slug.substring(0, 30);
-        }
-        return slug;
+
+        return slug + stamp;
     }
 
     public @NotNull @NotBlank @Email String emailAddress() {
-        return faker.internet().emailAddress();
+        var email = faker.internet().emailAddress();
+        var at = email.indexOf('@');
+
+        return email.substring(0, at) + stamp() + email.substring(at);
+    }
+
+    private static String stamp() {
+        return String.valueOf(Instant.now().toEpochMilli());
     }
 
     public @NotNull @NotBlank String phoneNumber() {

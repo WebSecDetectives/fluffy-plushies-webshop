@@ -8,17 +8,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@JsonDeserialize(builder = UpdateUserRequest.UpdateUserRequestBuilderImpl.class)
-public class UpdateUserRequest {
-    private String phone;
+@JsonDeserialize(builder = UpdatePasswordRequest.UpdatePasswordRequestBuilderImpl.class)
+public class UpdatePasswordRequest {
 
-    private AddressRequest address;
+    @StrongPassword
+    private String password;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class UpdateUserRequestBuilderImpl extends UpdateUserRequest.UpdateUserRequestBuilder<UpdateUserRequest, UpdateUserRequest.UpdateUserRequestBuilderImpl> {
+    public static class UpdatePasswordRequestBuilderImpl extends UpdatePasswordRequest.UpdatePasswordRequestBuilder<UpdatePasswordRequest, UpdatePasswordRequest.UpdatePasswordRequestBuilderImpl> {
     }
 }
