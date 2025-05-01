@@ -34,8 +34,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +61,8 @@ class UserControllerApiTest {
     private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
     private String adminToken;
     private User existingUser;
+    private String existingUserToken;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -77,6 +79,7 @@ class UserControllerApiTest {
         var userRequest = testDataUtil.userRequestWithDefaults();
         var userEntity = modelMapper.map(userRequest, User.class);
         existingUser = userService.registerUser(userEntity, userRequest.getPassword());
+        existingUserToken = jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken();
     }
 
     @Test
@@ -125,7 +128,6 @@ class UserControllerApiTest {
 
         mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userRequest)))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.username", startsWith("size must be between")));
     }
@@ -189,7 +191,7 @@ class UserControllerApiTest {
         var newAdminUserRequest = testDataUtil.userRequestWithUsername(newAdminUsername);
 
         mvc.perform(post("/users/admin")
-                        .header("Authorization", "Bearer " + jwtUtil.generateToken(currentUsername, Role.USER).getToken())
+                        .header("Authorization", "Bearer " + existingUserToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newAdminUserRequest)))
                 .andExpect(status().isForbidden());
@@ -235,19 +237,19 @@ class UserControllerApiTest {
         var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
 
         mvc.perform(patch("/users/{id}", existingUser.getId())
-                        .header("Authorization", "Bearer " + jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken())
+                        .header("Authorization", "Bearer " + existingUserToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void updateUser_givenCallerIsNotSelf_returnForbidden() throws Exception {
+    void updateUser_givenCallerIsNotSelfOrAdmin_returnForbidden() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
         var currentUser = userService.registerUser(testDataUtil.userWithDefaults(), STRONG_PASSWORD);
 
         mvc.perform(patch("/users/{id}", currentUser.getId())
-                        .header("Authorization", "Bearer " + jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken())
+                        .header("Authorization", "Bearer " + existingUserToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isForbidden());
@@ -314,5 +316,28 @@ class UserControllerApiTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatePasswordRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteUser_givenCallerIsAdmin_returnNoContent() throws Exception {
+        mvc.perform(delete("/users/{id}", existingUser.getId())
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteUser_givenCallerIsSelf_returnNoContent() throws Exception {
+        mvc.perform(delete("/users/{id}", existingUser.getId())
+                        .header("Authorization", "Bearer " + existingUserToken))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteUser_givenCallerIsNotSelfOrAdmin_returnForbidden() throws Exception {
+        var otherUser = userService.registerUser(testDataUtil.userWithDefaults(), STRONG_PASSWORD);
+
+        mvc.perform(delete("/users/{id}", otherUser.getId())
+                        .header("Authorization", "Bearer " + existingUserToken))
+                .andExpect(status().isForbidden());
     }
 }
