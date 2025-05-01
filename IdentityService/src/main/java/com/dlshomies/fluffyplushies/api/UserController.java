@@ -9,6 +9,7 @@ import com.dlshomies.fluffyplushies.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,5 +64,12 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     public UserResponse updatePassword(@PathVariable UUID id, @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         return modelMapper.map(userService.updatePassword(id, updatePasswordRequest.getPassword()), UserResponse.class);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
     }
 }

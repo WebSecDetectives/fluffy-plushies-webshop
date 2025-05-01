@@ -112,6 +112,14 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
+    public void deleteUser(UUID id) {
+        var existingUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        existingUser.setDeleted(true);
+
+        userRepository.save(existingUser);
+    }
+
     private User getExistingUser(UUID currentUserId) {
         Optional<User> existingOptional = SoftDeleteUtil.executeWithoutSoftDeleteFilter(entityManager, () ->
                 userRepository.findById(currentUserId));
