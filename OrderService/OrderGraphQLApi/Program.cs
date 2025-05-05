@@ -1,8 +1,10 @@
 using services.ordersService;
 using MongoDB.Driver;
 using repositories.ordersRepository;
+using OrderGraphQLApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,6 +18,8 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     var connectionString = config.GetSection("MongoDbSettings:ConnectionString").Value;
     return new MongoClient(connectionString);
 });
+
+builder.Services.AddSingleton<RabbitMQService>();
 
 builder.Services.AddScoped<OrdersRepository>();
 builder.Services.AddScoped<OrdersService>();
