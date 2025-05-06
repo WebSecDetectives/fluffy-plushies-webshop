@@ -2,6 +2,7 @@ using services.ordersService;
 using MongoDB.Driver;
 using repositories.ordersRepository;
 using OrderGraphQLApi.Services;
+using OrderGraphQLApi.graphql.mutations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,11 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 
 builder.Services.AddSingleton<RabbitMQService>();
 
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>();
+
 builder.Services.AddScoped<OrdersRepository>();
 builder.Services.AddScoped<OrdersService>();
 
@@ -37,6 +43,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+app.MapGraphQL();
 
 
 
