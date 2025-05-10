@@ -1,5 +1,5 @@
-using models.order;
-using services.ordersService;
+/*using OrderGraphQLApi.models;
+using services.OrderService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace controllers.ordersController;
@@ -8,9 +8,9 @@ namespace controllers.ordersController;
     [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
-        private readonly OrdersService _ordersService;
+        private readonly OrderService _ordersService;
 
-        public OrdersController(OrdersService ordersService){
+        public OrdersController(OrderService ordersService){
             _ordersService = ordersService;
         }
 
@@ -51,4 +51,4 @@ namespace controllers.ordersController;
         public IActionResult Delete(int id){
             return Ok("Hello from OrdersController!");
         }
-    }
+    }*/
