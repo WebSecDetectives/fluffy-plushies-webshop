@@ -1,16 +1,29 @@
-import { EmailProvider, EmailProviderStatic } from "./interfaces/email_provider.js";
+/**
+ * @module
+ * @mergeModuleWith <project>
+ */
+
 import { ServiceLogger } from "./logger.js";
 import { OrderConfirmation } from "./models/order_confirmation.js";
-import { staticImplements } from "./helpers/static_implements.js";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 
-@staticImplements<EmailProviderStatic>()
-export class Emailer implements EmailProvider {
+/**
+ * This class handles sending email with an HTML payload using an external SMTP server.
+ */
+export class Emailer {
     logger!: ServiceLogger;
     transporter!: nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options>;
 
-    static async createInstance(): Promise<EmailProvider> {
+    /**
+     * Returns an initialized instance of EmailProvider.
+     * 
+     * @remarks
+     * It was not possible to use the constructor for initialization purposes, as TypeScript constructors cannot be async.
+     * 
+     * @returns An initialized instance of EmailProvider.
+     */
+    static async createInstance(): Promise<Emailer> {
         const emailer = new Emailer();
 
         emailer.logger = new ServiceLogger;
@@ -32,6 +45,11 @@ export class Emailer implements EmailProvider {
         return emailer;
     }
 
+    /**
+     * Tells the SMTP server to send an email containing the provided HTML payload to the recipient in the provided order confirmation.
+     * @param order - A parsed order confirmation inside an OrderConfirmation object.
+     * @param html - A stringified HTML payload.
+     */
     async sendEmail(order: OrderConfirmation, html: string) {
         try {
             const info = await this.transporter.sendMail({

@@ -1,5 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
+/**
+ * @module
+ * @mergeModuleWith <project>
+ */
+
 import mjml2html from "mjml";
 import {
     Mjml,
@@ -19,26 +22,26 @@ import { ServiceLogger } from './logger.js'
 import { OrderConfirmation } from "./models/order_confirmation.js";
 import React from 'react';
 
+/**
+ * This class constructs an email HTML payload from a parsed order confirmation.
+ * 
+ * @remarks
+ * This class is contained in a .tsx file, as this class makes use of React and the React templating system.
+ */
 export class EmailConstructor {
     logger: ServiceLogger;
-    template!: string;
 
     constructor() {
         this.logger = new ServiceLogger;
-
-        try {
-            this.template = fs.readFileSync(path.join(process.cwd(), './src/templates/order_confirmation.mjml'), 'utf8')
-        } catch (error) {
-            this.logger.logger.fatal(error, "Could not read email template file: order_confirmation.mjml.")
-        }
     }
 
-    renderReactToHTML(email: React.ReactElement): MJMLParseResults {
-        return mjml2html(renderToMjml(email));
-    }
-
+    /**
+     * This method constructs an email HTML payload from a parsed order confirmation.
+     * @param order - An OrderConfirmation object containing a parsed order confirmation.
+     * @returns Stringified HTML or null if the React-to-MJML-to-HTML rendering process went wrong.
+     */
     construct(order: OrderConfirmation): string | null {
-        const { html, errors } = this.renderReactToHTML(
+        const { html, errors } = mjml2html(renderToMjml(
             <Mjml>
 
                 <MjmlHead>
@@ -106,7 +109,7 @@ export class EmailConstructor {
                     </MjmlSection>
                 </MjmlBody>
             </Mjml>
-        )
+        ));
 
         if (errors) {
             // MJML likes to complain about bad composition of components,
@@ -116,13 +119,5 @@ export class EmailConstructor {
         } else {
             return html
         }
-
-        /*console.log("Ready")
-    
-        http.createServer(function (_, response) {
-            response.writeHead(200, { "Content-Type": "text/html" });
-            response.write(html);
-            response.end();
-        }).listen(8080);*/
     }
 }

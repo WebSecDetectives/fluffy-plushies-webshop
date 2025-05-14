@@ -1,8 +1,20 @@
+/**
+ * @module
+ * @mergeModuleWith <project>
+ */
+
 import pino, { Logger } from "pino";
 
+/**
+ * This class initializes a logger to be used by all other classes.
+ * Our logger of choice is `pino`. 
+ */
 export class ServiceLogger {
     logger: Logger
 
+    /**
+     * Returns an initialized instance of ServiceLogger.
+     */
     constructor() {
         this.logger = pino({
             timestamp: pino.stdTimeFunctions.isoTime,

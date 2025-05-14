@@ -1,3 +1,11 @@
+/**
+ * @module
+ * @mergeModuleWith <project>
+ */
+
+/**
+ * An interface defining the data contained in an order confirmation message JSON payload.
+ */
 export interface OrderConfirmation {
     line_items: Array<LineItem>,
     shipping_cost: number,
