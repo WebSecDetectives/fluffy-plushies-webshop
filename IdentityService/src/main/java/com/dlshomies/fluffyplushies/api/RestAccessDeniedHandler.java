@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Custom handler for access denied scenarios.
+ * Provides formatted JSON responses for 403 Forbidden errors.
+ */
 @Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
     @Override

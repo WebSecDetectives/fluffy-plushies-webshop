@@ -64,6 +64,16 @@ public class TestDataUtil {
                 .build();
     }
 
+    public User userWithDeletedTrue() {
+        return User.builder()
+                .username(username())
+                .email(emailAddress())
+                .phone(phoneNumber())
+                .address(addressWithDefaults())
+                .deleted(true)
+                .build();
+    }
+
     public @NotNull @NotBlank String username() {
         var slug = faker.internet().slug().replace('.', '_');
         var stamp = stamp();
@@ -123,5 +133,4 @@ public class TestDataUtil {
     private @NotNull String country() {
         return faker.address().country();
     }
-
 }

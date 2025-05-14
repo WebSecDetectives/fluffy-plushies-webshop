@@ -5,7 +5,6 @@ import com.dlshomies.fluffyplushies.domain.ParsedJwtToken;
 import com.dlshomies.fluffyplushies.entity.Role;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
@@ -15,8 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.Optional;
 
+/**
+ * Utility for JWT generation and parsing.
+ * Handles token creation with user details and validation for authentication.
+ */
 @Slf4j
 @Component
 public class JwtUtil {
