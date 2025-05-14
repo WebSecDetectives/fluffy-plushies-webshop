@@ -23,6 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service class for managing users, their addresses, roles, and associated operations.
+ * Provides functionalities for handling user registration, updates, deletions,
+ * password management, and snapshot history creation.
+ * This class uses {@link UserRepository}, {@link UserHistoryRepository},
+ * and {@link AddressRepository} for database access and operations.
+ */
 @AllArgsConstructor
 @Service
 public class UserService {
@@ -35,14 +42,46 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Registers a new user with an admin role in the system.
+     * This method ensures the provided user is stored with a role of {@code ADMIN},
+     * handles address saving, encodes the provided password, and persists the user to the database.
+     *
+     * @param user the {@link User} object containing user's details to be registered
+     * @param password the raw password of the user which will be encoded and stored securely
+     * @return the {@link User} object after being saved, containing the assigned admin role
+     * @throws UserAlreadyExistsException if a user with the same username or email already exists
+     */
     public User registerAdminUser(User user, String password) {
         return registerWithRole(user, password, Role.ADMIN);
     }
 
+    /**
+     * Registers a new user with a user role in the system.
+     * This method stores the provided user with a role of {@code USER},
+     * handles saving the user's address, encodes the given password,
+     * and persists the user data in the database.
+     *
+     * @param user the {@link User} object containing the details of the user to be registered
+     * @param password the raw password provided by the user, which will be encoded for secure storage
+     * @return the {@link User} object after being saved with the assigned {@code USER} role
+     * @throws UserAlreadyExistsException if a user with the same username or email already exists
+     */
     public User registerUser(User user, String password) {
         return registerWithRole(user, password, Role.USER);
     }
 
+    /**
+     * Registers a new user in the system with the specified role.
+     * This method sets the user's role, encodes the provided password, saves the user's address,
+     * and persists the updated user to the database.
+     *
+     * @param user the {@link User} object containing the user's details to be registered
+     * @param password the raw password of the user to be securely encoded and stored
+     * @param role the {@link Role} to be assigned to the user (e.g., ADMIN, USER)
+     * @return the {@link User} object after being saved, inclusive of the assigned role and encoded password
+     * @throws UserAlreadyExistsException if a user with the same username or email already exists
+     */
     private User registerWithRole(User user, String password, Role role) {
         if(userExists(user)) {
             throw new UserAlreadyExistsException("username/email", user.getUsername() + " / " + user.getEmail());
@@ -82,14 +121,38 @@ public class UserService {
         return addressRepository.save(reqAddress);
     }
 
+    /**
+     * Retrieves a list of all users from the repository.
+     *
+     * @return a list of {@link User} objects representing all users in the system
+     * except those who have been marked as soft deleted (deleted=true)
+     */
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
+    /**
+     * Retrieves a specific user from the repository based on their unique identifier.
+     *
+     * @param id the unique identifier of the user to retrieve
+     * @return the {@link User} object representing the user with the specified identifier
+     * @throws UserNotFoundException if no user is found with the given identifier
+     */
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
+    /**
+     * Updates the details of an existing user identified by their unique identifier.
+     * The method retrieves the current user, creates a snapshot of the existing user data,
+     * updates applicable fields such as phone and address, and persists the changes.
+     *
+     * @param currentUserId the unique identifier of the user to update
+     * @param patch the {@link User} object containing the updated details (e.g., phone or address)
+     * @return the updated {@link User} object after changes are saved
+     * @throws UserNotFoundException if no user is found with the given identifier
+     * @throws UserDeletedException if the user has been marked as deleted
+     */
     public User updateUser(UUID currentUserId, User patch) {
         User existingUser = getExistingUser(currentUserId);
 
@@ -112,6 +175,14 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
+    /**
+     * Marks a user as deleted in the system by setting the "deleted" flag to true.
+     * This method performs a soft delete operation, meaning the user data is retained
+     * in the database but is flagged as no longer active or visible.
+     *
+     * @param id the unique identifier of the user to be marked as deleted
+     * @throws UserNotFoundException if no user is found with the provided identifier
+     */
     public void deleteUser(UUID id) {
         var existingUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
@@ -135,6 +206,13 @@ public class UserService {
         return existingUser;
     }
 
+    /**
+     * Creates and saves a snapshot of the provided user in the user history repository.
+     * This method maps the current state of the given {@link User} object to a {@link UserHistory} object
+     * and persists the resulting snapshot for historical tracking purposes.
+     *
+     * @param existingUser the {@link User} object representing the user whose snapshot is to be taken and saved
+     */
     private void createAndPersistSnapshot(User existingUser) {
         userHistoryRepository.save(modelMapper.map(existingUser, UserHistory.class));
     }

@@ -60,8 +60,8 @@ class UserControllerApiTest {
     private static final String DATA_PROVIDER_PATH = "com.dlshomies.fluffyplushies.api.TestDataProvider";
     private static final String STRONG_PASSWORD = "Str0ngP@ssw0rd";
     private String adminToken;
-    private User existingUser;
-    private String existingUserToken;
+    private User savedUser;
+    private String userToken;
 
     @Autowired
     private UserRepository userRepository;
@@ -78,8 +78,8 @@ class UserControllerApiTest {
     void seedUser() {
         var userRequest = testDataUtil.userRequestWithDefaults();
         var userEntity = modelMapper.map(userRequest, User.class);
-        existingUser = userService.registerUser(userEntity, userRequest.getPassword());
-        existingUserToken = jwtUtil.generateToken(existingUser.getUsername(), Role.USER).getToken();
+        savedUser = userService.registerUser(userEntity, userRequest.getPassword());
+        userToken = jwtUtil.generateToken(savedUser.getUsername(), Role.USER).getToken();
     }
 
     @Test
@@ -121,7 +121,7 @@ class UserControllerApiTest {
     @ValueSource(strings = {
             "us",
             "usernameOneCharacterTooManyXXXX", // 31 char
-            "usernameOneCharacterTooManyXXXXX"// 32 char
+            "usernameTwoCharacterTooManyXXXXX"// 32 char
     })
     void registerUser_givenUsernameHasInvalidLength_returnBadRequest(String username) throws Exception {
         var userRequest = testDataUtil.userRequestWithUsername(username);
@@ -191,7 +191,7 @@ class UserControllerApiTest {
         var newAdminUserRequest = testDataUtil.userRequestWithUsername(newAdminUsername);
 
         mvc.perform(post("/users/admin")
-                        .header("Authorization", "Bearer " + existingUserToken)
+                        .header("Authorization", "Bearer " + userToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newAdminUserRequest)))
                 .andExpect(status().isForbidden());
@@ -214,7 +214,7 @@ class UserControllerApiTest {
     }
 
     @Test
-    void registerAdmin_withoutAuthorizationHeader_returnUnauthorized() throws Exception {
+    void registerAdmin_noAuthorizationHeader_returnUnauthorized() throws Exception {
         mvc.perform(post("/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin"))))
@@ -225,7 +225,7 @@ class UserControllerApiTest {
     void updateUser_givenCallerIsAdmin_returnOk() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
 
-        mvc.perform(patch("/users/{id}", existingUser.getId())
+        mvc.perform(patch("/users/{id}", savedUser.getId())
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateUserRequest)))
@@ -236,8 +236,8 @@ class UserControllerApiTest {
     void updateUser_givenCallerIsSelf_returnOk() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().phone("12341234").build();
 
-        mvc.perform(patch("/users/{id}", existingUser.getId())
-                        .header("Authorization", "Bearer " + existingUserToken)
+        mvc.perform(patch("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer " + userToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isOk());
@@ -249,7 +249,7 @@ class UserControllerApiTest {
         var currentUser = userService.registerUser(testDataUtil.userWithDefaults(), STRONG_PASSWORD);
 
         mvc.perform(patch("/users/{id}", currentUser.getId())
-                        .header("Authorization", "Bearer " + existingUserToken)
+                        .header("Authorization", "Bearer " + userToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isForbidden());
@@ -264,7 +264,7 @@ class UserControllerApiTest {
     void updateUser_givenMalformedOrNoToken_returnUnauthorized(String authHeader) throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().build();
 
-        mvc.perform(patch("/users/{id}", existingUser.getId())
+        mvc.perform(patch("/users/{id}", savedUser.getId())
             .header("Authorization", authHeader)
             .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
@@ -272,17 +272,17 @@ class UserControllerApiTest {
     }
 
     @Test
-    void updateUser_withoutAuthorizationHeader_returnUnauthorized() throws Exception {
+    void updateUser_givenNoAuthorizationHeader_returnUnauthorized() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().build();
 
-        mvc.perform(patch("/users/{id}", existingUser.getId())
+        mvc.perform(patch("/users/{id}", savedUser.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void updateUser_givenNonexistentUserId_returnNotFound() throws Exception {
+    void updateUser_givenUserIdDoesNotExist_returnNotFound() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().build();
 
         mvc.perform(patch("/users/{id}", UUID.randomUUID())
@@ -296,10 +296,10 @@ class UserControllerApiTest {
     void updateUser_givenSoftDeletedUser_returnLocked() throws Exception {
         var updateUserRequest = UpdateUserRequest.builder().build();
 
-        existingUser.setDeleted(true);
-        userRepository.save(existingUser);
+        savedUser.setDeleted(true);
+        userRepository.save(savedUser);
 
-        mvc.perform(patch("/users/{id}", existingUser.getId())
+        mvc.perform(patch("/users/{id}", savedUser.getId())
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
@@ -311,7 +311,7 @@ class UserControllerApiTest {
     void updatePassword_givenInvalidPassword_returnBadRequest(String password) throws Exception {
         var updatePasswordRequest = UpdatePasswordRequest.builder().password(password).build();
 
-        mvc.perform(patch("/users/{id}/password", existingUser.getId())
+        mvc.perform(patch("/users/{id}/password", savedUser.getId())
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatePasswordRequest)))
@@ -320,15 +320,15 @@ class UserControllerApiTest {
 
     @Test
     void deleteUser_givenCallerIsAdmin_returnNoContent() throws Exception {
-        mvc.perform(delete("/users/{id}", existingUser.getId())
+        mvc.perform(delete("/users/{id}", savedUser.getId())
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteUser_givenCallerIsSelf_returnNoContent() throws Exception {
-        mvc.perform(delete("/users/{id}", existingUser.getId())
-                        .header("Authorization", "Bearer " + existingUserToken))
+        mvc.perform(delete("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isNoContent());
     }
 
@@ -337,7 +337,35 @@ class UserControllerApiTest {
         var otherUser = userService.registerUser(testDataUtil.userWithDefaults(), STRONG_PASSWORD);
 
         mvc.perform(delete("/users/{id}", otherUser.getId())
-                        .header("Authorization", "Bearer " + existingUserToken))
+                        .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteUser_givenUserDoesNotExist_returnNotFound() throws Exception {
+        mvc.perform(delete("/users/{id}", UUID.randomUUID())
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @ValueSource(strings = {
+            "Bearer",                     // prefix only
+            "Foo abc.def.ghi",            // wrong scheme
+    })
+    void deleteUser_givenMalformedOrNoToken_returnUnauthorized(String authHeader) throws Exception {
+        mvc.perform(delete("/users/{id}", savedUser.getId())
+                        .header("Authorization", authHeader))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteUser_givenUserIsSoftDeleted_returnNoContent() throws Exception {
+        var softDeletedUser = userService.registerUser(testDataUtil.userWithDeletedTrue(), STRONG_PASSWORD);
+
+        mvc.perform(delete("/users/{id}", softDeletedUser.getId())
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNoContent());
     }
 }
