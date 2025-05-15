@@ -1,9 +1,9 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
-import com.dlshomies.fluffyplushies.dto.UpdatePasswordRequest;
-import com.dlshomies.fluffyplushies.dto.UpdateUserRequest;
-import com.dlshomies.fluffyplushies.dto.UserResponse;
+import com.dlshomies.fluffyplushies.dto.rest.CreateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.UpdatePasswordRequest;
+import com.dlshomies.fluffyplushies.dto.rest.UpdateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.UserResponse;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.service.UserService;
 import jakarta.validation.Valid;

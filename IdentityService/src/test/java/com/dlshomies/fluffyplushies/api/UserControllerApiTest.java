@@ -3,15 +3,15 @@ package com.dlshomies.fluffyplushies.api;
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
-import com.dlshomies.fluffyplushies.dto.UpdatePasswordRequest;
-import com.dlshomies.fluffyplushies.dto.UpdateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.UpdatePasswordRequest;
+import com.dlshomies.fluffyplushies.dto.rest.UpdateUserRequest;
 import com.dlshomies.fluffyplushies.entity.Role;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.repository.UserRepository;
 import com.dlshomies.fluffyplushies.security.JwtUtil;
 import com.dlshomies.fluffyplushies.service.UserService;
 import com.dlshomies.fluffyplushies.util.TestDataUtil;
-import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.CreateUserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ class UserControllerApiTest {
         var adminRequest = testDataUtil.userRequestWithDefaults();
         var adminEntity = modelMapper.map(adminRequest, User.class);
         var savedAdmin = userService.registerAdminUser(adminEntity, adminRequest.getPassword());
-        adminToken = jwtUtil.generateToken(savedAdmin.getUsername(), Role.ADMIN).getToken();
+        adminToken = jwtUtil.generateToken(savedAdmin).getToken();
     }
 
     @BeforeEach
@@ -79,7 +79,7 @@ class UserControllerApiTest {
         var userRequest = testDataUtil.userRequestWithDefaults();
         var userEntity = modelMapper.map(userRequest, User.class);
         savedUser = userService.registerUser(userEntity, userRequest.getPassword());
-        userToken = jwtUtil.generateToken(savedUser.getUsername(), Role.USER).getToken();
+        userToken = jwtUtil.generateToken(savedUser).getToken();
     }
 
     @Test

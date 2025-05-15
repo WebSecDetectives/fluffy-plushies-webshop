@@ -71,7 +71,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private void setUserDetails(ParsedJwtToken token, HttpServletRequest request) {
         try {
 
-            var username = token.getSubject();
+            var username = token.getUsername();
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 var userDetails = userDetailsService.loadUserByUsername(username);
