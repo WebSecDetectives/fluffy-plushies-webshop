@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.service;
 
+import com.dlshomies.fluffyplushies.annotation.RabbitErrorHandler;
 import com.dlshomies.fluffyplushies.domain.IdentityChannel;
 import com.dlshomies.fluffyplushies.dto.messaging.UserAuthorizationRequest;
 import com.dlshomies.fluffyplushies.dto.messaging.UserAuthorizationResponse;
@@ -23,12 +24,15 @@ import org.springframework.stereotype.Component;
 public class IdentityMessageListener {
 
     private static final String IDENTITY_EXCHANGE = "identity.exchange";
+    private static final String AUTH_REQUEST_QUEUE = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).AUTH_REQUEST.getQueueName()}";
+    private static final String USER_INFO_REQUEST_QUEUE = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).USER_INFO_REQUEST.getQueueName()}";
     private final RabbitTemplate rabbitTemplate;
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final ModelMapper modelMapper;
 
-    @RabbitListener(queues = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).USER_INFO_REQUEST.getQueueName()}")
+    @RabbitErrorHandler
+    @RabbitListener(queues = USER_INFO_REQUEST_QUEUE)
     public void handleUserInformationRequest(
             @Payload UserInformationRequest request,
             @Header("correlationId") String correlationId) {
@@ -54,7 +58,8 @@ public class IdentityMessageListener {
         return userService.getUser(parsedToken.getSubject());
     }
 
-    @RabbitListener(queues = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).AUTH_REQUEST.getQueueName()}")
+    @RabbitErrorHandler
+    @RabbitListener(queues = AUTH_REQUEST_QUEUE)
     public void handleAuthorizationRequest(
             @Payload UserAuthorizationRequest request,
             @Header("correlationId") String correlationId) {

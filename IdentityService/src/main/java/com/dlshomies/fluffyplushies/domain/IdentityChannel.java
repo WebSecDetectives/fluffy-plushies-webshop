@@ -14,7 +14,8 @@ public enum IdentityChannel {
     USER_INFO_REQUEST("identity.user_information_requests"),
     USER_INFO_RESPONSE("identity.user_information_responses"),
     AUTH_REQUEST("identity.user_authentication_authorization_requests"),
-    AUTH_RESPONSE("identity.user_authentication_authorization_responses");
+    AUTH_RESPONSE("identity.user_authentication_authorization_responses"),
+    DEAD_LETTER("identity.dead_letters");
 
     private final String key;
 
