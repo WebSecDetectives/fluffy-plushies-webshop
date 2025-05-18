@@ -74,27 +74,27 @@ services:
     environment:
         MYSQL_ROOT_PASSWORD: inventory_service
 
-  inventory:
-    build:
-      context: ./InventoryService
-    container_name: inventory
-    restart: unless-stopped
-    ports:
-      - "4567:4567"
-    environment:
-      DB_HOST: inventory-mysql
-      DB_PORT: 3306
-      DB_NAME: inventorydb
-      DB_USER: root
-      DB_PASSWORD: inventory_service
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
-    depends_on:
-      - inventory-mysql
-      - rabbitmq
-    volumes:
-      - ./InventoryService:/app
+#  inventory:
+#    build:
+#      context: ./InventoryService
+#    container_name: inventory
+#    restart: unless-stopped
+#    ports:
+#      - "4567:4567"
+#    environment:
+#      DB_HOST: inventory-mysql
+#      DB_PORT: 3306
+#      DB_NAME: inventorydb
+#      DB_USER: root
+#      DB_PASSWORD: inventory_service
+#      RABBITMQ_HOST: rabbitmq
+#      RABBITMQ_USER: guest
+#      RABBITMQ_PASSWORD: guest
+#    depends_on:
+#      - inventory-mysql
+#      - rabbitmq
+#    volumes:
+#      - ./InventoryService:/app
 
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2

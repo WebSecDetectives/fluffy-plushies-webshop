@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.messaging;
+package com.dlshomies.fluffyplushies.service;
 
 import com.dlshomies.fluffyplushies.domain.IdentityChannel;
 import com.dlshomies.fluffyplushies.dto.messaging.UserAuthorizationRequest;

@@ -12,15 +12,40 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RabbitMqConfig {
 
     private static final String IDENTITY_EXCHANGE = "identity.exchange";
+    private static final String DEAD_LETTER_EXCHANGE = "identity.dlx";
+    private static final String DEAD_LETTER_QUEUE = "identity.dlq";
+
+    @Bean
+    Queue deadLetterQueue() {
+        return new Queue(DEAD_LETTER_QUEUE, true);
+    }
+
+    @Bean
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(DEAD_LETTER_EXCHANGE);
+    }
+
+    @Bean
+    Binding deadLetterBinding() {
+        return BindingBuilder
+                .bind(deadLetterQueue())
+                .to(deadLetterExchange())
+                .with(DEAD_LETTER_QUEUE);
+    }
 
     @Bean
     Queue userInfoRequestQueue() {
-        return new Queue(IdentityChannel.USER_INFO_REQUEST.getQueueName(), true);
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE);
+        args.put("x-dead-letter-routing-key", DEAD_LETTER_QUEUE);
+        return new Queue(IdentityChannel.USER_INFO_REQUEST.getQueueName(), true, false, false, args);
     }
 
     @Bean
@@ -30,7 +55,10 @@ public class RabbitMqConfig {
 
     @Bean
     Queue authRequestQueue() {
-        return new Queue(IdentityChannel.AUTH_REQUEST.getQueueName(), true);
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE);
+        args.put("x-dead-letter-routing-key", DEAD_LETTER_QUEUE);
+        return new Queue(IdentityChannel.AUTH_REQUEST.getQueueName(), true, false, false, args);
     }
 
     @Bean
