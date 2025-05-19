@@ -11,10 +11,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
@@ -32,7 +31,7 @@ public class User extends BaseEntity implements UserDetails {
     private String phone;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -43,6 +42,7 @@ public class User extends BaseEntity implements UserDetails {
     private Role role = Role.USER;
 
     // Required by Spring UserDetails which is used for authentication and authorization
+    // AuthorityList is a derived in-memory view that changes based on role
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(this.role.name());

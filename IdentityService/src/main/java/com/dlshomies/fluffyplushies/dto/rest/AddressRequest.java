@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.dto;
+package com.dlshomies.fluffyplushies.dto.rest;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
