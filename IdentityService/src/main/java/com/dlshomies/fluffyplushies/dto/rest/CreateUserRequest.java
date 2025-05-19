@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.dto;
+package com.dlshomies.fluffyplushies.dto.rest;
 
 import com.dlshomies.fluffyplushies.util.StrongPassword;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -1,7 +1,7 @@
 package com.dlshomies.fluffyplushies.util;
 
-import com.dlshomies.fluffyplushies.dto.AddressRequest;
-import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.AddressRequest;
+import com.dlshomies.fluffyplushies.dto.rest.CreateUserRequest;
 import com.dlshomies.fluffyplushies.entity.Address;
 import com.dlshomies.fluffyplushies.entity.User;
 import jakarta.validation.constraints.Email;

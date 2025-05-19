@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.domain;
 
+import com.dlshomies.fluffyplushies.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 @Data
@@ -23,13 +25,16 @@ public class ParsedJwtToken {
         return claims.getExpiration();
     }
 
-    // Refers to the username
-    public String getSubject() {
-        return claims.getSubject();
+    public UUID getSubject() {
+        return UUID.fromString(claims.getSubject());
     }
 
-    public boolean isValidToken(UserDetails userDetails) {
-        return userDetails.getUsername().equals(getSubject()) && !isExpiredToken();
+    public Role getRole() {
+        return claims.get("role", Role.class);
+    }
+
+    public String getUsername() {
+        return claims.get("username", String.class);
     }
 
     private boolean isExpiredToken() {

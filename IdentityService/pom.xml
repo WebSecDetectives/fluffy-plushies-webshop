@@ -56,6 +56,7 @@
             <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -117,7 +118,6 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>${jsonwebtoken.version}</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -147,6 +147,18 @@
             <version>6.1.0</version>
         </dependency>
 
+        <!-- Message Queue -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
