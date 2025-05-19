@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies.dto;
+package com.dlshomies.fluffyplushies.dto.rest;
 
 import com.dlshomies.fluffyplushies.util.StrongPassword;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@JsonDeserialize(builder = UserRequest.UserRequestBuilderImpl.class)
-public class UserRequest {
+@JsonDeserialize(builder = CreateUserRequest.CreateUserRequestBuilderImpl.class)
+public class CreateUserRequest {
 
     @NotNull
     @NotBlank
@@ -37,6 +37,6 @@ public class UserRequest {
     private AddressRequest address;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class UserRequestBuilderImpl extends UserRequest.UserRequestBuilder<UserRequest, UserRequestBuilderImpl> {
+    public static class CreateUserRequestBuilderImpl extends CreateUserRequest.CreateUserRequestBuilder<CreateUserRequest, CreateUserRequestBuilderImpl> {
     }
 }

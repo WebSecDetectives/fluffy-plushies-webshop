@@ -1,0 +1,2 @@
+namespace OrderGraphQLApi.graphql.input;
+

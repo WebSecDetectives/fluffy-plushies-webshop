@@ -1,6 +1,5 @@
-AMQP_HOST=amqp://rabbitmq:5672
-AMQP_QUEUE=email.send_order_confirmed
-SMTP_HOST=smtp.ethereal.email
-SMTP_PORT=587
+EMAIL_SERVICE_RABBITMQ_QUEUE=
+SMTP_HOST=
+SMTP_PORT=
 SMTP_USER=
 SMTP_PASS=

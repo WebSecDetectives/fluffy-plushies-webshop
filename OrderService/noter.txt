@@ -1,0 +1,5 @@
+i appsettings.json:
+bør MongoDbSettings sættes i .gitignore i stedet?
+
+i orderscontroller:
+kig på kommentarer i patch og delete

@@ -1,13 +1,26 @@
 version: '3.8'
 services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - default
+
   rabbitmq:
     image: docker.io/library/rabbitmq:management
     container_name: rabbitmq
     hostname: rabbitmq
     restart: 'unless-stopped'
     ports: 
-      - 5672:5672
-      - 15672:15672
+      - "5673:5672"
+      - "15673:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
@@ -21,6 +34,7 @@ services:
       dockerfile: Dockerfile
       args:
         RABBITMQ_HOST: ${RABBITMQ_HOST}
+        RABBITMQ_PORT: ${RABBITMQ_PORT}
         EMAIL_SERVICE_RABBITMQ_QUEUE: ${EMAIL_SERVICE_RABBITMQ_QUEUE}
         SMTP_HOST: ${SMTP_HOST}
         SMTP_PORT: ${SMTP_PORT}
@@ -35,9 +49,35 @@ services:
     volumes:
       - identity-mysql:/var/lib/mysql
     ports:
-      - 33000:3306
+      - "33000:3306"
     environment:
         MYSQL_ROOT_PASSWORD: identity_service
+        MYSQL_DATABASE: fluffy-plushies-identity
+
+  identity-service:
+    build:
+      context: ./IdentityService
+    container_name: identity-service
+    hostname: identity-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: identity_service
+      MYSQL_SCHEMA: fluffy-plushies-identity
+      MYSQL_URL: identity-mysql:3306
+      JWT_SECRET: 9d1e64017e6c9d5b7b7f2530c6ca0b0fc99ed884667c104d1291a062b9d7f1ee98fe5d1c5fe547b928bf5d9fa6b92f1f82fb2aa4b2a770412176be918a38c21bc00da8b60637296d234404a880557df1dbe0a8428d00b92f133ce5350f5e5816bcd1fa3425e4aa6d0a7654066fa0cde3bcefbdc0fae8c2c05871c59795c452cce921e1384030654265e00dfc73e9cca47c2479f814ef00787eb2bfa1f8af537c0f517d88c1a9c36cabceea53afe4f35ea611964fda7b4139ae6e0e521bd5d3af504849d7589b7f6f12b8f7ce6bb59c6b5f9f84036bc31b13c12920a1c18ee49283253d590f64cb5be5b50cbc2e5e75c60f463cb52f3096fa844ed3ee854d333c
+    depends_on:
+      - identity-mysql
+      - rabbitmq
+    entrypoint: >
+      sh -c "java -jar app.jar || tail -f /dev/null"
+
 
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
@@ -47,16 +87,38 @@ services:
     volumes:
       - inventory-mysql:/var/lib/mysql
     ports:
-      - 33001:3306
+      - "33001:3306"
     environment:
         MYSQL_ROOT_PASSWORD: inventory_service
+
+  inventory:
+    build:
+      context: ./InventoryService
+    container_name: inventory
+    restart: unless-stopped
+    ports:
+      - "4567:4567"
+    environment:
+      DB_HOST: inventory-mysql
+      DB_PORT: 3306
+      DB_NAME: inventorydb
+      DB_USER: root
+      DB_PASSWORD: inventory_service
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - inventory-mysql
+      - rabbitmq
+    volumes:
+      - ./InventoryService:/app
 
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2
     container_name: phpmyadmin
     hostname: phpmyadmin
     ports:
-        - 8080:80
+        - "7081:80"
     volumes:
       - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
@@ -68,7 +130,7 @@ services:
     volumes:
       - order-mongodb:/data/db
     ports:
-      - 27017:27017
+      - "27017:27017"
     environment:
       MONGODB_INITDB_ROOT_USERNAME: root
       MONGODB_INITDB_ROOT_PASSWORD: order_service

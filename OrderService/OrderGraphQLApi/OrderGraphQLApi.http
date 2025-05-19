@@ -1,0 +1,6 @@
+@OrderGraphQLApi_HostAddress = http://localhost:5102
+
+GET {{OrderGraphQLApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
