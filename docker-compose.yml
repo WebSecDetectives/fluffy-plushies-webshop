@@ -20,8 +20,8 @@ services:
       context: ./EmailService
       dockerfile: Dockerfile
       args:
-        AMQP_HOST: ${AMQP_HOST}
-        AMQP_QUEUE: ${AMQP_QUEUE}
+        RABBITMQ_HOST: ${RABBITMQ_HOST}
+        EMAIL_SERVICE_RABBITMQ_QUEUE: ${EMAIL_SERVICE_RABBITMQ_QUEUE}
         SMTP_HOST: ${SMTP_HOST}
         SMTP_PORT: ${SMTP_PORT}
         SMTP_USER: ${SMTP_USER}

@@ -16,7 +16,6 @@ import {
     MjmlTable,
     MjmlDivider,
 } from "@faire/mjml-react";
-import { MJMLParseResults } from 'mjml-core';
 import { renderToMjml } from "@faire/mjml-react/utils/renderToMjml.js";
 import { ServiceLogger } from './logger.js'
 import { OrderConfirmation } from "./models/order_confirmation.js";

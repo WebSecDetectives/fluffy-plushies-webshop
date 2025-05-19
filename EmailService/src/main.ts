@@ -8,7 +8,7 @@ import { EmailConstructor } from "./email_constructor.js";
 import { Emailer } from "./emailer.js";
 import { OrderConfirmation } from "./models/order_confirmation.js";
 
-const message_bus = await MessageBus.createInstance(process.env.AMQP_HOST!, process.env.AMQP_QUEUE!);
+const message_bus = await MessageBus.createInstance(process.env.RABBITMQ_HOST!, process.env.EMAIL_SERVICE_RABBITMQ_QUEUE!);
 const email_constructor = new EmailConstructor();
 const emailer = await Emailer.createInstance();
 
