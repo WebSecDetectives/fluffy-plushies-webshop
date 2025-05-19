@@ -1,0 +1,30 @@
+{
+    "status": "idk lmao",
+    "total_amount": 45749.9,
+    "shipping_cost": 50,
+    "contact_information": {
+        "customer_name": "Kaj Børge Fjæsing",
+        "email": "kaj@fjæsing.dk",
+        "phone": "73782785"
+    },
+    "address": {
+        "street": "H.C. Andersens Bouldevard 5, 1. Sal. Nr. 56",
+        "city": "København V",
+        "country": "Denmark",
+        "postal_code": "1553"
+    },
+    "line_items": [
+        {
+            "item_id": "01960bb6-0fbd-7bc1-8a39-d9751abb5949",
+            "item_name": "Legally Distinct Blåhaj",
+            "quantity": 100,
+            "price_per_item": 450
+        },
+        {
+            "item_id": "01961043-e083-7c7d-bc01-f5f249bf33ad",
+            "item_name": "Kaj fra Kaj og Andrea",
+            "quantity": 1,
+            "price_per_item": 399.95
+        }
+    ]
+}
