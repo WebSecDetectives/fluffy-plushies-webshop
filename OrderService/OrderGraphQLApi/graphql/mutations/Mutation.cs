@@ -20,8 +20,18 @@ public class Mutation
         return await service.CreateOrderAsync(input);
     }
 
+    public async Task<Order> UpdateOrder(string orderId, UpdateOrderInput input, [Service] OrderService service)
+    {
+        return await service.UpdateOrderAsync(orderId, input);
+    }
+
     public async Task<bool> DeleteOrder(string orderId, [Service] OrderService service)
     {
         return await service.DeleteOrderByIdAsync(orderId);
+    }
+
+    public async Task<bool> ConfirmOrder(ConfirmOrderInput input, [Service] OrderService service)
+    {
+        return await service.ConfirmOrderAsync(input);
     }
 }

@@ -19,7 +19,8 @@ public class Query
         return await orderService.GetOrderByIdAsync(orderId);
     }
 
-   public async Task<OrderConnection> GetOrders([Service] OrderService orderService,int first = 10, string? after = null)
+    [GraphQLName("orders")]
+    public async Task<OrderConnection> GetOrders([Service] OrderService orderService, int first = 10, string? after = null)
     {
         return await orderService.GetOrdersAsync(first, after);
     }
