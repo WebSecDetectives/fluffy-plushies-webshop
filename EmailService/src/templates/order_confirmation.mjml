@@ -1,0 +1,70 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+
+        <mj-section padding-bottom="0px">
+          <mj-column>
+            <mj-text font-size="20px" font-weight="400">Fluffy Plushies A/S</mj-text>
+          </mj-column>
+          <mj-column>
+            <mj-text font-size="14px" padding-top="16px" padding-left="119px" font-weight="400">The last word in plushies</mj-text>
+          </mj-column>
+        </mj-section>
+
+        <mj-section>
+          <mj-column>
+            <mj-text font-size="16px" font-weight="700" font-family="helvetica">Order Confirmation</mj-text>
+            <mj-text font-size="12px" font-family="helvetica">Status: Confirmed</mj-text>
+          </mj-column>
+          <mj-column>
+            <mj-text align="right" font-size="12px" font-family="helvetica">Name: Martin Niemann Madsen</mj-text>
+            <mj-text align="right" font-size="12px" font-family="helvetica">Email: martin@martin.com</mj-text>
+            <mj-text align="right" font-size="12px" font-family="helvetica">Phone: 73782785</mj-text>
+          </mj-column>
+        </mj-section>
+
+        <mj-table>
+          <tr style="text-align:left;">
+            <th style="padding: 0 160px 0 0;">Item</th>
+            <th style="padding: 0 0px 0 0;">Quantity</th>
+            <th style="padding: 0 0 0 0px;">Price</th>
+          </tr>
+          <tr style="text-align:left;">
+            <td style="padding: 20 160px 0 0;">Legally Distinct Blåhaj</td>
+            <td style="padding: 20 50px 0 0;">100</td>
+            <td style="padding: 20 0 0 0px;">45.000</td>
+          </tr>
+          <tr style="text-align:left;">
+            <td style="padding: 15 160px 0 0;">Kylling fra Bamse og Kylling</td>
+            <td style="padding: 15 50px 0 0;">1</td>
+            <td style="padding: 15 0 0 0px;">299,95</td>
+          </tr>
+          <tr style="text-align:left;">
+            <td style="padding: 15 160px 0 0;">Kaj fra Kaj og Andrea</td>
+            <td style="padding: 15 50px 0 0;">1</td>
+            <td style="padding: 15 0 0 0px;">399,95</td>
+          </tr>
+        </mj-table>
+
+        <mj-divider border-width="1px"></mj-divider>
+
+        <mj-table>
+          <tr style="text-align:left;">
+            <td style="padding: 15 160px 0 90;"></td>
+            <td style="padding: 15 0px 0 90;">Shipping</td>
+            <td style="padding: 15 0 0 0px;">50</td>
+          </tr>
+          <tr style="text-align:left;">
+            <td style="padding: 15 160px 0 90;"></td>
+            <td style="padding: 15 0px 0 90;font-weight:bold;font-size:16px">Total</td>
+            <td style="padding: 15 0 0 0px;">45.749,9</td>
+          </tr>
+        </mj-table>
+
+        <mj-divider border-width="2px"></mj-divider>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

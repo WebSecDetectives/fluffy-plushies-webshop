@@ -1,6 +1,6 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.CreateUserRequest;
+import com.dlshomies.fluffyplushies.dto.rest.CreateUserRequest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.function.Consumer;

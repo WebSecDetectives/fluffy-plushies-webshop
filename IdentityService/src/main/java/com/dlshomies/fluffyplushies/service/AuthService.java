@@ -41,7 +41,7 @@ public class AuthService {
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        return jwtUtil.generateToken(username, user.getRole());
+        return jwtUtil.generateToken(user);
     }
 
     private boolean isValidPassword(String rawPassword, String encodedPassword) {

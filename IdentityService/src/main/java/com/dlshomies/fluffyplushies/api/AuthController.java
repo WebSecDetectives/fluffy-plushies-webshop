@@ -1,7 +1,7 @@
 package com.dlshomies.fluffyplushies.api;
 
-import com.dlshomies.fluffyplushies.dto.AuthRequest;
-import com.dlshomies.fluffyplushies.dto.AuthResponse;
+import com.dlshomies.fluffyplushies.dto.rest.AuthRequest;
+import com.dlshomies.fluffyplushies.dto.rest.AuthResponse;
 import com.dlshomies.fluffyplushies.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

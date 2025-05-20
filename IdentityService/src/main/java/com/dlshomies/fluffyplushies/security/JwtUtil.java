@@ -3,6 +3,7 @@ package com.dlshomies.fluffyplushies.security;
 import com.dlshomies.fluffyplushies.domain.EncodedJwtToken;
 import com.dlshomies.fluffyplushies.domain.ParsedJwtToken;
 import com.dlshomies.fluffyplushies.entity.Role;
+import com.dlshomies.fluffyplushies.entity.User;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Utility for JWT generation and parsing.
@@ -33,12 +35,13 @@ public class JwtUtil {
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
-    public EncodedJwtToken generateToken(String username, Role role) {
+    public EncodedJwtToken generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
         var encodedToken = Jwts.builder()
-                .subject(username)
-                .claim("role", role.name())
+                .subject(user.getId().toString())
+                .claim("role", user.getRole().name())
+                .claim("username", user.getUsername())
                 .issuedAt(now)
                 .notBefore(now)
                 .expiration(expiryDate)

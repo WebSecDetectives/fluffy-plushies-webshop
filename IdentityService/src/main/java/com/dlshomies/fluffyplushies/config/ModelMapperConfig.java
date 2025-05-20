@@ -1,6 +1,7 @@
 package com.dlshomies.fluffyplushies.config;
 
-import com.dlshomies.fluffyplushies.dto.UserResponse;
+import com.dlshomies.fluffyplushies.dto.messaging.UserInformationResponse;
+import com.dlshomies.fluffyplushies.dto.rest.UserResponse;
 import com.dlshomies.fluffyplushies.entity.User;
 import com.dlshomies.fluffyplushies.entity.UserHistory;
 import org.modelmapper.Conditions;
@@ -30,6 +31,13 @@ public class ModelMapperConfig {
             m.skip(UserHistory::setId);
             m.skip(UserHistory::setCreatedAt);
             m.map(src -> src.getAddress().getId(), UserHistory::setAddressId);
+        });
+
+        TypeMap<User, UserInformationResponse> userToInfoResponse = mapper.createTypeMap(User.class, UserInformationResponse.class);
+        userToInfoResponse.addMappings(m -> {
+            m.map(User::getUsername, UserInformationResponse::setCustomerName);
+            m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(User::getPhone, UserInformationResponse::setPhone);
+            m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(src -> src.getAddress().getPostalCode(), UserInformationResponse::setPostalCode);
         });
 
         return mapper;

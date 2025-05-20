@@ -19,11 +19,28 @@ services:
     hostname: rabbitmq
     restart: 'unless-stopped'
     ports: 
-      - 5673:5672
-      - 15673:15672
+      - "5673:5672"
+      - "15673:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-  
+
+  email-service:
+    container_name: email-service
+    hostname: email-service
+    depends_on:
+      - rabbitmq
+    build:
+      context: ./EmailService
+      dockerfile: Dockerfile
+      args:
+        RABBITMQ_HOST: ${RABBITMQ_HOST}
+        RABBITMQ_PORT: ${RABBITMQ_PORT}
+        EMAIL_SERVICE_RABBITMQ_QUEUE: ${EMAIL_SERVICE_RABBITMQ_QUEUE}
+        SMTP_HOST: ${SMTP_HOST}
+        SMTP_PORT: ${SMTP_PORT}
+        SMTP_USER: ${SMTP_USER}
+        SMTP_PASS: ${SMTP_PASS}
+        
   identity-mysql:
     image: docker.io/library/mysql:8.4.4
     container_name: identity-mysql
@@ -32,9 +49,36 @@ services:
     volumes:
       - identity-mysql:/var/lib/mysql
     ports:
-      - 33000:3306
+      - "33000:3306"
     environment:
         MYSQL_ROOT_PASSWORD: identity_service
+        MYSQL_DATABASE: fluffy-plushies-identity
+
+  identity-service:
+    build:
+      context: ./IdentityService
+    container_name: identity-service
+    hostname: identity-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      IDENTITY_MYSQL_USERNAME: ${IDENTITY_MYSQL_USERNAME}
+      IDENTITY_MYSQL_PASSWORD: ${IDENTITY_MYSQL_PASSWORD}
+      IDENTITY_MYSQL_SCHEMA: ${IDENTITY_MYSQL_SCHEMA}
+      IDENTITY_MYSQL_URL: ${IDENTITY_MYSQL_URL}
+      IDENTITY_ADMIN_PASSWORD: ${IDENTITY_ADMIN_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - identity-mysql
+      - rabbitmq
+    entrypoint: >
+      sh -c "java -jar app.jar || tail -f /dev/null"
+
 
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
@@ -44,7 +88,7 @@ services:
     volumes:
       - inventory-mysql:/var/lib/mysql
     ports:
-      - 33001:3306
+      - "33001:3306"
     environment:
         MYSQL_ROOT_PASSWORD: inventory_service
 
@@ -75,7 +119,7 @@ services:
     container_name: phpmyadmin
     hostname: phpmyadmin
     ports:
-        - 8081:80
+        - "7081:80"
     volumes:
       - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
@@ -87,7 +131,7 @@ services:
     volumes:
       - order-mongodb:/data/db
     ports:
-      - 27017:27017
+      - "27017:27017"
     environment:
       MONGODB_INITDB_ROOT_USERNAME: root
       MONGODB_INITDB_ROOT_PASSWORD: order_service
