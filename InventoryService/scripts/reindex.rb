@@ -2,7 +2,7 @@ require 'dotenv/load'
 require 'sequel'
 require 'elasticsearch'
 
-DB = Sequel.connect(ENV['DATABASE_URL'])  # 👈 picks up from .env
+DB = Sequel.connect(ENV['INVENTORY_DB_URL'])  # 👈 picks up from .env
 ES = Elasticsearch::Client.new(url: ENV['ELASTIC_URL'] || 'http://elasticsearch:9200')
 
 products = DB[:products].all

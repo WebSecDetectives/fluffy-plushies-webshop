@@ -12,4 +12,14 @@ module MessageBus
     exchange = channel.topic(exchange_name, durable: true)
     exchange.publish(message.to_json, routing_key: routing_key)
   end
+
+  def self.subscribe(exchange_name, routing_key, &block)
+    exchange = channel.topic(exchange_name, durable: true)
+    queue = channel.queue('', exclusive: true)
+    queue.bind(exchange, routing_key: routing_key)
+
+    queue.subscribe(block: true) do |delivery_info, properties, payload|
+      block.call(payload)
+    end
+  end
 end
