@@ -38,6 +38,9 @@ public class ModelMapperConfig {
             m.map(User::getUsername, UserInformationResponse::setCustomerName);
             m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(User::getPhone, UserInformationResponse::setPhone);
             m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(src -> src.getAddress().getPostalCode(), UserInformationResponse::setPostalCode);
+            m.map(src -> src.getAddress().getStreet(), UserInformationResponse::setStreet);
+            m.map(src -> src.getAddress().getCity(), UserInformationResponse::setCity);
+            m.map(src -> src.getAddress().getCountry(), UserInformationResponse::setCountry);
         });
 
         return mapper;
