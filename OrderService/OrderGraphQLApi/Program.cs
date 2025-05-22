@@ -41,6 +41,7 @@ builder.Services.AddSingleton<IConnection>(sp =>
         HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST"),
         UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
         Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD"),
+        Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672"),
         DispatchConsumersAsync = true
     };
     return factory.CreateConnection();
