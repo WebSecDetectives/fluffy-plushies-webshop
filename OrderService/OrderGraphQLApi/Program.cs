@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
 
+
+// MONGODB INITIALIZATION
+
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
@@ -26,18 +29,35 @@ builder.Services.AddScoped(sp =>
     return client.GetDatabase(databaseName); // <-- this resolves IMongoDatabase
 });
 
-builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory
+// MONGODB INITIALIZATION DONE
+
+
+// RABBITMQ INITIALIZATION
+
+builder.Services.AddSingleton<IConnection>(sp =>
 {
-    HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST_NAME"),        // or your RabbitMQ container name if using Docker Compose
-    UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
-    Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD"),
-    DispatchConsumersAsync = true // enables async consumers (optional, good practice)
+    var factory = new ConnectionFactory
+    {
+        HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST"),
+        UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"),
+        Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD"),
+        DispatchConsumersAsync = true
+    };
+    return factory.CreateConnection();
 });
 
+builder.Services.AddHostedService<UserInformationResponsesConsumer>();
+builder.Services.AddHostedService<InventoryItemsReservationResponse>();
+builder.Services.AddHostedService<RabbitMqConsumerService>(); // RABBITMQ LISTENERS
 
-builder.Services.AddHostedService<QueueConsumerService>();
+// RABBITMQ INITIALIZATION DONE
 
+
+
+//builder.Services.AddHostedService<QueueConsumerService>();
 builder.Services.AddSingleton<RabbitMqService>();
+
+// GRAPHQL INITIALIZATION
 
 builder.Services
     .AddGraphQLServer()
@@ -46,15 +66,20 @@ builder.Services
 
 builder.Services.AddScoped<OrderService>();
 
-var app = builder.Build();
+// GRAPHQL INITIALIZATION DONE
 
+
+
+// APP BUILDER CONFIG
+
+var app = builder.Build();
 
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-
-
-app.MapGraphQL();                             
+app.MapGraphQL();
 
 app.Run();
+
+// APP BUILDER CONFIG DONE

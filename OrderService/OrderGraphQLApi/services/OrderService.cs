@@ -3,6 +3,8 @@ using OrderGraphQLApi.models;
 using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 using OrderGraphQLApi.graphql.input;
+using System.Text.Json;
+using System.Text;
 
 namespace OrderGraphQLApi.services;
 
@@ -75,8 +77,8 @@ public class OrderService
                 customer_name = input.customer_name,
                 address = input.address,
                 line_items = input.line_items,
-                shipping_cost = input.shipping_cost,
-                total_amount = input.total_amount,
+                shipping_cost = (decimal)input.shipping_cost,
+                total_amount = (decimal)input.total_amount,
                 status = "Pending"
             };
 
@@ -124,7 +126,7 @@ public class OrderService
         if (input.Address != null)
         {
             if (order.address == null)
-                order.address = new Address();
+                order.address = new address();
 
             order.address.street = input.Address.Street ?? order.address.street;
             order.address.postal_code = input.Address.PostalCode ?? order.address.postal_code;
@@ -138,16 +140,16 @@ public class OrderService
             {
                 item_id = li.ItemId,
                 item_name = li.ItemName,
-                quantity = li.Quantity,
-                price_per_item = li.PricePerItem
+                quantity = (int)li.Quantity,
+                price_per_item = (decimal)li.PricePerItem
             }).ToList();
         }
 
         if (input.ShippingCost.HasValue)
-            order.shipping_cost = input.ShippingCost.Value;
+            order.shipping_cost = (decimal)input.ShippingCost.Value;
 
         if (input.TotalAmount.HasValue)
-            order.total_amount = input.TotalAmount.Value;
+            order.total_amount = (decimal)input.TotalAmount.Value;
 
         if (!string.IsNullOrEmpty(input.Status))
             order.status = input.Status;
@@ -165,28 +167,137 @@ public class OrderService
         return order;
     }
 
-    public async Task<bool> ConfirmOrderAsync(ConfirmOrderInput input)
+    public async Task StartOrderConfirmation(ConfirmOrderInput input)
     {
-        if (input.Status?.ToLower() != "confirmed")
-            return false;
+        if (input.order_id == null || input.user_token == null)
+        {
+            throw new ArgumentNullException(nameof(input));
+        }
 
-        var order = await _orderCollection
-            .Find(o => o.order_id == input.OrderId)
-            .FirstOrDefaultAsync();
+        var filter = Builders<Order>.Filter.Eq(o => o.order_id, input.order_id);
+        var update = Builders<Order>.Update.Set(o => o.status, "awaiting authentication");
+        var result = await _orderCollection.UpdateOneAsync(filter, update);
+        if (result.MatchedCount == 0)
+        {
+            throw new ArgumentException($"Order with that ID not found.");
+        }
 
-        if (order == null)
-            return false;
+        _RabbitMqService.GetUserInfo(input.user_token, input.order_id);
 
-        var request = new ItemsReservationRequestDto
-         {
-            items = order.line_items.Select(item => new ReservationItem {
+       
+    }
+
+    public async Task getLineItemsByOrderId(string message, string order_id)
+{
+    Console.WriteLine("Method started");
+    Console.WriteLine(order_id);
+
+
+    var filter = Builders<Order>.Filter.Eq("order_id", order_id);
+    
+    var order = await _orderCollection.Find(filter).FirstOrDefaultAsync();
+
+        Console.WriteLine("here now");
+
+    if (order == null)
+        {
+            throw new ArgumentException($"Order with that ID not found.");
+        }
+
+    Console.WriteLine("Order found");
+
+    var doc = JsonDocument.Parse(message).RootElement;
+    
+    try
+    {
+        var address = JsonSerializer.Deserialize<address>(doc.GetProperty("address").GetRawText());
+        var contactInfo = JsonSerializer.Deserialize<contact_information>(doc.GetProperty("contact_information").GetRawText());
+
+        Console.WriteLine("Parsed address: " + JsonSerializer.Serialize(address));
+        Console.WriteLine("Parsed contact info: " + JsonSerializer.Serialize(contactInfo));
+
+        var update = Builders<Order>.Update
+            .Set("address", address)
+            .Set("contact_information", contactInfo);
+
+        var result = await _orderCollection.UpdateOneAsync(filter, update);
+        Console.WriteLine($"Update result: Matched={result.MatchedCount}, Modified={result.ModifiedCount}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Deserialization or update error: " + ex.Message);
+        return;
+    }
+    
+    Console.WriteLine("Creating DTO...");
+    var dto = new ItemsReservationRequestDto
+    {
+        items = order.line_items.Select(item => new ReservationItem
+        {
             item_id = item.item_id,
             quantity = (int)item.quantity
         }).ToList()
-            };
+    };
 
-        _RabbitMqService.SendOrderConfirmedEvent(request);
-
-        return true;        
+    int x = 1;
+    foreach (var item in dto.items)
+    {
+        Console.WriteLine($"Item {x}: {JsonSerializer.Serialize(item)}");
+        x++;
     }
+
+    
+    _RabbitMqService.CheckInventory(dto, order_id);
+    Console.WriteLine("All done");
+    
+}
+
+
+    public async Task FinalizeOrder(string items, string order_id)
+    {
+       
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var wrapper = JsonSerializer.Deserialize<LineItemsWrapper>(items);
+        List<line_item> line_items = wrapper.LineItems;
+        
+        
+        decimal total_amount = line_items.Sum(i => (decimal)i.quantity * (decimal)i.price_per_item);
+        
+        decimal shipping_cost = total_amount * (decimal)0.03;
+        
+
+        var order = await _orderCollection.Find(o => o.order_id == order_id).FirstOrDefaultAsync();
+
+
+        var filter = Builders<Order>.Filter.Eq(o => o.order_id, order_id);
+        var update = Builders<Order>.Update.Set(o => o.status, "confirmed")
+            .Set(o => o.line_items, line_items)
+            .Set(o => o.total_amount, total_amount)
+            .Set(o => o.shipping_cost, shipping_cost);
+        var result = await _orderCollection.UpdateOneAsync(filter, update);
+        
+
+        var orders = await _orderCollection.Find(filter).FirstOrDefaultAsync();
+
+        var response = new
+        {
+            order.line_items,
+            orders.address,
+            orders.contact_information,
+            order.total_amount,
+            orders.shipping_cost,
+            order.status
+        };
+        string finalJson = JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(finalJson);
+
+        _RabbitMqService.SendOrderConfirmedEvent(finalJson);
+    }
+
+    
 }

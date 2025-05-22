@@ -8,18 +8,16 @@ namespace OrderGraphQLApi.services;
 
 public class RabbitMqService
 {
-    private EventingBasicConsumer _consumer;
-
     private readonly IConnection _connection;
     private readonly IModel _channel;
     private readonly string _exchangeName = "order_exchange";
 
-    public RabbitMqService()
+    public RabbitMqService(IConnection connection)
     {
-        var factory = new ConnectionFactory() { HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST_NAME"), DispatchConsumersAsync = true };
-        _connection = factory.CreateConnection();
-        _channel = _connection.CreateModel();
 
+
+        _connection = connection;
+        _channel = _connection.CreateModel();
 
         _channel.ExchangeDeclare(_exchangeName, "direct", durable: true);
 
@@ -64,19 +62,30 @@ public class RabbitMqService
                            exchange: _exchangeName,
                            routingKey: "order.confirmed");
 
-        _channel.QueueDeclare(queue: "inventory.items.reserve",
+        _channel.QueueDeclare(queue: "inventory.items_reservation_requests",
                               durable: true,
                               exclusive: false,
                               autoDelete: false,
                               arguments: null);
 
-        _channel.QueueBind(queue: "inventory.items.reserve",
+        _channel.QueueBind(queue: "inventory.items_reservation_requests",
                            exchange: _exchangeName,
-                           routingKey: "inventory.items.reserve");
+                           routingKey: "inventory.items_reservation_requests");
 
+        _channel.QueueDeclare(queue: "identity.user_information_requests",
+                              durable: true,
+                              exclusive: false,
+                              autoDelete: false,
+                              arguments: null);
+
+        _channel.QueueBind(queue: "identity.user_information_requests",
+                            exchange: _exchangeName,
+                            routingKey: "identity.user_information_requests");
+                           
     }
 
-    
+
+
 
     public void SendOrderCreatedEvent(Order order)
     {
@@ -100,15 +109,53 @@ public class RabbitMqService
                               body: body);
     }
 
-    public void SendOrderConfirmedEvent(ItemsReservationRequestDto order)
+    public void GetUserInfo(string jwt, string correlationId)
     {
-        var message = JsonSerializer.Serialize(order);
+        var messageObject = new { user_token = jwt };
+        var messageJson = JsonSerializer.Serialize(messageObject);
+        var body = Encoding.UTF8.GetBytes(messageJson);
+
+        var properties = _channel.CreateBasicProperties();
+        properties.CorrelationId = correlationId;
+        properties.MessageId = "user_information_request";
+
+        
+        _channel.BasicPublish(exchange: _exchangeName,
+                              routingKey: "identity.user_information_requests",
+                              basicProperties: properties,
+                              body: body);
+    }
+
+    public void CheckInventory(ItemsReservationRequestDto lineItems, string correlationId)
+    {
+        
+        var message = JsonSerializer.Serialize(lineItems);
         var body = Encoding.UTF8.GetBytes(message);
+        var properties = _channel.CreateBasicProperties();
+        properties.CorrelationId = correlationId;
+
+        var d = Encoding.UTF8.GetString(body);
+        Console.WriteLine(d);
 
         _channel.BasicPublish(exchange: _exchangeName, // to inventory service
-                              routingKey: "inventory.items.reserve",
+                              routingKey: "inventory.items_reservation_requests",
+                              basicProperties: properties,
+                              body: body);
+    }
+
+    public void SendOrderConfirmedEvent(string orderFull)
+    {
+       // var message = JsonSerializer.Serialize(orderFull);
+        var body = Encoding.UTF8.GetBytes(orderFull);
+
+        var m = Encoding.UTF8.GetString(body);
+        Console.WriteLine(m);
+
+        _channel.BasicPublish(exchange: _exchangeName,
+                              routingKey: "order.confirmed",
                               basicProperties: null,
                               body: body);
+        
     }
 
     public async Task ManageResponse(string message)
@@ -124,7 +171,7 @@ public class RabbitMqService
     
 
 
-    public void SendOrderDeletedEvent(string orderId)
+    public async void SendOrderDeletedEvent(string orderId)
     {
         var message = JsonSerializer.Serialize(orderId);
         var body = Encoding.UTF8.GetBytes(message);
@@ -141,26 +188,4 @@ public class RabbitMqService
         _connection.Close();
     }
     
-     public Task PublishAsync<T>(string routingKey, T message, IDictionary<string, object>? headers = null)
-    {
-        var props = _channel.CreateBasicProperties();
-        props.ContentType = "application/json";
-
-        if (headers != null)
-        {
-            props.Headers = headers.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
-        }
-
-        var json = JsonSerializer.Serialize(message);
-        var body = Encoding.UTF8.GetBytes(json);
-
-        _channel.BasicPublish(
-            exchange: _exchangeName,
-            routingKey: routingKey,
-            basicProperties: props,
-            body: body
-        );
-
-        return Task.CompletedTask;
-    }
 }

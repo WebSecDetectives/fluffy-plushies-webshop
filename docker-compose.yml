@@ -123,6 +123,25 @@ services:
     volumes:
       - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
+  order-service:
+    build:
+      context: ./OrderService/OrderGraphQLApi
+    container_name: order-service
+    hostname: order-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      MONGODB_CONNECTION_STRING: ${MONGODB_CONNECTION_STRING}
+      MONGODB_DATABASE_NAME: ${MONGODB_DATABASE_NAME}
+    depends_on:
+      - order-mongodb
+      - rabbitmq
+
   order-mongodb:
     image: docker.io/mongodb/mongodb-community-server:latest
     container_name: order-mongodb
