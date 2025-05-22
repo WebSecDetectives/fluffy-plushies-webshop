@@ -77,8 +77,8 @@ public class OrderService
                 customer_name = input.customer_name,
                 address = input.address,
                 line_items = input.line_items,
-                shipping_cost = (decimal)input.shipping_cost,
-                total_amount = (decimal)input.total_amount,
+                shipping_cost = (decimal)(input.shipping_cost ?? 0),
+                total_amount = (decimal)(input.total_amount ?? 0),
                 status = "Pending"
             };
 
