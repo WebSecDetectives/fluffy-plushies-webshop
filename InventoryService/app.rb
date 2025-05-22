@@ -45,29 +45,29 @@ Thread.new do
       puts "📥 Received message in 'inventory_reservation_requests': #{payload}"
       data = JSON.parse(payload)
       line_items = data['line_items']
-      success = true
 
-      line_items.each do |item|
-        id = item['item_id']
-        quantity = item['quantity']
-        product = Product[id]
+      # First, check if all items can be fulfilled
+      all_available = line_items.all? do |item|
+        product = Product[item['item_id']]
+        product && product.stock >= item['quantity']
+      end
 
-        if product && product.stock >= quantity
-          product.update(stock: product.stock - quantity)
+      if all_available
+        # All items are available, now update stock
+        line_items.each do |item|
+          product = Product[item['item_id']]
+          product.update(stock: product.stock - item['quantity'])
           product.save
-        else
-          success = false
         end
-    end
-      if success
         RabbitMQ::Publisher.publish(
-          { line_items: line_items }, # or just line_items if schema expects array
+          { line_items: line_items },
           correlation_id: properties.correlation_id
         )
       else
+        # At least one item is not available, do not update any stock
         RabbitMQ::Publisher.publish(
-          { error_code: 404, message: 'Not enough stock' },
-            correlation_id: properties.correlation_id
+          { error_code: 404, message: 'Not enough stock', line_items: line_items },
+          correlation_id: properties.correlation_id
         )
       end
     end
