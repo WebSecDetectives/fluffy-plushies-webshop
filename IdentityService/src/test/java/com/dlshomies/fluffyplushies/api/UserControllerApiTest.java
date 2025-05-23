@@ -2,6 +2,7 @@ package com.dlshomies.fluffyplushies.api;
 
 import com.dlshomies.fluffyplushies.FluffyPlushiesIdentityApplication;
 import com.dlshomies.fluffyplushies.config.FakerTestConfig;
+import com.dlshomies.fluffyplushies.config.MockRabbitMqConfig;
 import com.dlshomies.fluffyplushies.config.TestDataConfig;
 import com.dlshomies.fluffyplushies.dto.rest.UpdatePasswordRequest;
 import com.dlshomies.fluffyplushies.dto.rest.UpdateUserRequest;
@@ -47,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = FluffyPlushiesIdentityApplication.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @Transactional
-@Import({FakerTestConfig.class, TestDataConfig.class})
+@Import({FakerTestConfig.class, TestDataConfig.class, MockRabbitMqConfig.class})
 @AutoConfigureMockMvc
 class UserControllerApiTest {
 
