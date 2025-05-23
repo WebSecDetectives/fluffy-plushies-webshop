@@ -12,16 +12,17 @@ public class Query
         _orderService = orderService;
     }
 
-    // Resolvers
     [GraphQLName("orderById")]
-    public async Task<Order?> GetOrderById(string orderId, [Service] OrderService orderService)
+    public async Task<Order?> GetOrderById(string orderId)
     {
-        return await orderService.GetOrderByIdAsync(orderId);
+        return await _orderService.GetOrderByIdAsync(orderId);
     }
 
     [GraphQLName("orders")]
-    public async Task<OrderConnection> GetOrders([Service] OrderService orderService, int first = 10, string? after = null)
+    public async Task<OrderConnection> GetOrders(int first = 10, string? after = null)
     {
-        return await orderService.GetOrdersAsync(first, after);
+        return await _orderService.GetOrdersAsync(first, after);
     }
+
+    public string Ping() => "pong";
 }

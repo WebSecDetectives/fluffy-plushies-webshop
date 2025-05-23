@@ -119,6 +119,8 @@ public class RabbitMqService
         properties.CorrelationId = correlationId;
         properties.MessageId = "user_information_request";
 
+        Console.WriteLine("calling identity service");
+
         
         _channel.BasicPublish(exchange: _exchangeName,
                               routingKey: "identity.user_information_requests",

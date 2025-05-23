@@ -132,6 +132,7 @@ services:
     ports:
       - "8083:8083"
     environment:
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}

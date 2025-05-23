@@ -23,6 +23,6 @@ public class Mutation
     public async Task<bool> DeleteOrder(string orderId) =>
         await _orderService.DeleteOrderByIdAsync(orderId);
 
-    public async Task ConfirmOrder(ConfirmOrderInput input) =>
+    public async Task<string> ConfirmOrder(ConfirmOrderInput input) =>
         await _orderService.StartOrderConfirmation(input);
 }

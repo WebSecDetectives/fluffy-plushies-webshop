@@ -77,8 +77,8 @@ public class OrderService
                 customer_name = input.customer_name,
                 address = input.address,
                 line_items = input.line_items,
-                shipping_cost = (decimal)input.shipping_cost,
-                total_amount = (decimal)input.total_amount,
+                shipping_cost = (decimal)(input.shipping_cost ?? 0),
+                total_amount = (decimal)(input.total_amount ?? 0),
                 status = "Pending"
             };
 
@@ -167,11 +167,11 @@ public class OrderService
         return order;
     }
 
-    public async Task StartOrderConfirmation(ConfirmOrderInput input)
+    public async Task<string> StartOrderConfirmation(ConfirmOrderInput input)
     {
         if (input.order_id == null || input.user_token == null)
         {
-            throw new ArgumentNullException(nameof(input));
+            return "Missing order_id or user_token";
         }
 
         var filter = Builders<Order>.Filter.Eq(o => o.order_id, input.order_id);
@@ -179,11 +179,13 @@ public class OrderService
         var result = await _orderCollection.UpdateOneAsync(filter, update);
         if (result.MatchedCount == 0)
         {
-            throw new ArgumentException($"Order with that ID not found.");
+            
+            return "Order not found";
         }
 
         _RabbitMqService.GetUserInfo(input.user_token, input.order_id);
 
+        return "Order confirmation started";
        
     }
 
