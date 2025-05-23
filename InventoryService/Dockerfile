@@ -1,6 +1,6 @@
 # inventory-service/Dockerfile
 
-FROM ruby:3.2
+FROM docker.io/library/ruby:3.2
 
 # Install dependencies
 RUN apt-get update -qq && apt-get install -y build-essential

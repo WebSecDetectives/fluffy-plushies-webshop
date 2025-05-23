@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-24 AS build
+FROM docker.io/library/maven:3.9-eclipse-temurin-24 AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY src ./src
 
 RUN mvn package -DskipTests
 
-FROM eclipse-temurin:24-jre
+FROM docker.io/library/eclipse-temurin:24-jre
 
 WORKDIR /app
 
