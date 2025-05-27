@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "axios": "^1.8.4",
+    "graphql": "^16.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.5.0"
+    "react-router": "^7.5.0",
+    "react-router-dom": "^7.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
