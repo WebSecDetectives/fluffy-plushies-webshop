@@ -52,7 +52,7 @@ services:
     ports:
       - "33000:3307"
     environment:
-        MYSQL_ROOT_PASSWORD: identity_service
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         MYSQL_DATABASE: fluffy-plushies-identity
         MYSQL_TCP_PORT: ${IDENTITY_MYSQL_TCP_PORT}
 

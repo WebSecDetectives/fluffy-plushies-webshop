@@ -1,0 +1,65 @@
+asyncapi: 3.0.0
+info:
+  title: Email Service Integration Contract
+  version: 1.0.0
+  description: This service sends emails as a response to topics in a message queue.
+channels:
+  order_confirmed:
+    address: order/confirmed
+    messages:
+      order_confirmed:
+        $ref: '#/components/messages/order_confirmed'
+operations:
+  send_order_confirmed:
+    action: send
+    channel:
+      $ref: '#/channels/order_confirmed'
+    messages:
+      - $ref: '#/channels/order_confirmed/messages/order_confirmed'
+components:
+  messages:
+    order_confirmed:
+      payload:
+        type: object
+        properties:
+          customer_name:
+            type: string
+          shipping_cost:
+            type: number
+            description: The total shipping cost for the order.
+          total_amount:
+            type: number
+            description: The total order sum.
+          status:
+            type: string
+            description: Current status of the order.
+          address:
+            type: object
+            properties:
+              street:
+                type: string
+                example: "123 Main St"
+              postal_code:
+                type: number
+                example: 12345
+              city:
+                type: string
+                example: "New York"
+              country:
+                type: string
+                example: "USA"
+          line_items:
+            type: object
+            properties:
+              item_id:
+                type: string
+              item_name:
+                type: string
+                description: Name of the item.
+              quantity:
+                type: integer
+                minimum: 1
+              price_per_item:
+                type: number
+                format: float
+                description: Price per individual item.

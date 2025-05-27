@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataInitializationException.class)
     public ResponseEntity<ErrorResponse> handleDataInitializationException(DataInitializationException ex) {
-        log.error("Data initialization failed", ex);
+        log.error("Data initialization failed: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(INITIALIZATION_ERROR, GENERIC_ERROR_MESSAGE));
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnexpectedUserTypeException.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedUserTypeException(final UnexpectedUserTypeException ex) {
-        log.error("Unexpected user type encountered", ex);
+        log.error("Unexpected user type encountered: {}", ex.getMessage());
         return ResponseEntity
                 .internalServerError()
                 .body(new ErrorResponse(INTERNAL_SERVER_ERROR, GENERIC_ERROR_MESSAGE));
