@@ -24,6 +24,7 @@ export default function Products() {
         product.name && product.name.toLowerCase().includes(query.toLowerCase())
       )
     : products;
+    console.log(filteredProducts);
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>

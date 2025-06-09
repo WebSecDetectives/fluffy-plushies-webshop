@@ -24,7 +24,7 @@ post '/products' do
   product = Product.new(
     name:        data['name'],
     price:       data['price'],
-    #description: data['description'],
+    description: data['description'],
     stock:       data['stock']
   )
 
