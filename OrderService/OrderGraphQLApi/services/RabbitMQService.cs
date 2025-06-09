@@ -72,12 +72,6 @@ public class RabbitMqService
                            exchange: _exchangeName,
                            routingKey: "inventory.items_reservation_requests");
 
-        _channel.QueueDeclare(queue: "identity.user_information_requests",
-                              durable: true,
-                              exclusive: false,
-                              autoDelete: false,
-                              arguments: null);
-
         _channel.QueueBind(queue: "identity.user_information_requests",
                             exchange: _exchangeName,
                             routingKey: "identity.user_information_requests");
