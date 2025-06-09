@@ -226,8 +226,8 @@ components:
   messages:
     user_authentication_authorization_request:
       description: A request from any service to validate the user token and query their role from the database.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -235,8 +235,8 @@ components:
             type: string
     user_authentication_authorization_response_error:
       description: A response from the Identity service when the supplied token is invalid.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -245,8 +245,8 @@ components:
             type: number
     user_authentication_authorization_response:
       description: A response from the Identity service for a valid user token, which includes the user role.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -256,8 +256,8 @@ components:
             type: string
     user_information_request:
       description: A request from the Order service to validate customer token and query information on the customer.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -265,8 +265,8 @@ components:
             type: string
     user_information_response_error:
       description: A response from the Identity service when an error occurs, such as invalid token.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -275,8 +275,8 @@ components:
             type: number
     user_information_response:
       description: A response from the Identity service with information on the customer.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         allOf:
@@ -284,8 +284,8 @@ components:
           - $ref: "#/components/schemas/address"
     items_reservation_request:
       description: A request from the Order service to reserve the items for an order.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -300,8 +300,8 @@ components:
                   type: number
     items_reservation_response_error:
       description: A response from the Inventory service when the requested items are not in stock.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         properties:
@@ -310,8 +310,8 @@ components:
             type: number
     items_reservation_response:
       description: A response from the Inventory service with the details of the reserved items.
-      correlationId:
-        location: "$message.header#/correlationId"
+      correlation_id:
+        location: "$message.header#/correlation_id"
       payload:
         type: object
         allOf:
