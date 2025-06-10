@@ -13,7 +13,7 @@ import java.util.UUID;
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper=true)
 @Entity
-public class UserHistory extends AbstractIdentifiable {
+public class UserHistory extends BaseEntity {
     private UUID userId;
     private String username;
     private String email;
