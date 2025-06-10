@@ -186,6 +186,8 @@ public class UserService {
     public void deleteUser(UUID id) {
         var existingUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
+        createAndPersistSnapshot(existingUser);
+
         existingUser.setDeleted(true);
 
         userRepository.save(existingUser);
