@@ -26,6 +26,7 @@ public class IdentityMessageListener {
     private static final String IDENTITY_EXCHANGE = "identity.exchange";
     private static final String AUTH_REQUEST_QUEUE = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).AUTH_REQUEST.getQueueName()}";
     private static final String USER_INFO_REQUEST_QUEUE = "#{T(com.dlshomies.fluffyplushies.domain.IdentityChannel).USER_INFO_REQUEST.getQueueName()}";
+    public static final String CORRELATION_ID = "correlation_id";
     private final RabbitTemplate rabbitTemplate;
     private final UserService userService;
     private final JwtUtil jwtUtil;
@@ -35,7 +36,7 @@ public class IdentityMessageListener {
     @RabbitListener(queues = USER_INFO_REQUEST_QUEUE)
     public void handleUserInformationRequest(
             @Payload UserInformationRequest request,
-            @Header("correlationId") String correlationId) {
+            @Header(CORRELATION_ID) String correlationId) {
 
         log.info("Received user information request with correlationId: {}", correlationId);
 
@@ -62,7 +63,7 @@ public class IdentityMessageListener {
     @RabbitListener(queues = AUTH_REQUEST_QUEUE)
     public void handleAuthorizationRequest(
             @Payload UserAuthorizationRequest request,
-            @Header("correlationId") String correlationId) {
+            @Header(CORRELATION_ID) String correlationId) {
 
         log.info("Received authorization request with correlationId: {}", correlationId);
 

@@ -1,0 +1,336 @@
+asyncapi: 3.0.0
+info:
+  title: Microservices Message Bus Integration Contract
+  version: 1.0.0
+  description: This service sends emails as a response to topics in a message queue.
+channels:
+  email_send_order_confirmed:
+    address: email.send_order_confirmed
+    messages:
+      order_confirmed:
+        $ref: "#/components/messages/order_confirmed"
+  inventory_reservation_requests:
+    address: inventory.reservation_requests
+    messages:
+      items_reservation_request:
+        $ref: "#/components/messages/items_reservation_request"
+  inventory_reservation_responses:
+    address: inventory.reservation_responses
+    messages:
+      items_reservation_response:
+        $ref: "#/components/messages/items_reservation_response"
+      items_reservation_response_error:
+        $ref: "#/components/messages/items_reservation_response_error"
+  user_information_requests:
+    address: identity.user_information_requests
+    messages:
+      user_information_request:
+        $ref: "#/components/messages/user_information_request"
+  user_information_responses:
+    address: identity.user_information_responses
+    messages:
+      user_information_response:
+        $ref: "#/components/messages/user_information_response"
+      user_information_response_error:
+        $ref: "#/components/messages/user_information_response_error"
+  user_authentication_authorization_requests:
+    address: identity.user_authentication_authorization_requests
+    messages:
+      user_authentication_authorization_request:
+        $ref: "#/components/messages/user_authentication_authorization_request"
+  user_authentication_authorization_responses:
+    address: identity.user_authentication_authorization_responses
+    messages:
+      user_authentication_authorization_response:
+        $ref: "#/components/messages/user_authentication_authorization_response"
+      user_authentication_authorization_response_error:
+        $ref: "#/components/messages/user_authentication_authorization_response_error"
+operations:
+  send_order_confirmed:
+    summary: "Order service sends order confirmed message."
+    action: send
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/email_send_order_confirmed"
+    messages:
+      - $ref: "#/channels/email_send_order_confirmed/messages/order_confirmed"
+  receive_order_confirmed:
+    summary: "Email service receives order confirmed message."
+    action: receive
+    tags:
+      - name: EmailService
+    channel:
+      $ref: "#/channels/email_send_order_confirmed"
+    messages:
+      - $ref: "#/channels/email_send_order_confirmed/messages/order_confirmed"
+  send_items_reservation_request:
+    summary: "Order service sends inventory reservation request."
+    action: send
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/inventory_reservation_requests"
+    messages:
+      - $ref: "#/channels/inventory_reservation_requests/messages/items_reservation_request"
+  receive_items_reservation_request:
+    summary: "Inventory service receives inventory reservation request."
+    action: receive
+    tags:
+      - name: InventoryService
+    channel:
+      $ref: "#/channels/inventory_reservation_requests"
+    messages:
+      - $ref: "#/channels/inventory_reservation_requests/messages/items_reservation_request"
+  send_items_reservation_response:
+    summary: "Inventory service sends inventory reservation response."
+    action: send
+    tags:
+      - name: InventoryService
+    channel:
+      $ref: "#/channels/inventory_reservation_responses"
+    messages:
+      - $ref: "#/channels/inventory_reservation_responses/messages/items_reservation_response"
+      - $ref: "#/channels/inventory_reservation_responses/messages/items_reservation_response_error"
+  receive_items_reservation_response:
+    summary: "Order service receives inventory reservation response."
+    action: receive
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/inventory_reservation_responses"
+    messages:
+      - $ref: "#/channels/inventory_reservation_responses/messages/items_reservation_response"
+      - $ref: "#/channels/inventory_reservation_responses/messages/items_reservation_response_error"
+  send_user_information_request:
+    summary: "Order service sends user information request."
+    action: send
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/user_information_requests"
+    messages:
+      - $ref: "#/channels/user_information_requests/messages/user_information_request"
+  receive_user_information_request:
+    summary: "Identity service receives user information request."
+    action: receive
+    tags:
+      - name: IdentityService
+    channel:
+      $ref: "#/channels/user_information_requests"
+    messages:
+      - $ref: "#/channels/user_information_requests/messages/user_information_request"
+  send_user_information_response:
+    summary: "Identity service sends user information response."
+    action: send
+    tags:
+      - name: IdentityService
+    channel:
+      $ref: "#/channels/user_information_responses"
+    messages:
+      - $ref: "#/channels/user_information_responses/messages/user_information_response"
+      - $ref: "#/channels/user_information_responses/messages/user_information_response_error"
+  receive_user_information_response:
+    summary: "Order service receives user information response."
+    action: receive
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/user_information_responses"
+    messages:
+      - $ref: "#/channels/user_information_responses/messages/user_information_response"
+      - $ref: "#/channels/user_information_responses/messages/user_information_response_error"
+  send_user_authentication_authorization_request:
+    summary: "Order service sends user authentication and authorization request."
+    action: send
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/user_authentication_authorization_requests"
+    messages:
+      - $ref: "#/channels/user_authentication_authorization_requests/messages/user_authentication_authorization_request"
+  receive_user_authentication_authorization_request:
+    summary: "Identity service receives user authentication and authorization request."
+    action: receive
+    tags:
+      - name: IdentityService
+    channel:
+      $ref: "#/channels/user_authentication_authorization_requests"
+    messages:
+      - $ref: "#/channels/user_authentication_authorization_requests/messages/user_authentication_authorization_request"
+  send_user_authentication_authorization_response:
+    summary: "Identity service sends user authentication and authorization response."
+    action: send
+    tags:
+      - name: IdentityService
+    channel:
+      $ref: "#/channels/user_authentication_authorization_responses"
+    messages:
+      - $ref: "#/channels/user_authentication_authorization_responses/messages/user_authentication_authorization_response"
+      - $ref: "#/channels/user_authentication_authorization_responses/messages/user_authentication_authorization_response_error"
+  receive_user_authentication_authorization_response:
+    summary: "Order service receives user authentication and authorization response."
+    action: receive
+    tags:
+      - name: OrderService
+    channel:
+      $ref: "#/channels/user_authentication_authorization_responses"
+    messages:
+      - $ref: "#/channels/user_authentication_authorization_responses/messages/user_authentication_authorization_response"
+      - $ref: "#/channels/user_authentication_authorization_responses/messages/user_authentication_authorization_response_error"
+components:
+  schemas:
+    address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: "123 Main St"
+        postal_code:
+          type: number
+          example: 12345
+        city:
+          type: string
+          example: "New York"
+        country:
+          type: string
+          example: "USA"
+    contact_information:
+      type: object
+      properties:
+        customer_name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "johndoe@example.com"
+        phone:
+          type: number
+          example: 1234567890
+    line_items:
+      type: array
+      properties:
+        item_id:
+          type: string
+        item_name:
+          type: string
+          description: Name of the item.
+        quantity:
+          type: integer
+          minimum: 1
+        price_per_item:
+          type: number
+          format: float
+          description: Price per individual item.
+  messages:
+    user_authentication_authorization_request:
+      description: A request from any service to validate the user token and query their role from the database.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          user_token:
+            type: string
+    user_authentication_authorization_response_error:
+      description: A response from the Identity service when the supplied token is invalid.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          error_code:
+            description: Error code
+            type: number
+    user_authentication_authorization_response:
+      description: A response from the Identity service for a valid user token, which includes the user role.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+          role:
+            type: string
+    user_information_request:
+      description: A request from the Order service to validate customer token and query information on the customer.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          user_token:
+            type: string
+    user_information_response_error:
+      description: A response from the Identity service when an error occurs, such as invalid token.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          error_code:
+            description: Error code
+            type: number
+    user_information_response:
+      description: A response from the Identity service with information on the customer.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        allOf:
+          - $ref: "#/components/schemas/contact_information"
+          - $ref: "#/components/schemas/address"
+    items_reservation_request:
+      description: A request from the Order service to reserve the items for an order.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                item_id:
+                  type: string
+                quantity:
+                  type: number
+    items_reservation_response_error:
+      description: A response from the Inventory service when the requested items are not in stock.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        properties:
+          error_code:
+            description: Error code
+            type: number
+    items_reservation_response:
+      description: A response from the Inventory service with the details of the reserved items.
+      correlation_id:
+        location: "$message.header#/correlation_id"
+      payload:
+        type: object
+        allOf:
+          - $ref: "#/components/schemas/line_items"
+    order_confirmed:
+      payload:
+        type: object
+        allOf:
+          - $ref: "#/components/schemas/line_items"
+          - $ref: "#/components/schemas/address"
+          - $ref: "#/components/schemas/contact_information"
+          - type: object
+            properties:
+              shipping_cost:
+                type: number
+                description: The total shipping cost for the order.
+              total_amount:
+                type: number
+                description: The total order sum.
+              status:
+                type: string
+                description: Current status of the order.
