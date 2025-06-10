@@ -49,11 +49,6 @@ namespace OrderGraphQLApi.services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-             //   _logger.LogInformation($"[RabbitMqConsumerService] Received message from {QueueName}: {message}");
-
-                // TODO: Do your message processing here
-               // Console.WriteLine($"[RabbitMqConsumerService] Received message from {QueueName}: {message}");
-                // Acknowledge the message
                 _channel.BasicAck(ea.DeliveryTag, multiple: false);
 
                 await Task.Yield();

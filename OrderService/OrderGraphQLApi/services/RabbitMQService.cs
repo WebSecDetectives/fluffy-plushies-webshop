@@ -71,13 +71,13 @@ public class RabbitMqService
         _channel.QueueBind(queue: "inventory.items_reservation_requests",
                            exchange: _exchangeName,
                            routingKey: "inventory.items_reservation_requests");
-
+/* 
         _channel.QueueDeclare(queue: "identity.user_information_requests",
                               durable: true,
                               exclusive: false,
                               autoDelete: false,
                               arguments: null);
-
+*/
         _channel.QueueBind(queue: "identity.user_information_requests",
                             exchange: _exchangeName,
                             routingKey: "identity.user_information_requests");
@@ -110,40 +110,40 @@ public class RabbitMqService
     }
 
     public void GetUserInfo(string jwt, string correlationId)
-    {
-        var messageObject = new { user_token = jwt };
-        var messageJson = JsonSerializer.Serialize(messageObject);
-        var body = Encoding.UTF8.GetBytes(messageJson);
+{
+    var messageObject = new { user_token = jwt };
+    var messageJson = JsonSerializer.Serialize(messageObject);
+    var body = Encoding.UTF8.GetBytes(messageJson);
 
-        var properties = _channel.CreateBasicProperties();
-        properties.CorrelationId = correlationId;
-        properties.MessageId = "user_information_request";
+    var properties = _channel.CreateBasicProperties();
+    //properties.CorrelationId = correlationId;
+    properties.MessageId = "user_information_request";
+    properties.Headers = new Dictionary<string, object> { { "correlation_id", correlationId } };
 
-        Console.WriteLine("calling identity service");
+    Console.WriteLine("calling identity service");
 
-        
-        _channel.BasicPublish(exchange: _exchangeName,
-                              routingKey: "identity.user_information_requests",
-                              basicProperties: properties,
-                              body: body);
-    }
+    _channel.BasicPublish(exchange: _exchangeName,
+                         routingKey: "identity.user_information_requests",
+                         basicProperties: properties,
+                         body: body);
+}
 
     public void CheckInventory(ItemsReservationRequestDto lineItems, string correlationId)
-    {
-        
-        var message = JsonSerializer.Serialize(lineItems);
-        var body = Encoding.UTF8.GetBytes(message);
-        var properties = _channel.CreateBasicProperties();
-        properties.CorrelationId = correlationId;
+{
+    var message = JsonSerializer.Serialize(lineItems);
+    var body = Encoding.UTF8.GetBytes(message);
+    var properties = _channel.CreateBasicProperties();
+    //properties.CorrelationId = correlationId;
+    properties.Headers = new Dictionary<string, object> { { "correlation_id", correlationId } };
 
-        var d = Encoding.UTF8.GetString(body);
-        Console.WriteLine(d);
+    var d = Encoding.UTF8.GetString(body);
+    Console.WriteLine(d);
 
-        _channel.BasicPublish(exchange: _exchangeName, // to inventory service
-                              routingKey: "inventory.items_reservation_requests",
-                              basicProperties: properties,
-                              body: body);
-    }
+    _channel.BasicPublish(exchange: _exchangeName, // to inventory service
+                         routingKey: "inventory.items_reservation_requests",
+                         basicProperties: properties,
+                         body: body);
+}
 
     public void SendOrderConfirmedEvent(string orderFull)
     {

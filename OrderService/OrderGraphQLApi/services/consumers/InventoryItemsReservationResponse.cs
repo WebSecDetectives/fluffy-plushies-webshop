@@ -44,56 +44,60 @@ namespace OrderGraphQLApi.services
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
+{
+    stoppingToken.ThrowIfCancellationRequested();
+
+    var consumer = new AsyncEventingBasicConsumer(_channel);
+
+    consumer.Received += async (model, ea) =>
+    {
+        var body = ea.Body.ToArray();
+        var message = Encoding.UTF8.GetString(body);
+        var correlationId = ea.BasicProperties?.CorrelationId;
+
+        // Check for correlation_id in headers if CorrelationId is not set
+        if (string.IsNullOrEmpty(correlationId) && ea.BasicProperties?.Headers != null &&
+            ea.BasicProperties.Headers.TryGetValue("correlation_id", out var headerValue))
         {
-            stoppingToken.ThrowIfCancellationRequested();
-
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-
-            consumer.Received += async (model, ea) =>
-            {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                var correlationId = ea.BasicProperties?.CorrelationId;
-                var messageId = ea.BasicProperties?.MessageId;
-
-                if (messageId == "items_reservation_response_error")
-                {
-                    _logger.LogError($"[InventoryItemsReservationResponse] Received message from {QueueName}: {message}");
-                    return;
-                }
-
-               // _logger.LogInformation($"[InventoryItemsReservationResponse] Received message from {QueueName}: {message}");
-
-                if (string.IsNullOrEmpty(correlationId))
-                {
-                    _logger.LogWarning("CorrelationId is missing, message will be acknowledged and skipped.");
-                    _channel.BasicAck(ea.DeliveryTag, false);
-                    return;
-                }
-
-                try
-                {
-                    using var scope = _serviceScopeFactory.CreateScope();
-                    var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
-
-                    await orderService.FinalizeOrder(message, (string)correlationId);
-
-                    //_logger.LogInformation("Processed getLineItemsByOrderId successfully.");
-
-                    _channel.BasicAck(ea.DeliveryTag, false);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error processing message with CorrelationId {CorrelationId}", correlationId);
-                }
-            };
-
-            _channel.BasicConsume(queue: QueueName,
-                                  autoAck: false,
-                                  consumer: consumer);
-
-            return Task.CompletedTask;
+            correlationId = Encoding.UTF8.GetString((byte[])headerValue);
         }
+
+        var messageId = ea.BasicProperties?.MessageId;
+
+        if (messageId == "items_reservation_response_error")
+        {
+            _logger.LogError($"[InventoryItemsReservationResponse] Received message from {QueueName}: {message}");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(correlationId))
+        {
+            _logger.LogWarning("CorrelationId is missing, message will be acknowledged and skipped.");
+            _channel.BasicAck(ea.DeliveryTag, false);
+            return;
+        }
+
+        try
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
+
+            await orderService.FinalizeOrder(message, (string)correlationId);
+
+            _channel.BasicAck(ea.DeliveryTag, false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing message with CorrelationId {CorrelationId}", correlationId);
+        }
+    };
+
+    _channel.BasicConsume(queue: QueueName,
+                         autoAck: false,
+                         consumer: consumer);
+
+    return Task.CompletedTask;
+}
 
         public override void Dispose()
         {

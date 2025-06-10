@@ -3,7 +3,6 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    container_name: elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -15,7 +14,6 @@ services:
 
   rabbitmq:
     image: docker.io/library/rabbitmq:management
-    container_name: rabbitmq
     hostname: rabbitmq
     restart: 'unless-stopped'
     ports: 
@@ -25,7 +23,6 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   email-service:
-    container_name: email-service
     hostname: email-service
     depends_on:
       - rabbitmq
@@ -43,7 +40,6 @@ services:
         
   identity-mysql:
     image: docker.io/library/mysql:8.4.4
-    container_name: identity-mysql
     hostname: identity-mysql
     restart: 'unless-stopped'
     volumes:
@@ -59,7 +55,6 @@ services:
   identity-service:
     build:
       context: ./IdentityService
-    container_name: identity-service
     hostname: identity-service
     restart: unless-stopped
     ports:
@@ -83,7 +78,6 @@ services:
 
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
-    container_name: inventory-mysql
     hostname: inventory-mysql
     restart: 'unless-stopped'
     volumes:
@@ -96,7 +90,6 @@ services:
   inventory:
     build:
       context: ./InventoryService
-    container_name: inventory
     restart: unless-stopped
     ports:
       - "4567:4567"
@@ -117,7 +110,6 @@ services:
 
   phpmyadmin:
     image: docker.io/library/phpmyadmin:5.2.2
-    container_name: phpmyadmin
     hostname: phpmyadmin
     ports:
         - "7081:80"
@@ -127,7 +119,6 @@ services:
   order-service:
     build:
       context: ./OrderService/OrderGraphQLApi
-    container_name: order-service
     hostname: order-service
     restart: unless-stopped
     ports:
@@ -146,7 +137,6 @@ services:
 
   order-mongodb:
     image: docker.io/mongodb/mongodb-community-server:latest
-    container_name: order-mongodb
     hostname: order-mongodb
     restart: 'unless-stopped'
     volumes:

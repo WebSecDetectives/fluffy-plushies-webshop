@@ -42,45 +42,53 @@ namespace OrderGraphQLApi.services
                                routingKey: QueueName);
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
-{
-    var consumer = new AsyncEventingBasicConsumer(_channel);
-
-    consumer.Received += async (model, ea) =>
+   protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var body = ea.Body.ToArray();
-        var message = Encoding.UTF8.GetString(body);
-        var correlationId = ea.BasicProperties?.CorrelationId;
-        var messageId = ea.BasicProperties?.MessageId;
+        var consumer = new AsyncEventingBasicConsumer(_channel);
 
-        if (messageId == "user_information_response_error")
+        consumer.Received += async (model, ea) =>
         {
-            _logger.LogError($"[UserInformationResponsesConsumer] Received message from {QueueName}: {message}");
-            return;
-        }
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            var correlationId = ea.BasicProperties?.CorrelationId;
 
-        using (var scope = _serviceScopeFactory.CreateScope())
-        {
-            var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
-
-            try
+            // Check for correlation_id in headers if CorrelationId is not set
+            if (string.IsNullOrEmpty(correlationId) && ea.BasicProperties?.Headers != null &&
+                ea.BasicProperties.Headers.TryGetValue("correlation_id", out var headerValue))
             {
-                await orderService.getLineItemsByOrderId(message, correlationId);
+                correlationId = Encoding.UTF8.GetString((byte[])headerValue);
             }
-            catch (Exception ex)
+
+            var messageId = ea.BasicProperties?.MessageId;
+
+            if (messageId == "user_information_response_error")
             {
-                _logger.LogError(ex, "Error handling message.");
+                _logger.LogError($"[UserInformationResponsesConsumer] Received message from {QueueName}: {message}");
+                return;
             }
-        }
 
-        _channel.BasicAck(ea.DeliveryTag, multiple: false);
-    };
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
 
-    _channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
+                try
+                {
+                    await orderService.getLineItemsByOrderId(message, correlationId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error handling message.");
+                }
+            }
 
-    // Keep the task alive as long as the application runs
-    return Task.Delay(Timeout.Infinite, stoppingToken);
-}
+            _channel.BasicAck(ea.DeliveryTag, multiple: false);
+        };
+
+        _channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
+
+        // Keep the task alive as long as the application runs
+        return Task.Delay(Timeout.Infinite, stoppingToken);
+    }
 
         public override void Dispose()
         {
