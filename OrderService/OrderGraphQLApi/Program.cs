@@ -60,6 +60,7 @@ builder.Services.AddSingleton<IConnection>(sp =>
     return factory.CreateConnection();
 });
 
+//builder.Services.AddHostedService<InventoryMockResponder>();
 builder.Services.AddHostedService<UserInformationResponsesConsumer>();
 builder.Services.AddHostedService<InventoryItemsReservationResponse>();
 builder.Services.AddHostedService<RabbitMqConsumerService>(); // RABBITMQ LISTENERS

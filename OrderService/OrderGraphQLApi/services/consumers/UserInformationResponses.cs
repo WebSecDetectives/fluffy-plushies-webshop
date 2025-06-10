@@ -70,6 +70,8 @@ namespace OrderGraphQLApi.services
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
+                
+                Console.WriteLine("Message received: " + message);
 
                 try
                 {

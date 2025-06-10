@@ -79,6 +79,9 @@ namespace OrderGraphQLApi.services
 
         try
         {
+            
+            Console.WriteLine("Message received: " + message);
+
             using var scope = _serviceScopeFactory.CreateScope();
             var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
 
