@@ -4,6 +4,7 @@ using OrderGraphQLApi.services;
 using RabbitMQ.Client;
 using DotNetEnv;
 using Microsoft.Extensions.Logging;
+using OrderGraphQLApi.Utils;
 
 Env.Load();
 
@@ -60,7 +61,7 @@ builder.Services.AddSingleton<IConnection>(sp =>
     return factory.CreateConnection();
 });
 
-//builder.Services.AddHostedService<InventoryMockResponder>();
+builder.Services.AddHostedService<InventoryMockResponder>();
 builder.Services.AddHostedService<UserInformationResponsesConsumer>();
 builder.Services.AddHostedService<InventoryItemsReservationResponse>();
 builder.Services.AddHostedService<RabbitMqConsumerService>(); // RABBITMQ LISTENERS
@@ -87,6 +88,11 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+await MongoSeeder.SeedDataAsync(
+    app.Services.GetRequiredService<IMongoDatabase>(),
+    app.Services.GetRequiredService<ILogger<Program>>()
+);
 
 // Middleware to log requests
 app.Use(async (context, next) =>
@@ -123,7 +129,7 @@ app.MapGet("/env", () =>
     };
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapGraphQL();
 

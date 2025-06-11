@@ -130,8 +130,13 @@ public class RabbitMqService
         //properties.CorrelationId = correlationId;
         properties.Headers = new Dictionary<string, object> { { "correlation_id", correlationId } };
 
+        Console.WriteLine("calling inventory service");
+
         var d = Encoding.UTF8.GetString(body);
-        Console.WriteLine(d);
+
+        Console.WriteLine($"Exchange: {_exchangeName}, RoutingKey: inventory.items_reservation_requests");
+        Console.WriteLine($"Payload: {message}");
+        
 
         _channel.BasicPublish(exchange: _exchangeName, // to inventory service
                             routingKey: "inventory.items_reservation_requests",
@@ -145,6 +150,8 @@ public class RabbitMqService
         var body = Encoding.UTF8.GetBytes(orderFull);
 
         var m = Encoding.UTF8.GetString(body);
+
+        Console.WriteLine("messaging email service");
         Console.WriteLine(m);
 
         _channel.BasicPublish(exchange: _exchangeName,

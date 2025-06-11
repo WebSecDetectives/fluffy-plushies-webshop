@@ -5,6 +5,7 @@ using MongoDB.Driver.Linq;
 using OrderGraphQLApi.graphql.input;
 using System.Text.Json;
 using System.Text;
+using OrderGraphQLApi.Utils;
 
 namespace OrderGraphQLApi.services;
 
@@ -168,96 +169,111 @@ public class OrderService
     }
 
     public async Task<string> StartOrderConfirmation(ConfirmOrderInput input)
+{
+    if (input.order_id == null || input.user_token == null)
     {
-        if (input.order_id == null || input.user_token == null)
-        {
-            return "Missing order_id or user_token";
-        }
-
-        var filter = Builders<Order>.Filter.Eq(o => o.order_id, input.order_id);
-        var update = Builders<Order>.Update.Set(o => o.status, "awaiting authentication");
-        var result = await _orderCollection.UpdateOneAsync(filter, update);
-        if (result.MatchedCount == 0)
-        {
-            
-            return "Order not found";
-        }
-
-        _RabbitMqService.GetUserInfo(input.user_token, input.order_id);
-
-        return "Order confirmation started";
-       
+        return "Missing order_id or user_token";
     }
 
-    public async Task getLineItemsByOrderId(string message, string order_id)
-{
-    Console.WriteLine("Method started");
-    Console.WriteLine(order_id);
-
-
-    var filter = Builders<Order>.Filter.Eq("order_id", order_id);
-    
+    var filter = Builders<Order>.Filter.Eq(o => o.order_id, input.order_id);
     var order = await _orderCollection.Find(filter).FirstOrDefaultAsync();
 
-        Console.WriteLine("here now");
-
     if (order == null)
+    {
+        return "Order not found";
+    }
+
+    if (order.status == "awaiting authentication")
+    {
+        // Already in the desired state, so treat as idempotent success
+        return "Order confirmation already started";
+    }
+    
+    if (order.status != "editable")
+    {
+        // Optionally handle invalid transitions, e.g., reject or log warning
+        return $"Cannot start confirmation from status '{order.status}'";
+    }
+
+    var update = Builders<Order>.Update.Set(o => o.status, "awaiting authentication");
+    await _orderCollection.UpdateOneAsync(filter, update);
+
+    _RabbitMqService.GetUserInfo(input.user_token, input.order_id);
+
+    return "Order confirmation started";
+}
+
+    public async Task getLineItemsByOrderId(string message, string order_id)
+    {
+        Console.WriteLine("Method started");
+        Console.WriteLine(order_id);
+
+        message = JsonReformatter.ReformatCustomerJson(message);
+
+        Console.WriteLine(message);
+
+        var filter = Builders<Order>.Filter.Eq("order_id", order_id);
+
+        var order = await _orderCollection.Find(filter).FirstOrDefaultAsync();
+
+
+        if (order == null)
         {
             throw new ArgumentException($"Order with that ID not found.");
         }
 
-    Console.WriteLine("Order found");
+        Console.WriteLine("Order found");
 
-    var doc = JsonDocument.Parse(message).RootElement;
-    
-    try
-    {
-        var address = JsonSerializer.Deserialize<address>(doc.GetProperty("address").GetRawText());
-        var contactInfo = JsonSerializer.Deserialize<contact_information>(doc.GetProperty("contact_information").GetRawText());
+        var doc = JsonDocument.Parse(message).RootElement;
 
-        Console.WriteLine("Parsed address: " + JsonSerializer.Serialize(address));
-        Console.WriteLine("Parsed contact info: " + JsonSerializer.Serialize(contactInfo));
-
-        var update = Builders<Order>.Update
-            .Set("address", address)
-            .Set("contact_information", contactInfo);
-
-        var result = await _orderCollection.UpdateOneAsync(filter, update);
-        Console.WriteLine($"Update result: Matched={result.MatchedCount}, Modified={result.ModifiedCount}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("Deserialization or update error: " + ex.Message);
-        return;
-    }
-    
-    Console.WriteLine("Creating DTO...");
-    var dto = new ItemsReservationRequestDto
-    {
-        items = order.line_items.Select(item => new ReservationItem
+        try
         {
-            item_id = item.item_id,
-            quantity = (int)item.quantity
-        }).ToList()
-    };
+            var address = JsonSerializer.Deserialize<address>(doc.GetProperty("address").GetRawText());
+            var contactInfo = JsonSerializer.Deserialize<contact_information>(doc.GetProperty("contact_information").GetRawText());
 
-    int x = 1;
-    foreach (var item in dto.items)
-    {
-        Console.WriteLine($"Item {x}: {JsonSerializer.Serialize(item)}");
-        x++;
+            Console.WriteLine("Parsed address: " + JsonSerializer.Serialize(address));
+            Console.WriteLine("Parsed contact info: " + JsonSerializer.Serialize(contactInfo));
+
+            var update = Builders<Order>.Update
+                .Set("address", address)
+                .Set("contact_information", contactInfo);
+
+            var result = await _orderCollection.UpdateOneAsync(filter, update);
+            Console.WriteLine($"Update result: Matched={result.MatchedCount}, Modified={result.ModifiedCount}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Deserialization or update error: " + ex.Message);
+            return;
+        }
+
+        Console.WriteLine("Creating DTO...");
+        var dto = new ItemsReservationRequestDto
+        {
+            items = order.line_items.Select(item => new ReservationItem
+            {
+                item_id = item.item_id,
+                quantity = (int)item.quantity
+            }).ToList()
+        };
+
+        int x = 1;
+        foreach (var item in dto.items)
+        {
+            Console.WriteLine($"Item {x}: {JsonSerializer.Serialize(item)}");
+            x++;
+        }
+        
+
+        _RabbitMqService.CheckInventory(dto, order_id);
+        Console.WriteLine("All done");
+
     }
-
-    
-    _RabbitMqService.CheckInventory(dto, order_id);
-    Console.WriteLine("All done");
-    
-}
 
 
     public async Task FinalizeOrder(string items, string order_id)
     {
-       
+
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -265,12 +281,12 @@ public class OrderService
 
         var wrapper = JsonSerializer.Deserialize<LineItemsWrapper>(items);
         List<line_item> line_items = wrapper.LineItems;
-        
-        
+
+
         decimal total_amount = line_items.Sum(i => (decimal)i.quantity * (decimal)i.price_per_item);
-        
+
         decimal shipping_cost = total_amount * (decimal)0.03;
-        
+
 
         var order = await _orderCollection.Find(o => o.order_id == order_id).FirstOrDefaultAsync();
 
@@ -281,25 +297,27 @@ public class OrderService
             .Set(o => o.total_amount, total_amount)
             .Set(o => o.shipping_cost, shipping_cost);
         var result = await _orderCollection.UpdateOneAsync(filter, update);
-        
+
 
         var orders = await _orderCollection.Find(filter).FirstOrDefaultAsync();
 
         var response = new
         {
-            order.line_items,
+            orders.line_items,
             orders.address,
             orders.contact_information,
-            order.total_amount,
+            orders.total_amount,
             orders.shipping_cost,
-            order.status
+            orders.status
         };
         string finalJson = JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine("final json outbound for email service");
 
         Console.WriteLine(finalJson);
 
         _RabbitMqService.SendOrderConfirmedEvent(finalJson);
     }
 
-    
+
 }

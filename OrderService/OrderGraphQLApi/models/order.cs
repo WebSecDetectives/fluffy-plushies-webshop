@@ -38,7 +38,7 @@ public class line_item
 
 public class LineItemsWrapper
 {
-    [JsonPropertyName("items")] // change to line_items if necessary
+    [JsonPropertyName("line_items")] // change to line_items if necessary
     public List<line_item>? LineItems { get; set; }
 }
 

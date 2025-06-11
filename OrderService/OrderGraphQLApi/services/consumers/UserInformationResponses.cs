@@ -63,6 +63,7 @@ namespace OrderGraphQLApi.services
 
             if (messageId == "user_information_response_error")
             {
+                Console.WriteLine("ERROR BAD MESSAGE RECEIVED FROM IDENTITY SERVICE" + message);
                 _logger.LogError($"[UserInformationResponsesConsumer] Received message from {QueueName}: {message}");
                 return;
             }
