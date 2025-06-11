@@ -52,15 +52,17 @@ public class RabbitMqService
                            exchange: _exchangeName,
                            routingKey: "order_deleted");
 
-        _channel.QueueDeclare(queue: "order.confirmed",
+     /* 
+        _channel.QueueDeclare(queue: "email.send_order_confirmed",
                               durable: true,
                               exclusive: false,
                               autoDelete: false,
                               arguments: null);
+                              */
 
-        _channel.QueueBind(queue: "order.confirmed",
+        _channel.QueueBind(queue: "email.send_order_confirmed",
                            exchange: _exchangeName,
-                           routingKey: "order.confirmed");
+                           routingKey: "email.send_order_confirmed");
 
         _channel.QueueDeclare(queue: "inventory.items_reservation_requests",
                               durable: true,
@@ -155,7 +157,7 @@ public class RabbitMqService
         Console.WriteLine(m);
 
         _channel.BasicPublish(exchange: _exchangeName,
-                              routingKey: "order.confirmed",
+                              routingKey: "email.send_order_confirmed",
                               basicProperties: null,
                               body: body);
         
@@ -166,7 +168,7 @@ public class RabbitMqService
         var body = Encoding.UTF8.GetBytes(message);
         
         _channel.BasicPublish(exchange: _exchangeName, // to email service
-                              routingKey: "order.confirmed",
+                              routingKey: "email.send_order_confirmed",
                               basicProperties: null,
                               body: body);
     }
