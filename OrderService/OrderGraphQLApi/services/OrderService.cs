@@ -285,8 +285,13 @@ public class OrderService
 
         decimal total_amount = line_items.Sum(i => (decimal)i.quantity * (decimal)i.price_per_item);
 
-        decimal shipping_cost = total_amount * (decimal)0.03;
+        
 
+        decimal shipping_cost = Math.Round(total_amount * 0.03m, 2);
+
+        total_amount += shipping_cost;
+
+        total_amount = Math.Round(total_amount, 2);
 
         var order = await _orderCollection.Find(o => o.order_id == order_id).FirstOrDefaultAsync();
 
