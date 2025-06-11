@@ -41,7 +41,7 @@ namespace OrderGraphQLApi.Utils
             order_id = $"f47ac10b-58cc-4372-a567-0e02b2c3d4{i}", // Ends in 70-79
             contact_information = new contact_information
             {
-                email = $"user{i}@plushieshop.com"
+                email = "admin@admin.com"
             },
             line_items = new List<line_item>(),
             status = "editable"
