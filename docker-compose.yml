@@ -81,48 +81,48 @@ services:
     entrypoint: >
       sh -c "java -jar app.jar || tail -f /dev/null"
 
-  inventory-mysql:
-    image: docker.io/library/mysql:8.4.4
-    container_name: inventory-mysql
-    hostname: inventory-mysql
-    restart: 'unless-stopped'
-    volumes:
-      - inventory-mysql:/var/lib/mysql
-    ports:
-      - "33001:3306"
-    environment:
-        MYSQL_ROOT_PASSWORD: inventory_service
+#  inventory-mysql:
+#    image: docker.io/library/mysql:8.4.4
+#    container_name: inventory-mysql
+#    hostname: inventory-mysql
+#    restart: 'unless-stopped'
+#    volumes:
+#      - inventory-mysql:/var/lib/mysql
+#    ports:
+#      - "33001:3306"
+#    environment:
+#        MYSQL_ROOT_PASSWORD: inventory_service
 
-  inventory:
-    build:
-      context: ./InventoryService
-    container_name: inventory
-    restart: unless-stopped
-    ports:
-      - "4567:4567"
-    environment:
-      DB_HOST: inventory-mysql
-      DB_PORT: 3306
-      DB_NAME: inventorydb
-      DB_USER: root
-      DB_PASSWORD: inventory_service
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
-    depends_on:
-      - inventory-mysql
-      - rabbitmq
-    volumes:
-      - ./InventoryService:/app
+#  inventory:
+#    build:
+#      context: ./InventoryService
+#    container_name: inventory
+#    restart: no
+#    ports:
+#      - "4567:4567"
+#    environment:
+#      DB_HOST: inventory-mysql
+#      DB_PORT: 3306
+#      DB_NAME: inventorydb
+#      DB_USER: root
+#      DB_PASSWORD: inventory_service
+#      RABBITMQ_HOST: rabbitmq
+#      RABBITMQ_USER: guest
+#      RABBITMQ_PASSWORD: guest
+#    depends_on:
+#      - inventory-mysql
+#      - rabbitmq
+#    volumes:
+#      - ./InventoryService:/app
 
-  phpmyadmin:
-    image: docker.io/library/phpmyadmin:5.2.2
-    container_name: phpmyadmin
-    hostname: phpmyadmin
-    ports:
-        - "7081:80"
-    volumes:
-      - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
+#  phpmyadmin:
+#    image: docker.io/library/phpmyadmin:5.2.2
+#    container_name: phpmyadmin
+#    hostname: phpmyadmin
+#    ports:
+#        - "7081:80"
+#    volumes:
+#      - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
   order-service:
     build:

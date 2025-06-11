@@ -55,8 +55,4 @@ public class QueueConfig {
     public static Queue deadLetterQueue() {
         return new Queue(IdentityChannel.DEAD_LETTER.getQueueName(), true);
     }
-
-
-
-
 }

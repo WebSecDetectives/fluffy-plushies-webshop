@@ -40,7 +40,7 @@ public class RabbitErrorHandlingAspect {
             log.error("Error processing message in method {} with correlationId {}: {}",
                     methodName, correlationId, e.getMessage(), e);
 
-            throw new AmqpRejectAndDontRequeueException("Failed to process message", e);
+            throw new AmqpRejectAndDontRequeueException("Failed to process message with correlationId: " + correlationId, e);
         }
     }
 
