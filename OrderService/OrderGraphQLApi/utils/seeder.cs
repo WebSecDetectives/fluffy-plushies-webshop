@@ -11,13 +11,7 @@ namespace OrderGraphQLApi.Utils
         {
             var ordersCollection = database.GetCollection<Order>("orders");
 
-            // Check if collection is empty
-            var hasData = await ordersCollection.Find(_ => true).AnyAsync();
-            if (hasData)
-            {
-                logger.LogInformation("Orders collection already seeded. Skipping.");
-                return;
-            }
+            await ordersCollection.DeleteManyAsync(Builders<Order>.Filter.Empty);
 
             logger.LogInformation("Seeding MongoDB orders collection...");
 
