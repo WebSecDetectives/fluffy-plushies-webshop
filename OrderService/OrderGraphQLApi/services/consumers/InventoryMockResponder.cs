@@ -23,9 +23,15 @@ namespace OrderGraphQLApi.services
 
         private readonly Dictionary<string, (string Name, decimal Price, int Stock)> _products = new()
     {
-        { "550e8400-e29b-41d4-a716-446655440000", ("Fluffy", 19.99m, 33) },
-        { "550e8400-e29b-41d4-a716-446655440001", ("Flushy the Bear", 24.99m, 92) }
+        { "550e8400-e29b-41d4-a716-446655440000", ("Fluffy", 19.99m, 73) },
+        { "550e8400-e29b-41d4-a716-446655440001", ("Flushy the Bear", 24.99m, 92) },
+        { "550e8400-e29b-41d4-a716-446655440002", ("Pawbert the Puppy", 21.49m, 58) },
+        { "550e8400-e29b-41d4-a716-446655440003", ("Snuggs the Sloth", 29.95m, 50) },
+        { "550e8400-e29b-41d4-a716-446655440004", ("Mallow the Bunny", 17.99m, 76) },
+        { "550e8400-e29b-41d4-a716-446655440005", ("Waddles the Penguin", 22.49m, 64) },
+        { "550e8400-e29b-41d4-a716-446655440006", ("Roary the Dino", 27.99m, 52) }
     };
+
 
         public InventoryMockResponder(IConnection connection)
         {
