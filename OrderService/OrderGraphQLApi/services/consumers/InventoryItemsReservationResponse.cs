@@ -80,7 +80,7 @@ namespace OrderGraphQLApi.services
         try
         {
             
-            Console.WriteLine("Message received to inventory queue listener: " + message);
+            Console.WriteLine("Message received by order service [inventory response queue listener]: " + message);
 
             using var scope = _serviceScopeFactory.CreateScope();
             var orderService = scope.ServiceProvider.GetRequiredService<OrderService>();
