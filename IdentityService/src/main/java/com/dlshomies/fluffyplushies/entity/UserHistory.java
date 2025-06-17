@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @Data
@@ -21,4 +22,5 @@ public class UserHistory extends BaseEntity {
     private UUID addressId;
     private String encodedPassword;
     private Role role;
+    private URI imgUrl;
 }

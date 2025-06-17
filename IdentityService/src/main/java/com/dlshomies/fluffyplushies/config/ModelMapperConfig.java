@@ -36,6 +36,7 @@ public class ModelMapperConfig {
         TypeMap<User, UserInformationResponse> userToInfoResponse = mapper.createTypeMap(User.class, UserInformationResponse.class);
         userToInfoResponse.addMappings(m -> {
             m.map(User::getUsername, UserInformationResponse::setCustomerName);
+            m.map(User::getImgUrl, UserInformationResponse::setImgUrl);
             m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(User::getPhone, UserInformationResponse::setPhone);
             m.using(ctx -> Integer.valueOf((String)ctx.getSource())).map(src -> src.getAddress().getPostalCode(), UserInformationResponse::setPostalCode);
             m.map(src -> src.getAddress().getStreet(), UserInformationResponse::setStreet);

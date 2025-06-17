@@ -23,9 +23,7 @@ replay_pid*
 # IntelliJ
 .idea/**
 out/
-
 target/
-.env
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -39,3 +37,5 @@ buildNumber.properties
 application.properties
 
 *.sql
+
+.env

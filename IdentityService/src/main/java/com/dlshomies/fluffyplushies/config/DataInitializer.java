@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -20,8 +24,10 @@ public class DataInitializer {
     @Value("${identity.admin.password}")
     private String adminPassword;
 
+    private final URI IMG_URL = URI.create("https://dk.pinterest.com/pin/736549714079317500/");
+
     @PostConstruct
-    public void init() {
+    public void init() throws MalformedURLException {
         log.info("Starting data initialization...");
 
             var address = Address.builder()
@@ -37,6 +43,7 @@ public class DataInitializer {
                     .phone("1234567890")
                     .address(address)
                     .role(Role.ADMIN)
+                    .imgUrl(IMG_URL)
                     .build();
 
             userService.registerAdminUser(adminUser, adminPassword);
