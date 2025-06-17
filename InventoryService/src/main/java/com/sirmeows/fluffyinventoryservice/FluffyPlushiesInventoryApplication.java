@@ -1,4 +1,4 @@
-package com.dlshomies.fluffyplushies;
+package com.sirmeows.fluffyinventoryservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class FluffyPlushiesIdentityApplication {
+public class FluffyPlushiesInventoryApplication {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -20,7 +20,6 @@ public class FluffyPlushiesIdentityApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(FluffyPlushiesIdentityApplication.class, args);
+        SpringApplication.run(FluffyPlushiesInventoryApplication.class, args);
     }
 }
-
