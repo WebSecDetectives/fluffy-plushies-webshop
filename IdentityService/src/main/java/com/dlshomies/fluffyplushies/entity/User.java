@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import java.net.URI;
 import java.util.Collection;
 
 @Data
@@ -40,6 +40,8 @@ public class User extends BaseEntity implements UserDetails {
 
     @NotNull
     private Role role = Role.USER;
+
+    private URI imgUrl;
 
     // Required by Spring UserDetails which is used for authentication and authorization
     // AuthorityList is a derived in-memory view that changes based on role
