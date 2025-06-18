@@ -23,7 +23,7 @@ public class Item extends AbstractIdentifiable {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull
     private URI imgLink;
 
     @NotNull

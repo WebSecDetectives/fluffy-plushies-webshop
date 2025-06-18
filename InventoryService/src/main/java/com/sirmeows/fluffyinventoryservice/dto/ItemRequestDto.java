@@ -25,7 +25,7 @@ public class ItemRequestDto {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull
     private URI imgLink;
 
     @NotNull
