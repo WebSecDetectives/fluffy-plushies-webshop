@@ -15,4 +15,8 @@ public class ItemService {
     public List<Item> getItems() {
         return itemRepository.findAll();
     }
+
+    public Item createItem(Item item) {
+        return itemRepository.save(item);
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class ItemRequestDto {
     @NotNull
     private BigDecimal price;
 
-    @NotBlank
+    @Min(0)
     private int stock;
 
     @NotNull

@@ -1,13 +1,13 @@
 package com.sirmeows.fluffyinventoryservice.api;
 
+import com.sirmeows.fluffyinventoryservice.dto.ItemRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ItemResponseDto;
+import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +25,11 @@ public class ItemController {
     @GetMapping("")
     public List<ItemResponseDto> getItems() {
         return modelMapper.map(itemService.getItems(), LIST_TYPE_ITEM_RESPONSE_DTO);
+    }
+
+    @PostMapping("")
+    public ItemResponseDto createItem(@Valid @RequestBody ItemRequestDto itemRequestDto) {
+        var item = itemService.createItem(modelMapper.map(itemRequestDto, Item.class));
+        return modelMapper.map(item, ItemResponseDto.class);
     }
 }

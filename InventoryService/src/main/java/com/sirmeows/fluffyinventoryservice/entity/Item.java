@@ -3,6 +3,7 @@ package com.sirmeows.fluffyinventoryservice.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -29,7 +30,7 @@ public class Item extends AbstractIdentifiable {
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
-    @NotBlank
+    @Min(0)
     private int stock;
 
     @NotNull

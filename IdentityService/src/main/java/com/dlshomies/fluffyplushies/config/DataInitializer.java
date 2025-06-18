@@ -30,23 +30,23 @@ public class DataInitializer {
     public void init() throws MalformedURLException {
         log.info("Starting data initialization...");
 
-            var address = Address.builder()
-                    .street("Main Street")
-                    .city("Capital City")
-                    .country("Canada")
-                    .postalCode("12345")
-                    .build();
+        var address = Address.builder()
+                .street("Main Street")
+                .city("Capital City")
+                .country("Canada")
+                .postalCode("12345")
+                .build();
 
-            var adminUser = User.builder()
-                    .username("admin")
-                    .email("admin@admin.com")
-                    .phone("1234567890")
-                    .address(address)
-                    .role(Role.ADMIN)
-                    .imgUrl(IMG_URL)
-                    .build();
+        var adminUser = User.builder()
+                .username("admin")
+                .email("admin@admin.com")
+                .phone("1234567890")
+                .address(address)
+                .role(Role.ADMIN)
+                .imgUrl(IMG_URL)
+                .build();
 
-            userService.registerAdminUser(adminUser, adminPassword);
-            log.info("Admin user created successfully");
-        }
+        userService.registerAdminUser(adminUser, adminPassword);
+        log.info("Admin user created successfully");
+    }
 }
