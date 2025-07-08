@@ -26,9 +26,6 @@ public class ItemRequestDto {
     private String name;
 
     @NotNull
-    private URI imgLink;
-
-    @NotNull
     private BigDecimal price;
 
     @Min(0)

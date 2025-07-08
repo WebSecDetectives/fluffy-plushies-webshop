@@ -7,9 +7,11 @@ import com.sirmeows.fluffyinventoryservice.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.sirmeows.fluffyinventoryservice.config.ModelMapperConfig.LIST_TYPE_ITEM_RESPONSE_DTO;
 
@@ -27,7 +29,13 @@ public class ItemController {
         return modelMapper.map(itemService.getItems(), LIST_TYPE_ITEM_RESPONSE_DTO);
     }
 
+    @GetMapping("/{id}")
+    public ItemResponseDto getItem(@PathVariable UUID id) {
+        return modelMapper.map(itemService.getItem(id), ItemResponseDto.class);
+    }
+
     @PostMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ItemResponseDto createItem(@Valid @RequestBody ItemRequestDto itemRequestDto) {
         var item = itemService.createItem(modelMapper.map(itemRequestDto, Item.class));
         return modelMapper.map(item, ItemResponseDto.class);

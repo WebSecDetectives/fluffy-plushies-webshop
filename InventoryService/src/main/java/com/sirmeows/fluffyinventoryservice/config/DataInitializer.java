@@ -43,7 +43,6 @@ public class DataInitializer {
     private Item buildRandomItem() {
         return Item.builder()
                 .name(randomName())
-                .imgLink(randomUrl())
                 .price(randomPrice())
                 .stock(randomStock())
                 .details(createRandomDetails())
@@ -56,6 +55,7 @@ public class DataInitializer {
                 .ageGroup(AgeGroup.random().label())
                 .itemType("YY")
                 .material("ZZ")
+                .imgLink(randomUrl())
                 .build();
         return itemDetailService.createItemDetails(details);
     }
@@ -73,7 +73,7 @@ public class DataInitializer {
     }
 
     private int randomStock() {
-        return random.nextInt(1, 1001);
+        return random.nextInt(1, 100);
     }
 
     private record AgeGroup(String label) {
@@ -83,6 +83,7 @@ public class DataInitializer {
                 new AgeGroup("15+")
         );
         private static final RandomGenerator RG = RandomGenerator.of("L64X256MixRandom");
+
         public static AgeGroup random() {
             return POOL.get(RG.nextInt(POOL.size()));
         }
