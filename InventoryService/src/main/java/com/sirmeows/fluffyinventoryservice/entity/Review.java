@@ -1,7 +1,6 @@
 package com.sirmeows.fluffyinventoryservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -25,4 +24,7 @@ public class Review extends AbstractIdentifiable {
     @Max(value = 5, message = "Rating must be ≤ 5")
     @Column(nullable = false)
     private int rating;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item item;
 }
