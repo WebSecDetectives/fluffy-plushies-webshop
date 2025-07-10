@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -28,7 +27,4 @@ public class Item extends AbstractIdentifiable {
 
     @ManyToOne
     private ItemDetails details;
-
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private List<Review> reviews;
 }

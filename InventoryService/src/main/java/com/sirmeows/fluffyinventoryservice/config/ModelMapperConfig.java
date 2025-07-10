@@ -2,6 +2,7 @@ package com.sirmeows.fluffyinventoryservice.config;
 
 import com.sirmeows.fluffyinventoryservice.dto.ItemRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ItemResponseDto;
+import com.sirmeows.fluffyinventoryservice.dto.ReviewResponseDto;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 @Configuration
 public class ModelMapperConfig {
     public static final Type LIST_TYPE_ITEM_RESPONSE_DTO = new TypeToken<ArrayList<ItemResponseDto>>(){}.getType();
+    public static final Type LIST_TYPE_REVIEW_RESPONSE_DTO = new TypeToken<ArrayList<ReviewResponseDto>>(){}.getType();
 
     @Bean
     public ModelMapper modelMapper() {
