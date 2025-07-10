@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 @Configuration
 public class ModelMapperConfig {
-    public static final Type LIST_TYPE_ITEM_REQUEST_DTO = new TypeToken<ArrayList<ItemRequestDto>>(){}.getType();
     public static final Type LIST_TYPE_ITEM_RESPONSE_DTO = new TypeToken<ArrayList<ItemResponseDto>>(){}.getType();
 
     @Bean

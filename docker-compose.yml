@@ -55,7 +55,7 @@ services:
     ports:
       - "33000:3307"
     environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${IDENTITY_MYSQL_ROOT_PASSWORD}
         MYSQL_DATABASE: fluffy-plushies-identity
         MYSQL_TCP_PORT: ${IDENTITY_MYSQL_TCP_PORT}
 
@@ -84,17 +84,20 @@ services:
     entrypoint: >
       sh -c "java -jar app.jar || tail -f /dev/null"
 
-#  inventory-mysql:
-#    image: docker.io/library/mysql:8.4.4
-#    container_name: inventory-mysql
-#    hostname: inventory-mysql
-#    restart: 'unless-stopped'
-#    volumes:
-#      - inventory-mysql:/var/lib/mysql
-#    ports:
-#      - "33001:3306"
-#    environment:
-#        MYSQL_ROOT_PASSWORD: inventory_service
+  inventory-mysql:
+    image: docker.io/library/mysql:8.4.4
+    container_name: inventory-mysql
+    hostname: inventory-mysql
+    restart: 'unless-stopped'
+    volumes:
+      - inventory-mysql:/var/lib/mysql
+      - ./InventoryService/inventory-temp-schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    ports:
+      - "33001:3306"
+    environment:
+        MYSQL_ROOT_PASSWORD: ${INVENTORY_MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: fluffy-plushies-inventory
+        MYSQL_TCP_PORT: ${INVENTORY_MYSQL_TCP_PORT}
 
 #  inventory:
 #    build:

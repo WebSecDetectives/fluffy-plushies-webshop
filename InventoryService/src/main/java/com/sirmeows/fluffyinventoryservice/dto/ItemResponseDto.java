@@ -23,7 +23,6 @@ import java.util.UUID;
 public class ItemResponseDto {
     private UUID id;
     private String name;
-    private URI imgLink;
     private BigDecimal price;
     private int stock;
     private ItemDetailsResponseDto details;

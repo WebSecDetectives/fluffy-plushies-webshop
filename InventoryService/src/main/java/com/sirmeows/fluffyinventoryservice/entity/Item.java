@@ -1,17 +1,14 @@
 package com.sirmeows.fluffyinventoryservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.net.URI;
+import java.util.List;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -19,20 +16,19 @@ import java.net.URI;
 @NoArgsConstructor
 @Entity
 public class Item extends AbstractIdentifiable {
-    @NotBlank
+
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank
-    private URI imgLink;
-
-    @NotNull
-    @Column(precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @NotBlank
+    @Min(0)
     private int stock;
 
-    @NotNull
     @ManyToOne
     private ItemDetails details;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<Review> reviews;
 }
