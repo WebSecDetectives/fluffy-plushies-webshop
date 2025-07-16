@@ -1,4 +1,4 @@
 ansible_user: fluffy_ansible
 ansible_port: 22
-ansible_host: 136.243.105.45
+ansible_host: "{{ vault_faramir_host_ip }}"
 ansible_become_pass: "{{ vault_faramir_host_become_pass }}"
