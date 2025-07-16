@@ -1,0 +1,89 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+# ansible_become: yes
+
+# Docker installation section (following official Docker instructions)
+- name: Ensure Docker prerequisites are installed
+  apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+  tags:
+    - docker
+
+- name: Create Docker keyring directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags:
+    - docker
+
+- name: Download Docker's official GPG key
+  shell: curl -fsSL https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg -o /etc/apt/keyrings/docker.asc
+  args:
+    creates: /etc/apt/keyrings/docker.asc
+  tags:
+    - docker
+
+- name: Set permissions for Docker GPG key
+  file:
+    path: /etc/apt/keyrings/docker.asc
+    mode: 'a+r'
+  tags:
+    - docker
+
+- name: Add Docker APT repository
+  vars:
+    arch_map:
+      x86_64: amd64
+      aarch64: arm64
+    docker_arch: "{{ arch_map[ansible_architecture] | default(ansible_architecture) }}"
+  shell: |
+    echo "deb [arch={{ docker_arch }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  args:
+    creates: /etc/apt/sources.list.d/docker.list
+  tags:
+    - docker
+
+- name: Update apt cache after adding Docker repository
+  apt:
+    update_cache: yes
+  tags:
+    - docker
+
+- name: Install Docker packages
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: "{{ pkg_state | default('latest') }}"
+    update_cache: yes
+  tags:
+    - docker
+
+- name: Add current user to Docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+  tags:
+    - docker
+
+- name: Ensure Docker service is enabled to start at boot
+  systemd:
+    name: docker
+    enabled: yes
+  tags:
+    - docker
+
+- name: Ensure Docker service is started
+  systemd:
+    name: docker
+    state: started
+  tags:
+    - docker

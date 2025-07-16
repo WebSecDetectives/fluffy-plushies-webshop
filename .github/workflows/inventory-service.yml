@@ -1,0 +1,37 @@
+name: Inventory Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/inventory-service.yml'
+      - 'InventoryService/**'
+  pull_request:
+    paths:
+      - '.github/workflows/inventory-service.yml'
+      - 'InventoryService/**'
+  workflow_dispatch:
+
+env:
+  DOCKER_REPO: ghcr.io/websecdetectives
+  IMAGE_NAME: fluffy-plushies-inventory:latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.XGITHUB_TOKEN }}
+      - uses: docker/build-push-action@v4
+        with:
+          context: ./InventoryService
+          file: ./InventoryService/Dockerfile
+          push: false
+          tags: ${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}

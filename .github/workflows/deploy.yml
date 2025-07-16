@@ -1,0 +1,45 @@
+name: Deploy fluffy plushies
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: pip install --upgrade ansible
+
+      - name: Prepare Vault Password
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASS }}" > ansible/.vault_pass
+
+      - name: Launch SSH agent
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+
+      - name: Run playbook
+        working-directory: ansible
+        run: ansible-playbook -i inventory/hosts.yml playbooks/deploy-fluffy-plushies.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
+
+      - name: Cleanup Vault Password
+        if: always()
+        run: rm ansible/.vault_pass

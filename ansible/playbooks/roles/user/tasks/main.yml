@@ -1,0 +1,66 @@
+---
+# This playbook configures users on mirkwood.
+# ansible_become: yes
+
+- name: Ensure all user_default_groups exist
+  become: yes
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ user_default_groups }}"
+  when: user_state | default('present') == 'present'
+
+- name: Add or remove user
+  become: yes
+  user:
+    name: "{{ user_name }}"
+    password: "{{ user_password | default(omit) }}"
+    state: "{{ user_state | default('present') }}"
+    update_password: on_create
+    group: "{{ user_primary_group | default('users') }}"
+    groups: "{{ user_default_groups | join(',') }}"
+    uid: "{{ user_uid | default(omit) }}"
+    shell: "{{ user_shell | default('/bin/bash') }}"
+#    generate_ssh_key: yes
+#    ssh_key_bits: 2048
+#    ssh_key_type: ed25519
+#    ssh_key_file: .ssh/id_ed25519
+
+- name: Copy .bashrc file
+  become: yes
+  copy:
+    src: files/user.bashrc
+    dest: /home/{{ user_name }}/.bashrc
+    owner: "{{ user_name }}"
+    mode: "u=rw,g=r,o=r"
+    force: yes
+  when: user_state | default('present') == 'present'
+
+- name: Create .ssh directory
+  become: yes
+  file:
+    path: /home/{{ user_name }}/.ssh/
+    owner: "{{ user_name }}"
+    mode: "u=rwx,g=r,o=r"
+    force: no
+    state: directory
+  when: user_state | default('present') == 'present'
+
+- name: Copy public key
+  become: yes
+  copy:
+    dest: /home/{{ user_name }}/.ssh/authorized_keys
+    owner: "{{ user_name }}"
+    content: "{{ user_public_key }}"
+    mode: "u=rw,g=r,o=r"
+    force: no
+  when: user_public_key is defined and user_state | default('present') == 'present'
+
+- name: Configure Git push.default to current
+  become: yes
+  become_user: "{{ user_name }}"
+  git_config:
+    name: push.default
+    scope: global
+    value: current
+  when: user_state | default('present') == 'present'
