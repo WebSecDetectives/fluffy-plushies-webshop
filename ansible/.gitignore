@@ -1,0 +1,8 @@
+.junie
+.idea
+.vault_pass
+*.retry
+**/*.retry
+.vault*
+*venv*
+__pycache__

@@ -1,0 +1,21 @@
+---
+# Default variables for user role
+
+# Required variables
+# user_name: username
+# user_password: password hash
+# user_default_groups: list of groups
+
+# Optional variables
+# user_state: present or absent (default: present)
+# user_public_key: SSH public key for authorized_keys
+
+# UID/GID options
+# user_uid: optional fixed UID for the user
+# user_gid: optional fixed GID for the user's primary group
+# user_primary_group: primary group name (default: same as username or 'users')
+# user_shell: user's login shell (default: /bin/bash)
+
+# Default groups
+user_state: present
+user_default_groups: [ "users" ,"sudo" ]
