@@ -86,22 +86,24 @@ jobs:
         run: checkov --framework ansible -d ansible/
 
   zap:
+
     name: OWASP ZAP DAST
     runs-on: ubuntu-latest
     needs: trivy
-    services:
-      web:
-        image: ${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
-        ports:
-          - 8080:8080
     steps:
+      - name: Build & tag image
+        run: docker build -t ${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} IdentityService/
+
+      - name: Start container
+        run: docker run -d --name web -p 8081:8081 ${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+
       - name: Wait for web service
         run: |
           for i in $(seq 1 30); do
-            nc -z localhost 8080 && break
+            nc -z localhost 8081 && break
             sleep 1
           done
       - name: Start ZAP baseline scan
         uses: zaproxy/action-full-scan@v0.12.0
         with:
-          target: 'http://host.docker.internal:8080'
+          target: 'http://host.docker.internal:8081'
