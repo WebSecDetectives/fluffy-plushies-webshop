@@ -22,6 +22,7 @@ env:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
   codeql:
@@ -38,6 +39,11 @@ jobs:
           distribution: temurin
           java-version: '24'
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+
       - name: Build Identity Service
         working-directory: IdentityService
         run: mvn clean package -DskipTests -B
@@ -45,11 +51,6 @@ jobs:
       - name: Build Inventory Service
         working-directory: InventoryService
         run: mvn clean package -DskipTests -B
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java
 
       - name: Run CodeQL analysis
         uses: github/codeql-action/analyze@v3
@@ -61,7 +62,7 @@ jobs:
     needs: codeql
     steps:
       - uses: actions/checkout@v4
-      - uses: github/dependency-review-action@v4
+      - uses: actions/dependency-review-action@v4
         with:
           token: ${{ secrets.XGITHUB_TOKEN }}
 
@@ -75,7 +76,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t $DOCKER_REPO/$IMAGE_NAME IdentityService/
-      - uses: aquasecurity/trivy-action@v0.32.0
+      - uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: image
           image-ref: $DOCKER_REPO/$IMAGE_NAME
