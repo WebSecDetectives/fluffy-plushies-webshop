@@ -1,5 +1,7 @@
 # KEA 2025 Security for Web Developers - Fluffy Plushies Webshop
 
+[![Security Scans](https://github.com/WebSecDetectives/fluffy-plushies-webshop-backend/actions/workflows/security-scans.yml/badge.svg)](https://github.com/WebSecDetectives/fluffy-plushies-webshop-backend/actions/workflows/security-scans.yml)
+
 ## How to run the project
 
 1. Pull `https://github.com/WebSecDetectives/fluffy-plushies-webshop`.
