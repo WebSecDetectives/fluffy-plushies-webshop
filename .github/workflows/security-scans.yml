@@ -24,6 +24,7 @@ jobs:
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -53,6 +54,7 @@ jobs:
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: codeql
     steps:
       - uses: actions/checkout@v4
@@ -63,6 +65,7 @@ jobs:
   trivy:
     name: Trivy Container Scan
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: dependency-review
     steps:
       - uses: actions/checkout@v4
@@ -77,6 +80,7 @@ jobs:
   checkov:
     name: Checkov Ansible Scan
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: trivy
     steps:
       - uses: actions/checkout@v4
@@ -89,6 +93,7 @@ jobs:
 
     name: OWASP ZAP DAST
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: trivy
     steps:
       - name: Build & tag image
