@@ -1,17 +1,4 @@
-version: '3.8'
 services:
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-      - "9200:9200"
-    networks:
-      - default
 
   rabbitmq:
     image: docker.io/library/rabbitmq:management
@@ -98,37 +85,6 @@ services:
         MYSQL_ROOT_PASSWORD: ${INVENTORY_MYSQL_ROOT_PASSWORD}
         MYSQL_DATABASE: fluffy-plushies-inventory
         MYSQL_TCP_PORT: ${INVENTORY_MYSQL_TCP_PORT}
-
-#  inventory:
-#    build:
-#      context: ./InventoryService
-#    container_name: inventory
-#    restart: no
-#    ports:
-#      - "4567:4567"
-#    environment:
-#      DB_HOST: inventory-mysql
-#      DB_PORT: 3306
-#      DB_NAME: inventorydb
-#      DB_USER: root
-#      DB_PASSWORD: inventory_service
-#      RABBITMQ_HOST: rabbitmq
-#      RABBITMQ_USER: guest
-#      RABBITMQ_PASSWORD: guest
-#    depends_on:
-#      - inventory-mysql
-#      - rabbitmq
-#    volumes:
-#      - ./InventoryService:/app
-
-#  phpmyadmin:
-#    image: docker.io/library/phpmyadmin:5.2.2
-#    container_name: phpmyadmin
-#    hostname: phpmyadmin
-#    ports:
-#        - "7081:80"
-#    volumes:
-#      - ./config.inc.php:/etc/phpmyadmin/config.inc.php:ro
 
   order-service:
     build:

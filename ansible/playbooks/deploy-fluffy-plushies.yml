@@ -5,17 +5,17 @@
   become: True
   remote_user: fluffy_ansible
   tags: [ 'faramir-host', 'fluffy', 'plushies', 'deploy' ]
-  tasks: [ ]
+  vars: {}
+  tasks: []
   roles:
     - {role: docker}
-#    - {role: user,
-#       user_name: fluffy,
-#       user_default_groups: [ "users", "docker" ],
-#       user_password: "{{ vault_faramir_host_angmar_password_hash }}",
-#       tags: [ "users" ]
-#    }
-   # checkout repository as fluffy
-  # run docker compose as fluffy
+    - {role: user,
+       user_name: fluffy,
+       user_default_groups: [ "fluffy", "users", "docker" ],
+       user_password: "{{ vault_faramir_host_fluffy_password_hash }}",
+       tags: [ "users" ]
+    }
+    - { role: deploy_from_github, tags: [ 'deploy', 'git', 'docker' ] }
 
 
 
