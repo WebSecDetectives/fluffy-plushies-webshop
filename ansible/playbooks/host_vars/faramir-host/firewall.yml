@@ -1,0 +1,15 @@
+---
+# UFW firewall configuration for faramir-host
+
+ufw_default_incoming_policy: 'deny'
+ufw_default_outgoing_policy: 'allow'
+ufw_default_routed_policy: 'deny'
+
+ufw_rules:
+  - { rule: allow, to_port: 10, protocol: tcp, comment: "Allow SSH on alternate port 10" }
+  - { rule: allow, to_port: 22, protocol: tcp, comment: "Allow SSH on standard port" }
+  - { rule: allow, to_port: 80, protocol: tcp, comment: "Allow HTTP" }
+  - { rule: allow, to_port: 443, protocol: tcp, comment: "Allow HTTPS" }
+  - { rule: allow, to_port: 8081, protocol: tcp, comment: "Allow access to Identity Service" }
+  - { rule: allow, to_port: 8083, protocol: tcp, comment: "Allow access to Order Service" }
+
