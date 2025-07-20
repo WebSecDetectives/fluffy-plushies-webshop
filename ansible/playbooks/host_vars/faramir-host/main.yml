@@ -1,4 +1,9 @@
 ansible_user: fluffy_ansible
-ansible_port: 22
+ansible_port: 10
 ansible_host: "{{ vault_faramir_host_ip }}"
 ansible_become_pass: "{{ vault_faramir_host_become_pass }}"
+
+git_repo_url: "https://github.com/WebSecDetectives/fluffy-plushies-webshop-backend.git"
+app_path: /opt/fluffy-plushies
+app_owner: "fluffy"
+app_group: "fluffy"

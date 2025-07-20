@@ -1,4 +1,6 @@
 ### setup ansible env.
+Use WSL ubuntu image :
+
 
 python3 -m venv .venv
 source .venv/bin/activate

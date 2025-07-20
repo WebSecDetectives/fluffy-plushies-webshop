@@ -1,0 +1,45 @@
+---
+# Tasks for deploy_from_github role
+
+- name: Ensure destination directory exists
+  file:
+    path: "{{ app_path }}"
+    state: directory
+    owner: "{{ app_owner }}"
+    group: "{{ app_group }}"
+    mode: '0740'
+  tags: [ 'checkout', 'git' ]
+
+- name: Checkout git repository
+  become: yes
+  become_user: "{{ app_owner }}"
+  git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ app_path }}"
+    version: main
+    clone: yes
+    update: yes
+  tags: [ 'checkout', 'git' ]
+
+- name: Generate .env file from template
+  template:
+    src: dotenv.j2
+    dest: "{{ app_path }}/.env"
+    owner: "{{ app_owner }}"
+    group: "{{ app_group }}"
+    mode: '0640'
+  tags: [ 'deploy', 'docker' ]
+
+- name: Run docker-compose
+  become: yes
+  become_user: "{{ app_owner }}"
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_path }}"
+    files:
+      - docker-compose.yml
+    state: present
+    build: always
+    remove_orphans: yes
+    pull: always
+    assume_yes: yes
+  tags: [ 'deploy', 'docker' ]

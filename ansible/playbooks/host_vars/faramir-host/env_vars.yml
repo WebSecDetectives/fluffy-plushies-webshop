@@ -1,0 +1,32 @@
+---
+# Environment-specific variables for faramir host
+
+# These variables will override the defaults in the role
+
+# RabbitMQ Configuration
+rabbitmq_host: "rabbitmq"
+rabbitmq_port: "5672"
+rabbitmq_username: "{{ vault_faramir_host_rabbitmq_username }}"
+rabbitmq_password: "{{ vault_faramir_host_rabbitmq_password }}"
+
+# Email Service Configuration
+email_service_queue: "email_notifications"
+smtp_host: "{{ vault_faramir_host_smtp_host }}"
+smtp_port: "587"
+smtp_user: "{{ vault_faramir_host_smtp_user }}"
+smtp_pass: "{{ vault_faramir_host_smtp_password }}"
+
+# Identity MySQL Configuration
+identity_mysql_root_password: "{{ vault_faramir_host_identity_mysql_root_password }}"
+identity_mysql_username: "identity_app"
+identity_mysql_password: "{{ vault_faramir_host_identity_mysql_password }}"
+identity_admin_password: "{{ vault_faramir_host_identity_admin_password }}"
+
+# JWT Configuration
+jwt_secret: "{{ vault_faramir_host_jwt_secret }}"
+
+# Inventory MySQL Configuration
+inventory_mysql_root_password: "{{ vault_faramir_host_inventory_mysql_root_password }}"
+
+# Order Service Configuration
+mongodb_database_name: "fluffy_orders"
