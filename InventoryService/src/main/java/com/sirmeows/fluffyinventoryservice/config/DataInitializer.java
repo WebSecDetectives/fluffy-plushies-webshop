@@ -50,14 +50,13 @@ public class DataInitializer {
     }
 
     private ItemDetails createRandomDetails() {
-        var details = ItemDetails.builder()
+        return ItemDetails.builder()
                 .description("XX")
                 .ageGroup(AgeGroup.random().label())
                 .itemType("YY")
                 .material("ZZ")
                 .imgLink(randomUrl())
                 .build();
-        return itemDetailService.createItemDetails(details);
     }
 
     private String randomName() {

@@ -1,6 +1,5 @@
 package com.sirmeows.fluffyinventoryservice.config;
 
-import com.sirmeows.fluffyinventoryservice.dto.ItemRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ItemResponseDto;
 import com.sirmeows.fluffyinventoryservice.dto.ReviewResponseDto;
 import org.modelmapper.Conditions;
@@ -21,8 +20,7 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
 
-        mapper.getConfiguration()
-                .setPropertyCondition(Conditions.isNotNull());
+        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 
         return mapper;
     }

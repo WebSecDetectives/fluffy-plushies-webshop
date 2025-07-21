@@ -26,7 +26,8 @@ public class ParsedJwtToken {
     }
 
     public Role getRole() {
-        return claims.get("role", Role.class);
+        var role = claims.get("role", String.class);
+        return Role.valueOf(role);
     }
 
     public String getUsername() {

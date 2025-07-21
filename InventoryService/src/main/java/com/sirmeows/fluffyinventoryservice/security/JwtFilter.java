@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -32,7 +34,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public static final String BEARER_PREFIX = "Bearer ";
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
 
     /**
      * Filters HTTP requests to perform JWT-based authentication.
@@ -74,8 +75,13 @@ public class JwtFilter extends OncePerRequestFilter {
             var username = token.getUsername();
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                var userDetails = userDetailsService.loadUserByUsername(username);
-
+                // Take user details from signed JWT token to pass to Spring Security Context
+                // Alternative could be to do a request to identityservice to get user information that way
+                var userDetails = User.builder()
+                        .username(token.getUsername())
+                        .password("") // No password needed as we're authenticating via JWT
+                        .authorities(AuthorityUtils.createAuthorityList(token.getRole().name()))
+                        .build();
                 setAuthentication(userDetails, request);
             }
         } catch (Exception e) {
@@ -84,11 +90,12 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(UserDetails userDetails, HttpServletRequest request) {
-        var authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        var authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null, // credentials can be null as we're using JWT
+                userDetails.getAuthorities());
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }
