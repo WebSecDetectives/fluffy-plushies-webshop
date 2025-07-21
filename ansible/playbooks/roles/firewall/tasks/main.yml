@@ -22,23 +22,23 @@
     logging: "{{ ufw_logging }}"
   notify: reload ufw
 
-- name: ufw allow IPv4 forwarding between interfaces
-  lineinfile:
-    dest: /etc/ufw/sysctl.conf
-    line: net/ipv4/ip_forward=1
-    regexp: "#net/ipv4/ip_forward\\="
+- name: Set default incoming policy
+  ufw:
+    default: "{{ ufw_default_incoming_policy }}"
+    direction: incoming
+  notify: reload ufw
 
-- name: ufw allow IPv6 forwarding between interfaces
-  lineinfile:
-    dest: /etc/ufw/sysctl.conf
-    line: net/ipv6/conf/default/forwarding=1
-    regexp: "#net/ipv6/conf/default/forwarding\\="
+- name: Set default outgoing policy
+  ufw:
+    default: "{{ ufw_default_outgoing_policy }}"
+    direction: outgoing
+  notify: reload ufw
 
-- name: ufw allow IPv6 forwarding for all interfaces
-  lineinfile:
-    dest: /etc/ufw/sysctl.conf
-    line: net/ipv6/conf/all/forwarding=1
-    regexp: "#net/ipv6/conf/all/forwarding\\="
+- name: Set default routed policy
+  ufw:
+    default: "{{ ufw_default_routed_policy }}"
+    direction: routed
+  notify: reload ufw
 
 - name: rules
   ufw:
@@ -51,5 +51,6 @@
     to_port: "{{ item.to_port | default('') }}"
     protocol: "{{ item.protocol | default('any') }}"
     log: "{{ item.log | default(False) }}"
+    comment: "{{ item.comment | default(omit) }}"
   with_items: "{{ ufw_rules }}"
   notify: reload ufw

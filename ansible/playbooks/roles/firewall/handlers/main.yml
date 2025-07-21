@@ -1,6 +1,9 @@
 ---
-# handlers file for ufw
+# Handlers for the firewall role
 
+- name: reload ufw
+  command: ufw reload
+  become: yes
 - name: reload ufw
   ufw:
     state: reloaded

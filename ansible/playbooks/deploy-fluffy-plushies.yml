@@ -15,9 +15,6 @@
        user_password: "{{ vault_faramir_host_fluffy_password_hash }}",
        tags: [ "users" ]
     }
+    - { role: firewall, tags: ['ufw', 'firewall']}
     - { role: deploy_from_github, tags: [ 'deploy', 'git', 'docker' ] }
-
-
-
-  # configure firewall
 
