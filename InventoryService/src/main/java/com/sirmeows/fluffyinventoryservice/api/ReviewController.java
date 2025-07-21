@@ -39,7 +39,6 @@ public class ReviewController {
         return modelMapper.map(reviewService.getReviewsByItemId(id), LIST_TYPE_REVIEW_RESPONSE_DTO);
     }
 
-
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ReviewResponseDto createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto) {
