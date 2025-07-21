@@ -68,6 +68,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler) // for 403
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users", "/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -77,14 +78,21 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowedOrigins(List.of("http://localhost:4200"));
+        //config.setAllowedOrigins(List.of("http://localhost:8080"));
         config.addAllowedOriginPattern("*");
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS", "DELETE"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of(
+                "Origin",
+                "Accept",
+                "Content-Type",
+                "Authorization",
+                "X-Requested-With",
+                "X-XSRF-TOKEN"
+        ));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        var source = new UrlBasedCorsConfigurationSource();
         // apply cors configuration to all endpoints
         source.registerCorsConfiguration("/**", config);
         return source;

@@ -25,6 +25,6 @@ public class Item extends AbstractIdentifiable {
     @Min(0)
     private int stock;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private ItemDetails details;
 }

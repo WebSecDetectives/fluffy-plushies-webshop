@@ -4,11 +4,13 @@ import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.exception.ItemNotFoundException;
 import com.sirmeows.fluffyinventoryservice.repository.ItemRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class ItemService {
@@ -24,6 +26,7 @@ public class ItemService {
 
     public Item createItem(Item item) {
         //TODO: Add Firestore Authentication step
+        log.info("Creating new item {}", item);
         return itemRepository.save(item);
     }
 }

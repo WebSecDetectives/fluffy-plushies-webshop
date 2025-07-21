@@ -18,7 +18,7 @@ import static com.sirmeows.fluffyinventoryservice.config.ModelMapperConfig.LIST_
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 public class ReviewController {
 
     private ReviewService reviewService;
