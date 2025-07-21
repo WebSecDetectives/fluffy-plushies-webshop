@@ -11,5 +11,6 @@ ufw_rules:
   - { rule: allow, to_port: 80, protocol: tcp, comment: "Allow HTTP" }
   - { rule: allow, to_port: 443, protocol: tcp, comment: "Allow HTTPS" }
   - { rule: allow, to_port: 8081, protocol: tcp, comment: "Allow access to Identity Service" }
+  - { rule: allow, to_port: 8082, protocol: tcp, comment: "Allow access to Inventory Service" }
   - { rule: allow, to_port: 8083, protocol: tcp, comment: "Allow access to Order Service" }
 
