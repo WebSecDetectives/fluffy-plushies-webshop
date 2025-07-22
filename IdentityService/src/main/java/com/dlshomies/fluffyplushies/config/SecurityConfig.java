@@ -85,6 +85,9 @@ public class SecurityConfig {
                 "Origin",
                 "Accept",
                 "Content-Type",
+                "Content-Length",
+                "Connection",
+                "Cache-Control",
                 "Authorization",
                 "X-Requested-With",
                 "X-XSRF-TOKEN"
