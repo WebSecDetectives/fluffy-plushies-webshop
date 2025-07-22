@@ -6,8 +6,11 @@ import com.sirmeows.fluffyinventoryservice.entity.Review;
 import com.sirmeows.fluffyinventoryservice.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import static com.sirmeows.fluffyinventoryservice.config.ModelMapperConfig.LIST_
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
+@Slf4j
 @RequestMapping("/reviews")
 public class ReviewController {
 
@@ -25,11 +29,13 @@ public class ReviewController {
     private final ModelMapper modelMapper;
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<ReviewResponseDto> getReviews() {
         return modelMapper.map(reviewService.getReviews(), LIST_TYPE_REVIEW_RESPONSE_DTO);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ReviewResponseDto getReview(@PathVariable UUID id) {
         return modelMapper.map(reviewService.getReview(id), ReviewResponseDto.class);
     }
