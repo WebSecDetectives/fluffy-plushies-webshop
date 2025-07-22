@@ -34,15 +34,16 @@ public class ReviewController {
         return modelMapper.map(reviewService.getReview(id), ReviewResponseDto.class);
     }
 
-    @GetMapping("/item/{id}")
-    public List<ReviewResponseDto> getReviewsByItemId(@PathVariable UUID id) {
-        return modelMapper.map(reviewService.getReviewsByItemId(id), LIST_TYPE_REVIEW_RESPONSE_DTO);
+    @GetMapping("/item/{itemId}")
+    public List<ReviewResponseDto> getReviewsByItemId(@PathVariable UUID itemId) {
+        return modelMapper.map(reviewService.getReviewsByItemId(itemId), LIST_TYPE_REVIEW_RESPONSE_DTO);
     }
 
-    @PostMapping("")
+    @PostMapping("/item/{itemId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ReviewResponseDto createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto) {
-        var review = reviewService.createReview(modelMapper.map(reviewRequestDto, Review.class));
+    public ReviewResponseDto createReview(@PathVariable UUID itemId,
+                                          @Valid @RequestBody ReviewRequestDto reviewRequestDto) {
+        var review = reviewService.createReview(itemId, modelMapper.map(reviewRequestDto, Review.class));
         return modelMapper.map(review, ReviewResponseDto.class);
     }
 }

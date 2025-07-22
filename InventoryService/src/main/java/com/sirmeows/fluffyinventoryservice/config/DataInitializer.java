@@ -2,8 +2,10 @@ package com.sirmeows.fluffyinventoryservice.config;
 
 import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
+import com.sirmeows.fluffyinventoryservice.entity.Review;
 import com.sirmeows.fluffyinventoryservice.service.ItemDetailService;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
+import com.sirmeows.fluffyinventoryservice.service.ReviewService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 import java.util.random.RandomGenerator;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
@@ -24,20 +27,36 @@ public class DataInitializer {
 
     private static final int NUMBER_OF_ITEMS = 10 ;
     private final ItemService itemService;
-    private final ItemDetailService itemDetailService;
+    private final ReviewService reviewService;
     private final Faker faker;
-    private static final RandomGenerator random = RandomGenerator.of("L64X256MixRandom");
-
+    private static final RandomGenerator RG = RandomGenerator.of("L64X256MixRandom");
 
     @PostConstruct
     public void init() {
         log.info("Starting data initialization...");
 
-        Stream.generate(this::buildRandomItem)
+        var items = Stream.generate(this::buildRandomItem)
                 .limit(NUMBER_OF_ITEMS)
-                .forEach(itemService::createItem);
+                .map(itemService::createItem)
+                .toList();
 
-        log.info("Created {} items. Finished data initialization...", NUMBER_OF_ITEMS);
+        items.forEach(item -> {
+            int n = RG.nextInt(1, 4);
+            IntStream.range(0, n).forEach(i -> {
+                reviewService.createReview(item.getId(), buildRandomReview());
+            });
+        });
+
+        log.info("Created {} items with reviews. Finished data initialization...", NUMBER_OF_ITEMS);
+    }
+
+    private Review buildRandomReview() {
+        var reviewData = ReviewData.random();
+
+        return Review.builder()
+                .reviewText(reviewData.text)
+                .rating(reviewData.rating)
+                .build();
     }
 
     private Item buildRandomItem() {
@@ -68,11 +87,11 @@ public class DataInitializer {
     }
 
     private BigDecimal randomPrice() {
-        return BigDecimal.valueOf(random.nextDouble(50.0, 5000.0));
+        return BigDecimal.valueOf(RG.nextDouble(50.0, 5000.0));
     }
 
     private int randomStock() {
-        return random.nextInt(1, 100);
+        return RG.nextInt(1, 100);
     }
 
     private record AgeGroup(String label) {
@@ -81,10 +100,58 @@ public class DataInitializer {
                 new AgeGroup("5+"), new AgeGroup("7+"), new AgeGroup("11+"),
                 new AgeGroup("15+")
         );
-        private static final RandomGenerator RG = RandomGenerator.of("L64X256MixRandom");
 
         public static AgeGroup random() {
             return POOL.get(RG.nextInt(POOL.size()));
+        }
+    }
+
+    private record ReviewData(String text, int rating) {
+        static final List<ReviewData> REVIEW_DATA_POOL = List.of(
+                new ReviewData("Exactly what I wanted.", 5),
+                new ReviewData("Great quality for the price.", 5),
+                new ReviewData("Pretty good, a few small issues.", 4),
+                new ReviewData("Decent, but expected more.", 3),
+                new ReviewData("Okay, does the job.", 3),
+                new ReviewData("Not impressed, would not buy again.", 2),
+                new ReviewData("Arrived damaged and feels cheap.", 1),
+                new ReviewData("Kids loved it, super soft!", 5),
+                new ReviewData("Color wasn’t as shown.", 2),
+                new ReviewData("Average—nothing special.", 3),
+                new ReviewData("The fluffiest plushie I've ever hugged.", 5),
+                new ReviewData("So fluffy it feels like a cloud.", 5),
+                new ReviewData("My cat stole this plushie, must be good.", 4),
+                new ReviewData("Stitching came loose after a week.", 2),
+                new ReviewData("Super cuddly, perfect bedtime buddy.", 5),
+                new ReviewData("A bit smaller than expected.", 3),
+                new ReviewData("Fabric sheds lint everywhere.", 1),
+                new ReviewData("Bright colors and ultra-soft fur.", 5),
+                new ReviewData("Packaging was terrible, product survived.", 3),
+                new ReviewData("Soft but weird chemical smell at first.", 2),
+                new ReviewData("My toddler won’t let go of this bear.", 5),
+                new ReviewData("Great gift, recipient was thrilled.", 5),
+                new ReviewData("Meh—seen better plush toys.", 2),
+                new ReviewData("Fluffy plushies collection complete thanks to this one.", 5),
+                new ReviewData("Could use more stuffing in the arms.", 3),
+                new ReviewData("Seam on the ear ripped quickly.", 1),
+                new ReviewData("Fast shipping, lovely plush.", 4),
+                new ReviewData("Cuter in person than in photos.", 4),
+                new ReviewData("Perfect squishiness level.", 5),
+                new ReviewData("Overpriced for what you get.", 2),
+                new ReviewData("Ultra-fluffy belly, 10/10 snuggle score.", 5),
+                new ReviewData("The tag scratched my kid’s neck.", 2),
+                new ReviewData("Great texture, but eyes are misaligned.", 3),
+                new ReviewData("Feels durable, quality stitching.", 4),
+                new ReviewData("Fluffy plushie nirvana achieved.", 5),
+                new ReviewData("Not fluffy at all, quite rough.", 1),
+                new ReviewData("Survived several washes and still soft.", 4),
+                new ReviewData("My dog thinks it’s his new toy—held up well.", 4),
+                new ReviewData("Comfort item during hospital stay, worked wonders.", 5),
+                new ReviewData("Too many loose threads out of the box.", 2)
+        );
+
+        static ReviewData random() {
+            return REVIEW_DATA_POOL.get(RG.nextInt(REVIEW_DATA_POOL.size()));
         }
     }
 }

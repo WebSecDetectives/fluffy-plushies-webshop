@@ -1,7 +1,9 @@
 package com.sirmeows.fluffyinventoryservice.service;
 
 import com.sirmeows.fluffyinventoryservice.entity.Review;
+import com.sirmeows.fluffyinventoryservice.exception.ItemNotFoundException;
 import com.sirmeows.fluffyinventoryservice.exception.ReviewNotFoundException;
+import com.sirmeows.fluffyinventoryservice.repository.ItemRepository;
 import com.sirmeows.fluffyinventoryservice.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +15,11 @@ import java.util.UUID;
 @Service
 public class ReviewService {
     private ReviewRepository reviewRepository;
+    private ItemRepository itemRepository;
 
-    public Review createReview(Review review) {
+    public Review createReview(UUID itemId, Review review) {
+        var item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+        review.setItem(item);
         return reviewRepository.save(review);
     }
 
