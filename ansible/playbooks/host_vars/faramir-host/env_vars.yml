@@ -18,7 +18,7 @@ smtp_pass: "{{ vault_faramir_host_smtp_password }}"
 
 # Identity MySQL Configuration
 identity_mysql_root_password: "{{ vault_faramir_host_identity_mysql_root_password }}"
-identity_mysql_username: "identity_app"
+identity_mysql_username: "root"
 identity_mysql_password: "{{ vault_faramir_host_identity_mysql_password }}"
 identity_admin_password: "{{ vault_faramir_host_identity_admin_password }}"
 
@@ -27,6 +27,8 @@ jwt_secret: "{{ vault_faramir_host_jwt_secret }}"
 
 # Inventory MySQL Configuration
 inventory_mysql_root_password: "{{ vault_faramir_host_inventory_mysql_root_password }}"
+inventory_mysql_username: "root"
+inventory_mysql_password: "{{ vault_faramir_host_inventory_mysql_password }}"
 
 # Order Service Configuration
 mongodb_database_name: "fluffy_orders"

@@ -16,15 +16,25 @@
   git:
     repo: "{{ git_repo_url }}"
     dest: "{{ app_path }}"
-    version: main
+    version: "{{ git_branch | default('main') }}"
     clone: yes
     update: yes
+    force: yes
   tags: [ 'checkout', 'git' ]
 
 - name: Generate .env file from template
   template:
     src: dotenv.j2
     dest: "{{ app_path }}/.env"
+    owner: "{{ app_owner }}"
+    group: "{{ app_group }}"
+    mode: '0640'
+  tags: [ 'deploy', 'docker' ]
+
+- name: Add Caddyfile config
+  template:
+    src: Caddyfile.j2
+    dest: "{{ app_path }}/Caddyfile"
     owner: "{{ app_owner }}"
     group: "{{ app_group }}"
     mode: '0640'

@@ -1,4 +1,26 @@
 services:
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    hostname: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+  hello-nginx:
+    hostname: nginx
+    container_name: nginx
+    image: nginx:alpine
+
+  webshop-nginx:
+    hostname: webshop
+    container_name: webshop
+    image: nginx:alpine
 
   rabbitmq:
     image: docker.io/library/rabbitmq:management
@@ -148,3 +170,5 @@ volumes:
   identity-mysql:
   inventory-mysql:
   order-mongodb:
+  caddy_data:
+  caddy_config:

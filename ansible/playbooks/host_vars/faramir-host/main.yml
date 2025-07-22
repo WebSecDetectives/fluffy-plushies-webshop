@@ -7,3 +7,5 @@ git_repo_url: "https://github.com/WebSecDetectives/fluffy-plushies-webshop-backe
 app_path: /opt/fluffy-plushies
 app_owner: "fluffy"
 app_group: "fluffy"
+
+acme_account_email: "{{ vault_faramir_host_acme_account_email }}"
