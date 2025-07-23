@@ -23,6 +23,24 @@ permissions:
   packages: write
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
+          cache: maven
+      - name: Run tests
+        working-directory: IdentityService
+        run: mvn -B clean verify
+      - name: Upload surefire reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: IdentityService/target/surefire-reports/**
+        
   build:
     name: Build & Push Docker image
     runs-on: ubuntu-latest
