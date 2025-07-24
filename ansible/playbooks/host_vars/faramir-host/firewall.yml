@@ -9,26 +9,30 @@ ufw_default_incoming_policy: 'deny'
 ufw_default_outgoing_policy: 'allow'
 ufw_default_routed_policy: 'allow' # allow traffic between interfaces by default. required for docker
 
-
 ufw_rules:
   - { rule: allow, to_port: 10, protocol: tcp, comment: "Allow SSH on alternate port 10" }
   - { rule: allow, to_port: 22, protocol: tcp, comment: "Allow SSH on standard port" }
   - { rule: allow, to_port: 80, protocol: tcp, comment: "Allow HTTP" }
   - { rule: allow, to_port: 443, protocol: tcp, comment: "Allow HTTPS" }
-  - { rule: allow, to_port: 8081, protocol: tcp, comment: "Allow access to Identity Service" }
-  - { rule: allow, to_port: 8082, protocol: tcp, comment: "Allow access to Inventory Service" }
-  - { rule: allow, to_port: 8083, protocol: tcp, comment: "Allow access to Order Service" }
   # Block database access on external interface
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: 81, protocol: tcp, comment: "Deny direct access to Nginx" }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: 8081, protocol: tcp, comment: "Deny direct access to Identity Service" }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: 8082, protocol: tcp, comment: "Deny direct access to Inventory Service" }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}",to_port: 8083, protocol: tcp, comment: "Deny direct access to Order Service" }
   - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '33000', protocol: 'tcp', comment: 'Block identity-mysql on external interface' }
   - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '33001', protocol: 'tcp', comment: 'Block inventory-mysql on external interface' }
   - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '3306', protocol: 'tcp', comment: 'Block identity-mysql on external interface' }
   - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '3307', protocol: 'tcp', comment: 'Block inventory-mysql on external interface' }
   - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '27017', protocol: 'tcp', comment: 'Block order-mongodb on external interface' }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '5672', protocol: 'tcp', comment: 'Block rabbitmq  on external interface' }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '5673', protocol: 'tcp', comment: 'Block rabbitmq on external interface' }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '15672', protocol: 'tcp', comment: 'Block rabbitmq  on external interface' }
+  - { rule: 'deny', interface: "{{ ufw_external_interface }}", to_port: '15673', protocol: 'tcp', comment: 'Block rabbitmq  on external interface' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '33000', protocol: 'tcp', comment: 'Allow identity-mysql from Docker network' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '33001', protocol: 'tcp', comment: 'Allow inventory-mysql from Docker network' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '3306', protocol: 'tcp', comment: 'Allow identity-mysql from Docker network' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '3307', protocol: 'tcp', comment: 'Allow inventory-mysql from Docker network' }
-  #- { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '27017', protocol: 'tcp', comment: 'Allow order-mongodb from Docker network' }
+ # - { rule: 'allow', from_ip: '{{ ufw_docker_network_1 }}', to_port: '27017', protocol: 'tcp', comment: 'Allow order-mongodb from Docker network' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_2 }}', to_port: '33000', protocol: 'tcp', comment: 'Allow identity-mysql from Docker network 2' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_2 }}', to_port: '33001', protocol: 'tcp', comment: 'Allow inventory-mysql from Docker network 2' }
   - { rule: 'allow', from_ip: '{{ ufw_docker_network_2 }}', to_port: '3306', protocol: 'tcp', comment: 'Allow identity-mysql from Docker network 2' }
