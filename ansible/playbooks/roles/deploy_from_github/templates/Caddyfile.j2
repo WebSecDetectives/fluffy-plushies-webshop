@@ -1,0 +1,19 @@
+{
+  email {{ acme_account_email }}
+}
+
+identity.starlords.eu {
+  reverse_proxy identity-service:8081
+}
+
+inventory.starlords.eu {
+  reverse_proxy inventory-service:8082
+}
+
+www.starlords.eu {
+  reverse_proxy webshop:80
+}
+
+starlords.eu {
+  reverse_proxy nginx:80
+}

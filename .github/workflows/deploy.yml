@@ -31,7 +31,7 @@ jobs:
 
       - name: Run playbook
         working-directory: ansible
-        run: ansible-playbook -i inventory/hosts.yml playbooks/deploy-fluffy-plushies.yml
+        run: ansible-playbook -i inventory/hosts.yml playbooks/deploy-fluffy-plushies.yml --extra-vars "git_branch=${{ github.ref_name }}"
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'
 
