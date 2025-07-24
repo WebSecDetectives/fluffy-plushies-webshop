@@ -19,7 +19,7 @@ identity_mysql_root_password: "from vault"
 identity_mysql_username: "identity_user"
 identity_mysql_password: "from_vault"
 identity_mysql_schema: "fluffy-plushies-identity"
-identity_mysql_url: "jdbc:mysql://identity-mysql:3307/fluffy-plushies-identity"
+identity_mysql_url: "identity-mysql:3307"
 identity_mysql_tcp_port: "3307"
 identity_admin_password: "from vault"
 

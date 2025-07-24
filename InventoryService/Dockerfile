@@ -14,10 +14,10 @@ FROM docker.io/library/eclipse-temurin:24-jre
 
 WORKDIR /app
 
-ENV JAVA_OPTS=""
-
 COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/classes/*.properties application.properties
+ENV SPRING_CONFIG_ADDITIONAL_LOCATION=/app/application.properties
 
 EXPOSE 8082
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]
