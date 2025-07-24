@@ -1,0 +1,51 @@
+<div>
+
+
+<br><br><br><br>
+<h1 class="d-flex d-flex-center">Register account</h1>
+<br><br>
+<div class="d-flex d-flex-justify-center d-flex-align-top">
+  <form [formGroup]="registerForm" (submit)="onSubmit($event)" class="d-flex d-flex-row ">
+    <div class="margin-right-50">
+      <p>Username</p>
+      <input type="text" class=" input-field" formControlName="username" placeholder="username">
+      <p>Password</p>
+      <input type="password" class="input-field" formControlName="password" placeholder="password">
+      <!-- <p>Repeat Password</p>
+      <input type="text" class="input-field" formControlName="confirmPassword" placeholder="confirm password"> -->
+      <p>Email</p>
+      <input type="text" class="input-field" formControlName="email" placeholder="email@example.com">
+      <p>Phone Number</p>
+      <input type="text" class="input-field" formControlName="phone" placeholder="123-456-7890">
+    </div>
+    <div>
+      <p>Street</p>
+      <input type="text" class=" input-field" formControlName="street" placeholder="street">
+      <p>City</p>
+      <input type="text" class="input-field" formControlName="city" placeholder="city of residence">
+      <p>Postal code</p>
+      <input type="text" class="input-field" formControlName="postal_code" placeholder="postal code">
+      <p>Country</p>
+      <input type="text" class="input-field" formControlName="country" placeholder="country of residence" >
+
+      <br>  <br>
+
+      <p>Upload image</p>
+      <div class="file-upload">
+        <input type="file" class="input-field-file" formControlName="image_url" placeholder="profile image" style="width: 170px;" (change)="onFileSelected($event)">
+        <label for="fileInput" class="file-label">Upload fil</label>
+        <span class="file-name" id="fileName">Ingen fil valgt</span>
+      </div>
+
+      <br><br><br><br>
+      <div>
+
+
+      <input type="submit" class="login-button-anchor" style="border: none; color: white; margin-right: 10px;" value="Create Account">
+      <a href="" class="login-button-anchor" style="background-color: gray;">Cancel</a>
+      </div>
+    </div>
+  </form>
+  </div>
+
+</div>
