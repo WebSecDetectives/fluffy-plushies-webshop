@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+body{
+  margin: 0;
+
+}
+
+html{
+  min-height: 100vh;
+}
+
+button{
+  cursor: pointer;
+}
+
+input{
+  cursor: text;
+}
+
+input[type="submit"]{
+  cursor: pointer;
+}

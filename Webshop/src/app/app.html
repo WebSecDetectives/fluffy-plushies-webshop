@@ -1,0 +1,38 @@
+<div class="width-75 margin-right-left-auto">
+  <div *ngIf="loggedIn" class="nav d-flex flex-column d-flex-space-between d-flex-align-center">
+
+    <div class="margin-left-20" (click)="home()">
+      <h1 class="text-bold text-color-white" >Fluffy Plushies</h1>
+    </div>
+    <div>
+      <a [routerLink]="['/update']" class="margin-right-50 btn btn-link">Edit account</a>
+      <a [routerLink]="['/about']" class="margin-right-50 btn btn-link">About</a>
+      <a [routerLink]="['/contact']" class="margin-right-50 btn btn-link">Contact</a>
+      <a [routerLink]="['/careers']" class="margin-right-50 btn btn-link">Careers</a>
+    </div>
+    <div class="margin-right-10 d-flex d-flex-align-center">
+      <p class="margin-right-20 text-color-white">Ali1234</p>
+      <img src="/favicon.ico" alt="" class="profile-image margin-right-20" style="cursor: pointer;" (click)="logout()">
+    </div>
+  </div>
+
+   <div *ngIf="!loggedIn" class="nav d-flex flex-column d-flex-space-between d-flex-align-center">
+
+    <div class="margin-left-20" (click)="home()">
+      <h1 class="text-bold text-color-white">Fluffy Plushies</h1>
+    </div>
+    <div>
+      <a [routerLink]="['/shop']" class="margin-right-50 btn btn-link">Shop</a>
+      <a [routerLink]="['/about']" class="margin-right-50 btn btn-link">About us</a>
+      <a [routerLink]="['/contact']" class="margin-right-50 btn btn-link">Contact</a>
+      <a [routerLink]="['/careers']" class="margin-right-50 btn btn-link">Careers</a>
+    </div>
+    <div class="margin-right-10">
+      <a [routerLink]="['/create']" class="btn btn-primary margin-right-20">Sign up</a>
+      <button class="btn btn-secondary margin-right-20 login-button-anchor" (click)="login()">Login</button>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+
+ <footer>All rights reserved. Fluffy Plushies A/S. CVR - 23343243243</footer>
