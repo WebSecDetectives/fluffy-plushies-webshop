@@ -1,20 +1,20 @@
 # Fluffy Plushies Web Shop - Identity Service
 ## System Context
-Fluffy Plushies Web Shop is an e-commerce platform for selling plush toys, built using a microservices architecture consisting of four key services:
-1. **Identity Service** (current scope): Manages user authentication, authorization, and account management
-2. **Inventory Service**: Handles product catalog and stock management
-3. **Email Service**: Manages email notifications and communications
-4. **Order Service**: Processes customer orders and payments
+Fluffy Plushies Web Shop is an e-commerce platform for selling plush toys, built using a microservices architecture consisting of four services:
+1. **Identity Service** (current backend scope): Manages user authentication, authorization, and account management
+2. **Inventory Service** (current backend scope): Handles product catalog and stock management
+3. **Email Service** (outside current SWD scope): Manages email notifications and communications
+4. **Order Service** (outside current SWD scope): Processes customer orders and payments
 
 This document focuses specifically on the Identity Service architecture. The other microservices have their own dedicated documentation covering their specific implementations.
 
 ## Technology Stack
 - **Java**: Version 24
-- **Spring Framework**: Spring Boot 3.4.4, Spring MVC, Spring Data JPA
-- **Security**: Spring Security 6.4.4, JWT (JSON Web Token)
-- **Database**: MySQL for production, H2 for testing
+- **Spring Framework**: Spring Boot 4.0.6, Spring MVC, Spring Data JPA
+- **Security**: Spring Security 7.0.5, JWT (JSON Web Token) using JJWT 0.12.7
+- **Database**: MySQL using MySQL Connector/J 9.7.0 for runtime, H2 2.4.240 for Identity Service tests
 - **Build Tool**: Maven
-- **Additional Libraries**: Lombok, Hibernate Validator, Passay (password validation)
+- **Additional Libraries**: Lombok, Hibernate Validator, Passay
 
 ## Core Modules
 ### 1. Identity Service
@@ -69,7 +69,7 @@ The application uses JPA repositories to interact with the database, supporting:
     - Custom authentication entry point for unauthorized access handling
 
 - **Authorization**:
-    - Role-based access control (RBAC) with user and admin roles
+    - Role-based access control (RBAC) with `USER`, `MERCHANT`, and `ADMIN` roles
     - Method-level security using Spring's @EnableMethodSecurity
     - Custom access denied handler for proper error responses
     - Fine-grained permissions for user management operations
@@ -91,6 +91,8 @@ The application uses JPA repositories to interact with the database, supporting:
     - Security context management
 
 ## Communication Flow
+The current SWD project scope uses REST over HTTP. Message queue based communication is not part of the current architecture.
+
 1. Client requests reach API controllers through HTTP endpoints
 2. Controllers delegate to service layer for business logic processing
 3. Services interact with repositories for data persistence
@@ -104,7 +106,7 @@ The application uses JPA repositories to interact with the database, supporting:
 - Comprehensive boundary testing for validating field constraints (length, format, etc.)
 - Transaction management in tests to ensure database state isolation between test cases
 - H2 in-memory database for testing with custom test properties configuration
-- Role-based authorization testing for admin vs. regular user operations
+- Role-based authorization testing for `ADMIN`, `MERCHANT`, and `USER` operations
 - Token-based authentication testing with proper JWT validation scenarios
 - Mock MVC configuration for simulating HTTP requests without requiring a running server
 
