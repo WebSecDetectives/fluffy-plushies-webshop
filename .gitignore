@@ -39,3 +39,9 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 .vscode/
+
+# local docs
+*/exam-project-2026.pdf
+AGENTS.md
+*/TODO.md
+*/AccessControlMatrix_v01.pdf

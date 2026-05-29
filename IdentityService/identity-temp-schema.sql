@@ -1,1 +1,1 @@
-CREATE SCHEMA fluffy-plushies-identity;
+CREATE SCHEMA IF NOT EXISTS `fluffy-plushies-identity`;

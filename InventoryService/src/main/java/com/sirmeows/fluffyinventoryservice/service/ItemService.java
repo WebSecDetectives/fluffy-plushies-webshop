@@ -25,7 +25,6 @@ public class ItemService {
     }
 
     public Item createItem(Item item) {
-        //TODO: Add Firestore Authentication step
         log.info("Creating new item {}", item);
         return itemRepository.save(item);
     }
