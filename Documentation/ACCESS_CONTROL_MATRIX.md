@@ -35,14 +35,3 @@
 | `POST /reviews/item/{itemId}` | No | If item visible | If item visible | Yes | Add review/comment |
 | `GET /reviews` | No | No | No | Yes | Admin review moderation |
 | `GET /reviews/{id}` | No | No | No | Yes | Admin review moderation |
-
-## Order Service
-
-| Endpoint | Everyone | USER | MERCHANT | ADMIN | Notes |
-|---|---:|---:|---:|---:|---|
-| `POST /orders` | No | Yes | Yes | Yes | Create order |
-| `GET /orders` | No | No | No | Yes | Admin can list all orders |
-| `GET /orders/{id}` | No | Own only | Own only | Yes | Users can view own order |
-| `PATCH /orders/{id}` | No | Own only | Own only | Yes | Users can update own order if allowed |
-| `DELETE /orders/{id}` | No | Own only | Own only | Yes | Users can delete/cancel own order if allowed |
-| `GET /orders/user/{userId}` | No | Own only | Own only | Yes | Users can list own orders |
