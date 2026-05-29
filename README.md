@@ -1,4 +1,4 @@
-# KEA 2025 Security for Web Developers - Fluffy Plushies Webshop
+# KEA 2026 Security for Web Developers - Fluffy Plushies Webshop
 
 [![Security Scans](https://github.com/WebSecDetectives/fluffy-plushies-webshop-backend/actions/workflows/security-scans.yml/badge.svg)](https://github.com/WebSecDetectives/fluffy-plushies-webshop-backend/actions/workflows/security-scans.yml)
 
