@@ -46,6 +46,13 @@ public class UserController {
         return modelMapper.map(user, UserResponse.class);
     }
 
+    @PostMapping("/merchant")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UserResponse registerMerchant(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        var user = userService.registerMerchantUser(modelMapper.map(createUserRequest, User.class), createUserRequest.getPassword());
+        return modelMapper.map(user, UserResponse.class);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isSelf(#id)")
     public UserResponse getUser(@PathVariable UUID id) {

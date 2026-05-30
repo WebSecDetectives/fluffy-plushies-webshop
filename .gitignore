@@ -40,6 +40,11 @@ buildNumber.properties
 
 .vscode/
 
+# Claude Code
+.claude/
+.mcp.json
+CLAUDE.md
+
 # local docs
 */exam-project-2026.pdf
 AGENTS.md
