@@ -36,6 +36,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -97,6 +98,43 @@ class UserControllerApiTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithDefaults())))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void login_givenValidCredentials_returnJwt() throws Exception {
+        var authRequest = AuthRequest.builder()
+                .username(savedUser.getUsername())
+                .password(STRONG_PASSWORD)
+                .build();
+
+        mvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(authRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.expires_at").isNumber());
+    }
+
+    @Test
+    void login_givenWrongPassword_returnUnauthorized() throws Exception {
+        var authRequest = AuthRequest.builder()
+                .username(savedUser.getUsername())
+                .password("WrongP@ssw0rd")
+                .build();
+
+        mvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authRequest)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void registerUser_givenValidPassword_doesNotStoreRawPassword() {
+        var savedPassword = userRepository.findById(savedUser.getId())
+                .orElseThrow()
+                .getEncodedPassword();
+
+        assertNotEquals(STRONG_PASSWORD, savedPassword);
     }
 
     @ParameterizedTest
