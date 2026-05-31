@@ -39,6 +39,7 @@ public class User extends BaseEntity implements UserDetails {
     private String encodedPassword;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     private URI imgUrl;

@@ -1,0 +1,1126 @@
+{
+  "info": {
+    "_postman_id": "f7d6b89e-1648-435b-ab46-a1f5d896b47f",
+    "name": "Fluffy-Plushies-Webshop",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19470254"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"userToken\", jsonData.token);",
+                  "const base64Payload = jsonData.token.split(\".\")[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                  "const paddedPayload = base64Payload.padEnd(base64Payload.length + (4 - base64Payload.length % 4) % 4, \"=\");",
+                  "const payload = JSON.parse(atob(paddedPayload));",
+                  "pm.collectionVariables.set(\"userId\", payload.sub);"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "5aa5da57-6d9b-4c1e-8317-0813aa8563ee",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"user\",\r\n  \"password\": \"{{userPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"adminToken\", jsonData.token);"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "f6daef28-dd56-4ba1-995d-399e9dfb0174",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"{{adminPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Merchant",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"merchantToken\", jsonData.token);"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "ef7c74cb-bbcf-43c8-89d5-a46c367ef820",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"merchant\",\r\n  \"password\": \"{{merchantPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "4ef9c61a-fc8b-4adc-899a-5d5a1a564219"
+    },
+    {
+      "name": "Registration",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "const jsonData = pm.response.json();",
+                  "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));",
+                  "pm.collectionVariables.set(\"registeredUserId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "id": "91eb954f-4451-455f-bda2-66dab0df0161",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"email\":  \"kitty@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com\",\r\n    \"address\":  {\r\n                    \"street\":  \"Dragonstone Castle Road\",\r\n                    \"postal_code\":  \"101\",\r\n                    \"city\":  \"King's Landing\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Registered User",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is OK\", () => pm.response.to.have.status(200));",
+                  "const jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "bd353d9d-0fcd-4e2a-8fe6-3fe70b48768f",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"password\":  \"{{registrationPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Merchant as Admin",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "const jsonData = pm.response.json();",
+                  "pm.test(\"Role is MERCHANT\", () => pm.expect(jsonData.role).to.eql(\"MERCHANT\"));",
+                  "pm.collectionVariables.set(\"registeredMerchantId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "ef8b8372-6433-43a7-826e-85159b8a6f05",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"bigpanther\",\r\n    \"email\":  \"big.panther@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/big-panther\",\r\n    \"address\":  {\r\n                    \"street\":  \"Moonlit Market Road\",\r\n                    \"postal_code\":  \"202\",\r\n                    \"city\":  \"Panthera\",\r\n                    \"country\":  \"Feline Realm\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/merchant",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "merchant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Admin as Admin",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "const jsonData = pm.response.json();",
+                  "pm.test(\"Role is ADMIN\", () => pm.expect(jsonData.role).to.eql(\"ADMIN\"));",
+                  "pm.collectionVariables.set(\"registeredAdminId\", jsonData.id);"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "9a7e7293-d404-4863-83a3-a769b3b32d8d",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"scarylion\",\r\n    \"email\":  \"scary.lion@cat.com\",\r\n    \"phone\":  \"+4512345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/scary-lion\",\r\n    \"address\":  {\r\n                    \"street\":  \"Roaring Crown Avenue\",\r\n                    \"postal_code\":  \"303\",\r\n                    \"city\":  \"Lionhold\",\r\n                    \"country\":  \"Feline Realm\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/admin",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Merchant as User Forbidden",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "dd79dca9-164a-46e3-96cf-0486bb29ce9d",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"usercantmerchant\",\r\n    \"email\":  \"user.cant.merchant@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/user-cant-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Tiny Paw Road\",\r\n                    \"postal_code\":  \"401\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/merchant",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "merchant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Admin as User Forbidden",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "c10e1b9e-16bf-42b9-b15f-27a8a5cced30",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"usercantadmin\",\r\n    \"email\":  \"user.cant.admin@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/user-cant-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Small Claw Street\",\r\n                    \"postal_code\":  \"402\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/admin",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Merchant as Merchant Forbidden",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "8aa788cc-7ffe-442f-b053-f549e1a6a98e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{merchantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"merchantcantmerchant\",\r\n    \"email\":  \"merchant.cant.merchant@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/merchant-cant-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Velvet Paw Plaza\",\r\n                    \"postal_code\":  \"403\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/merchant",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "merchant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Admin as Merchant Forbidden",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "fb91dc26-ecb2-487e-b1f6-7280cf39da4d",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{merchantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"merchantcantadmin\",\r\n    \"email\":  \"merchant.cant.admin@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/merchant-cant-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Velvet Claw Plaza\",\r\n                    \"postal_code\":  \"404\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/admin",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Merchant Without Token Unauthorized",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "5b79b04c-5223-48f0-beff-44938010ca23",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"notokenmerchant\",\r\n    \"email\":  \"no.token.merchant@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/no-token-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Locked Gate Road\",\r\n                    \"postal_code\":  \"405\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/merchant",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "merchant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Admin Without Token Unauthorized",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "d52d39bf-51ff-43cd-84fd-93488282e51f",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"notokenadmin\",\r\n    \"email\":  \"no.token.admin@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/no-token-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Locked Castle Road\",\r\n                    \"postal_code\":  \"406\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/admin",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "7103c8c0-1402-480e-84bd-30e053ef3a19"
+    },
+    {
+      "name": "Identity",
+      "item": [
+        {
+          "name": "Get Seeded User by ID",
+          "id": "c73adddf-ccf5-4de2-9bc1-a454f0bdd41a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/{{userId}}",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Registered User",
+          "id": "2340ab67-ed66-4ae7-b087-b864e742a06b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{registeredUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"phone\": \"34343434\",\r\n  \"img_url\": \"https://dk.pinterest.com/pin/1500/\",\r\n  \"address\": {\r\n    \"street\": \"Unicorn Castle Rd\",\r\n    \"postal_code\": \"10\",\r\n    \"city\": \"King's Landing\",\r\n    \"country\": \"Westeros\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/{{registeredUserId}}",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "{{registeredUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Registered User Password",
+          "id": "73ff0aa5-b372-4727-84e7-b3934b8d0ebc",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{registeredUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\":  \"{{newPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/{{registeredUserId}}/password",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "{{registeredUserId}}",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Registered User With New Password",
+          "event": [
+            {
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
+                ],
+                "type": "text/javascript"
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "28572c81-5889-48e1-9140-fac443881e74",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"password\":  \"{{newPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users",
+          "id": "0387e051-14bd-4764-ac0d-528e191befe4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Token",
+          "id": "5bfa9fc1-61bd-42ff-8d46-ab2ced36e690",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "\"dszhtadrgh<dz\"",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/admin",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Registered User",
+          "id": "cc9ddd51-e0e5-45bb-83ad-7666b57d1a01",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{registeredUserToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlIdentity}}/users/{{registeredUserId}}",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "users",
+                "{{registeredUserId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "9180525d-22cb-44ef-b539-bda013cdcbc6"
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get Items",
+          "id": "eda85ba8-ccb1-4403-8063-9405ff9e5f09",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlInventory}}/items",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Item",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set(\"itemId\", body.id);"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "6d8cfe07-ca8e-40d0-99a8-28a60de210c1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{merchantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Teddy Bear\",\r\n  \"price\": 29.99,\r\n  \"stock\": 50,\r\n  \"details\": {\r\n    \"description\": \"Soft and cuddly teddy bear\",\r\n    \"age_group\": \"3-12\",\r\n    \"item_type\": \"Plush Toy\",\r\n    \"material\": \"Cotton\",\r\n    \"img_link\": \"https://example.com/teddy-bear.jpg\"\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlInventory}}/items",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Item by ID",
+          "id": "80c497fb-dfec-435a-a454-3114378ec620",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlInventory}}/items/{{itemId}}",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "items",
+                "{{itemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Review",
+          "id": "cc8dc454-3ff1-4d9e-a765-b8ceda4c9e10",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"review_text\": \"I've n ever had such a lovely fluffy plushie ever in my whole life and it's so soft that I'm going to diiiieeeeee!\",\r\n  \"rating\": 5\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "reviews",
+                "item",
+                "{{itemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reviews",
+          "id": "a8070170-721e-4871-a63a-39021126017b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlInventory}}/reviews",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "reviews"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Review by ItemID",
+          "id": "54b47e16-f048-4fe4-be13-e4bf9b1b253f",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "reviews",
+                "item",
+                "{{itemId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "dcf72cb4-b8ca-4955-937d-6029b634b53f"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrlIdentity",
+      "value": "http://localhost:8081/identity"
+    },
+    {
+      "key": "baseUrlOrders",
+      "value": "http://localhost:8083"
+    },
+    {
+      "key": "baseUrlInventory",
+      "value": "http://localhost:8082/inventory"
+    },
+    {
+      "key": "adminPassword",
+      "value": ""
+    },
+    {
+      "key": "merchantPassword",
+      "value": ""
+    },
+    {
+      "key": "userPassword",
+      "value": ""
+    },
+    {
+      "key": "registrationPassword",
+      "value": ""
+    },
+    {
+      "key": "newPassword",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "registeredUserId",
+      "value": ""
+    },
+    {
+      "key": "registeredMerchantId",
+      "value": ""
+    },
+    {
+      "key": "registeredAdminId",
+      "value": ""
+    },
+    {
+      "key": "itemId",
+      "value": ""
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "registeredUserToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "merchantToken",
+      "value": ""
+    }
+  ]
+}

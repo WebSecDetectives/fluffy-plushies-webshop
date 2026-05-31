@@ -36,6 +36,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -259,6 +260,42 @@ class UserControllerApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin"))))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void registerMerchant_givenCallerIsAdmin_returnOk() throws Exception {
+        var merchantRequest = testDataUtil.userRequestWithUsername("merchant1");
+
+        mvc.perform(post("/users/merchant")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(merchantRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void registerMerchant_givenCallerIsUser_returnForbidden() throws Exception {
+        var merchantRequest = testDataUtil.userRequestWithUsername("merchant2");
+
+        mvc.perform(post("/users/merchant")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(merchantRequest)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void registerMerchant_givenValidRequest_savesMerchantRole() throws Exception {
+        var merchantRequest = testDataUtil.userRequestWithUsername("merchant3");
+
+        mvc.perform(post("/users/merchant")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(merchantRequest)))
+                .andExpect(status().isOk());
+
+        var savedMerchant = userRepository.findByUsername(merchantRequest.getUsername()).orElseThrow();
+        assertEquals(Role.MERCHANT, savedMerchant.getRole());
     }
 
     @Test

@@ -9,8 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.net.URI;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +19,7 @@ public class ItemDetailsResponseDto {
     private String ageGroup;
     private String itemType;
     private String material;
-    private URI imgLink;
+    private String imgLink;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ItemDetailsResponseDtoBuilderImpl extends ItemDetailsResponseDto.ItemDetailsResponseDtoBuilder<ItemDetailsResponseDto, ItemDetailsResponseDto.ItemDetailsResponseDtoBuilderImpl> {

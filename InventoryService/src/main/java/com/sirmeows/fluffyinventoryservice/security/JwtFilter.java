@@ -7,16 +7,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * JwtFilter is a Spring Security filter that provides JWT-based authentication by intercepting
@@ -75,25 +74,25 @@ public class JwtFilter extends OncePerRequestFilter {
             var username = token.getUsername();
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // Take user details from signed JWT token to pass to Spring Security Context
-                // Alternative could be to do a request to identityservice to get user information that way
-                var userDetails = User.builder()
-                        .username(token.getUsername())
-                        .password("") // No password needed as we're authenticating via JWT
-                        .authorities(AuthorityUtils.createAuthorityList(token.getRole().name()))
-                        .build();
-                setAuthentication(userDetails, request);
+                // Build the authenticated principal straight from the signed JWT (no DB/Identity call).
+                // AuthUser carries the user's UUID (token subject) so controllers can make
+                // ownership decisions (e.g. set an item's merchantId) without re-parsing the token.
+                var authUser = new AuthUser(token.getSubject(), username, token.getRole());
+                var authorities = AuthorityUtils.createAuthorityList(token.getRole().name());
+                setAuthentication(authUser, authorities, request);
             }
         } catch (Exception e) {
             log.error("Failed to process JWT token", e);
         }
     }
 
-    private void setAuthentication(UserDetails userDetails, HttpServletRequest request) {
+    private void setAuthentication(AuthUser principal,
+                                   Collection<? extends GrantedAuthority> authorities,
+                                   HttpServletRequest request) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
+                principal,
                 null, // credentials can be null as we're using JWT
-                userDetails.getAuthorities());
+                authorities);
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
