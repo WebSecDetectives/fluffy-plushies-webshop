@@ -3,13 +3,12 @@ package com.sirmeows.fluffyinventoryservice.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.net.URI;
 
 @Data
 @NoArgsConstructor
@@ -29,8 +28,10 @@ public class ItemDetailsRequestDto {
     @NotBlank
     private String material;
 
-    @NotNull
-    private URI imgLink;
+    @NotBlank
+    @URL(protocol = "https")
+    @Size(max = 2048)
+    private String imgLink;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ItemDetailsRequestDtoBuilderImpl extends ItemDetailsRequestDto.ItemDetailsRequestDtoBuilder<ItemDetailsRequestDto, ItemDetailsRequestDto.ItemDetailsRequestDtoBuilderImpl> {

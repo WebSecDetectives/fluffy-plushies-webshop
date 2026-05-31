@@ -1,5 +1,6 @@
 package com.dlshomies.fluffyplushies.dto.rest;
 
+import com.dlshomies.fluffyplushies.entity.Role;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class UserResponse {
     private String phone;
     private URI imgUrl;
     private AddressResponse address;
+    private Role role;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class UserResponseBuilderImpl extends UserResponse.UserResponseBuilder<UserResponse, UserResponseBuilderImpl> {

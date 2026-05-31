@@ -58,6 +58,10 @@ public class UserService {
         return registerWithRole(user, password, Role.ADMIN);
     }
 
+    public User registerMerchantUser(User user, String password) {
+        return registerWithRole(user, password, Role.MERCHANT);
+    }
+
     /**
      * Registers a new user with a user role in the system.
      * This method stores the provided user with a role of {@code USER},

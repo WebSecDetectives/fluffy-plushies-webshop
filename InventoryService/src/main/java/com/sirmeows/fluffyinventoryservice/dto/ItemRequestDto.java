@@ -3,10 +3,12 @@ package com.sirmeows.fluffyinventoryservice.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
+import com.sirmeows.fluffyinventoryservice.entity.Visibility;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,10 +28,14 @@ public class ItemRequestDto {
     private String name;
 
     @NotNull
+    @PositiveOrZero
     private BigDecimal price;
 
     @Min(0)
     private int stock;
+
+    // Default defined in Item
+    private Visibility visibility;
 
     @NotNull
     private ItemDetailsRequestDto details;

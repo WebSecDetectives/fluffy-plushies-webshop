@@ -3,12 +3,14 @@ package com.sirmeows.fluffyinventoryservice.api;
 import com.sirmeows.fluffyinventoryservice.dto.ItemRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ItemResponseDto;
 import com.sirmeows.fluffyinventoryservice.entity.Item;
+import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,10 +39,11 @@ public class ItemController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ItemResponseDto createItem(@Valid @RequestBody ItemRequestDto itemRequestDto) {
-        log.info("Creating new item {}", itemRequestDto);
-        var item = itemService.createItem(modelMapper.map(itemRequestDto, Item.class));
+    @PreAuthorize("hasAuthority('MERCHANT')")
+    public ItemResponseDto createItem(@AuthenticationPrincipal AuthUser user,
+                                      @Valid @RequestBody ItemRequestDto itemRequestDto) {
+        log.info("Merchant {} creating new item {}", user.id(), itemRequestDto);
+        var item = itemService.createItem(modelMapper.map(itemRequestDto, Item.class), user.id());
         return modelMapper.map(item, ItemResponseDto.class);
     }
 }

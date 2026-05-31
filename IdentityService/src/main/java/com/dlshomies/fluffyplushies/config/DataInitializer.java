@@ -24,6 +24,12 @@ public class DataInitializer {
     @Value("${identity.admin.password}")
     private String adminPassword;
 
+    @Value("${identity.merchant.password}")
+    private String merchantPassword;
+
+    @Value("${identity.user.password}")
+    private String userPassword;
+
     private final URI IMG_URL = URI.create("https://dk.pinterest.com/pin/736549714079317500/");
 
     @PostConstruct
@@ -48,5 +54,29 @@ public class DataInitializer {
 
         userService.registerAdminUser(adminUser, adminPassword);
         log.info("Admin user created successfully");
+
+        var merchantUser = User.builder()
+                .username("merchant")
+                .email("merchant@merchant.com")
+                .phone("+35834343434")
+                .address(address)
+                .role(Role.MERCHANT)
+                .imgUrl(IMG_URL)
+                .build();
+
+        userService.registerMerchantUser(merchantUser, merchantPassword);
+        log.info("Merchant user created successfully");
+
+        var user = User.builder()
+                .username("user")
+                .email("user@user.com")
+                .phone("1234567890")
+                .address(address)
+                .role(Role.USER)
+                .imgUrl(IMG_URL)
+                .build();
+
+        userService.registerUser(user, userPassword);
+        log.info("User user created successfully");
     }
 }

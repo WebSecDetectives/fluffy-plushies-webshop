@@ -24,8 +24,9 @@ public class ItemService {
         return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
     }
 
-    public Item createItem(Item item) {
-        log.info("Creating new item {}", item);
+    public Item createItem(Item item, UUID merchantId) {
+        item.setMerchantId(merchantId);
+        log.info("Creating new item {} for merchant {}", item, merchantId);
         return itemRepository.save(item);
     }
 }
