@@ -80,7 +80,7 @@ services:
         MYSQL_DATABASE: fluffy-plushies-identity
         MYSQL_TCP_PORT: ${IDENTITY_MYSQL_TCP_PORT}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-P", "${IDENTITY_MYSQL_TCP_PORT}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-P", "${IDENTITY_MYSQL_TCP_PORT}"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -111,8 +111,7 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
-    entrypoint: >
-      sh -c "java -jar app.jar || tail -f /dev/null"
+    entrypoint: ["java", "-jar", "app.jar"]
 
   inventory-mysql:
     image: docker.io/library/mysql:8.4.4
@@ -129,7 +128,7 @@ services:
         MYSQL_DATABASE: fluffy-plushies-inventory
         MYSQL_TCP_PORT: ${INVENTORY_MYSQL_TCP_PORT}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-P", "${INVENTORY_MYSQL_TCP_PORT}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-P", "${INVENTORY_MYSQL_TCP_PORT}"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -157,8 +156,7 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
-    entrypoint: >
-      sh -c "java -jar app.jar || tail -f /dev/null"
+    entrypoint: ["java", "-jar", "app.jar"]
 
   order-service:
     profiles:
