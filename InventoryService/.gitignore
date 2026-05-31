@@ -38,3 +38,7 @@ buildNumber.properties
 application.properties
 
 *.sql
+# Keep the MySQL bootstrap schema tracked — Docker bind-mounts it as
+# /docker-entrypoint-initdb.d/schema.sql; if absent, Docker creates a directory
+# there and MySQL first-init fails (breaks inventory-service startup).
+!inventory-temp-schema.sql
