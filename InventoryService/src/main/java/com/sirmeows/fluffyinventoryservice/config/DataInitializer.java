@@ -46,7 +46,7 @@ public class DataInitializer {
         items.forEach(item -> {
             int n = RG.nextInt(1, 4);
             IntStream.range(0, n).forEach(i -> {
-                reviewService.createReview(item.getId(), buildRandomReview());
+                reviewService.createReview(item.getId(), buildRandomReview(), null);
             });
         });
 

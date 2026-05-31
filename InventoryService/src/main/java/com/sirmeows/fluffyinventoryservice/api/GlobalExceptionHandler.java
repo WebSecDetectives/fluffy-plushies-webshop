@@ -1,5 +1,6 @@
 package com.sirmeows.fluffyinventoryservice.api;
 
+import com.sirmeows.fluffyinventoryservice.exception.ItemAccessDeniedException;
 import com.sirmeows.fluffyinventoryservice.exception.ItemNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ public class GlobalExceptionHandler {
     private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     private static final String BAD_REQUEST = "BAD_REQUEST";
     private static final String NOT_FOUND = "NOT_FOUND";
+    private static final String FORBIDDEN = "FORBIDDEN";
     private static final String LOCKED = "LOCKED";
     private static final String INITIALIZATION_ERROR = "INITIALIZATION_ERROR";
 
@@ -27,5 +29,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(NOT_FOUND, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ItemAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleItemAccessDenied(final ItemAccessDeniedException ex) {
+        log.debug("Item access denied: {}", ex.getMessage());
+        // Return a generic message; don't reveal item details or why access was denied.
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(FORBIDDEN, GENERIC_SECURITY_MESSAGE));
     }
 }

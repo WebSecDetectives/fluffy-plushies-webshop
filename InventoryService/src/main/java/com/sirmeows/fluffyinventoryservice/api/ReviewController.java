@@ -3,14 +3,14 @@ package com.sirmeows.fluffyinventoryservice.api;
 import com.sirmeows.fluffyinventoryservice.dto.ReviewRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ReviewResponseDto;
 import com.sirmeows.fluffyinventoryservice.entity.Review;
+import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,15 +41,17 @@ public class ReviewController {
     }
 
     @GetMapping("/item/{itemId}")
-    public List<ReviewResponseDto> getReviewsByItemId(@PathVariable UUID itemId) {
-        return modelMapper.map(reviewService.getReviewsByItemId(itemId), LIST_TYPE_REVIEW_RESPONSE_DTO);
+    public List<ReviewResponseDto> getReviewsByItemId(@PathVariable UUID itemId,
+                                                      @AuthenticationPrincipal AuthUser user) {
+        return modelMapper.map(reviewService.getReviewsByItemId(itemId, user), LIST_TYPE_REVIEW_RESPONSE_DTO);
     }
 
     @PostMapping("/item/{itemId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ReviewResponseDto createReview(@PathVariable UUID itemId,
+                                          @AuthenticationPrincipal AuthUser user,
                                           @Valid @RequestBody ReviewRequestDto reviewRequestDto) {
-        var review = reviewService.createReview(itemId, modelMapper.map(reviewRequestDto, Review.class));
+        var review = reviewService.createReview(itemId, modelMapper.map(reviewRequestDto, Review.class), user);
         return modelMapper.map(review, ReviewResponseDto.class);
     }
 }
