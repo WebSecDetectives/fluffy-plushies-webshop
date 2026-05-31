@@ -13,9 +13,9 @@ import net.datafaker.Faker;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.random.RandomGenerator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,6 +26,9 @@ import java.util.stream.Stream;
 public class DataInitializer {
 
     private static final int NUMBER_OF_ITEMS = 10 ;
+    // Seeded sample items are owned by a placeholder merchant (no real merchant account).
+    // Real ownership/visibility flows are exercised by merchants creating items via the API.
+    private static final UUID SEED_MERCHANT_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private final ItemService itemService;
     private final ReviewService reviewService;
     private final Faker faker;
@@ -37,7 +40,7 @@ public class DataInitializer {
 
         var items = Stream.generate(this::buildRandomItem)
                 .limit(NUMBER_OF_ITEMS)
-                .map(itemService::createItem)
+                .map(item -> itemService.createItem(item, SEED_MERCHANT_ID))
                 .toList();
 
         items.forEach(item -> {
@@ -82,8 +85,8 @@ public class DataInitializer {
         return faker.funnyName().name().toLowerCase(Locale.ROOT);
     }
 
-    private URI randomUrl() {
-        return URI.create(faker.internet().url());
+    private String randomUrl() {
+        return faker.internet().url().replaceFirst("^http://", "https://");
     }
 
     private BigDecimal randomPrice() {

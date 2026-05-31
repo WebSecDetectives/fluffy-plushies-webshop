@@ -3,6 +3,7 @@ package com.sirmeows.fluffyinventoryservice.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
+import com.sirmeows.fluffyinventoryservice.entity.Visibility;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,8 @@ public class ItemResponseDto {
     private String name;
     private BigDecimal price;
     private int stock;
+    private UUID merchantId;
+    private Visibility visibility;
     private ItemDetailsResponseDto details;
 
     @JsonPOJOBuilder(withPrefix = "")

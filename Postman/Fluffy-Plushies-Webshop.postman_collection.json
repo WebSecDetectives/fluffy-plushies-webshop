@@ -13,8 +13,8 @@
           "name": "Login User",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"userToken\", jsonData.token);",
@@ -22,15 +22,12 @@
                   "const paddedPayload = base64Payload.padEnd(base64Payload.length + (4 - base64Payload.length % 4) % 4, \"=\");",
                   "const payload = JSON.parse(atob(paddedPayload));",
                   "pm.collectionVariables.set(\"userId\", payload.sub);"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "5aa5da57-6d9b-4c1e-8317-0813aa8563ee",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -63,20 +60,17 @@
           "name": "Login Admin",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"adminToken\", jsonData.token);"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "f6daef28-dd56-4ba1-995d-399e9dfb0174",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -109,20 +103,17 @@
           "name": "Login Merchant",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"merchantToken\", jsonData.token);"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "ef7c74cb-bbcf-43c8-89d5-a46c367ef820",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -151,7 +142,8 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "4ef9c61a-fc8b-4adc-899a-5d5a1a564219"
     },
     {
       "name": "Registration",
@@ -173,9 +165,6 @@
             }
           ],
           "id": "91eb954f-4451-455f-bda2-66dab0df0161",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -207,21 +196,18 @@
           "name": "Login Registered User",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is OK\", () => pm.response.to.have.status(200));",
                   "const jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "bd353d9d-0fcd-4e2a-8fe6-3fe70b48768f",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -254,7 +240,6 @@
           "name": "Register Merchant as Admin",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
@@ -263,13 +248,11 @@
                   "pm.collectionVariables.set(\"registeredMerchantId\", jsonData.id);"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "ef8b8372-6433-43a7-826e-85159b8a6f05",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -309,22 +292,19 @@
           "name": "Register Admin as Admin",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                   "const jsonData = pm.response.json();",
                   "pm.test(\"Role is ADMIN\", () => pm.expect(jsonData.role).to.eql(\"ADMIN\"));",
                   "pm.collectionVariables.set(\"registeredAdminId\", jsonData.id);"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "9a7e7293-d404-4863-83a3-a769b3b32d8d",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -364,19 +344,16 @@
           "name": "Register Merchant as User Forbidden",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "dd79dca9-164a-46e3-96cf-0486bb29ce9d",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -416,19 +393,16 @@
           "name": "Register Admin as User Forbidden",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "c10e1b9e-16bf-42b9-b15f-27a8a5cced30",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -468,19 +442,16 @@
           "name": "Register Merchant as Merchant Forbidden",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "8aa788cc-7ffe-442f-b053-f549e1a6a98e",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -520,19 +491,16 @@
           "name": "Register Admin as Merchant Forbidden",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "fb91dc26-ecb2-487e-b1f6-7280cf39da4d",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -572,19 +540,16 @@
           "name": "Register Merchant Without Token Unauthorized",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "5b79b04c-5223-48f0-beff-44938010ca23",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -617,19 +582,16 @@
           "name": "Register Admin Without Token Unauthorized",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "d52d39bf-51ff-43cd-84fd-93488282e51f",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -658,7 +620,8 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "7103c8c0-1402-480e-84bd-30e053ef3a19"
     },
     {
       "name": "Identity",
@@ -666,9 +629,6 @@
         {
           "name": "Get Seeded User by ID",
           "id": "c73adddf-ccf5-4de2-9bc1-a454f0bdd41a",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -698,9 +658,6 @@
         {
           "name": "Update Registered User",
           "id": "2340ab67-ed66-4ae7-b087-b864e742a06b",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -739,9 +696,6 @@
         {
           "name": "Update Registered User Password",
           "id": "73ff0aa5-b372-4727-84e7-b3934b8d0ebc",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -782,20 +736,17 @@
           "name": "Login Registered User With New Password",
           "event": [
             {
-              "listen": "test",
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
                 ],
                 "type": "text/javascript"
-              }
+              },
+              "listen": "test"
             }
           ],
           "id": "28572c81-5889-48e1-9140-fac443881e74",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -827,9 +778,6 @@
         {
           "name": "Get Users",
           "id": "0387e051-14bd-4764-ac0d-528e191befe4",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -858,9 +806,6 @@
         {
           "name": "Invalid Token",
           "id": "5bfa9fc1-61bd-42ff-8d46-ab2ced36e690",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -890,9 +835,6 @@
         {
           "name": "Delete Registered User",
           "id": "cc9ddd51-e0e5-45bb-83ad-7666b57d1a01",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -919,7 +861,8 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "9180525d-22cb-44ef-b539-bda013cdcbc6"
     },
     {
       "name": "Inventory",
@@ -927,9 +870,6 @@
         {
           "name": "Get Items",
           "id": "eda85ba8-ccb1-4403-8063-9405ff9e5f09",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -952,27 +892,24 @@
           "name": "Create Item",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();\r",
+                  "const body = pm.response.json();",
                   "pm.collectionVariables.set(\"itemId\", body.id);"
-                ],
-                "type": "text/javascript"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "6d8cfe07-ca8e-40d0-99a8-28a60de210c1",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{adminToken}}",
+                  "value": "{{merchantToken}}",
                   "type": "string"
                 }
               ]
@@ -1003,9 +940,6 @@
         {
           "name": "Get Item by ID",
           "id": "80c497fb-dfec-435a-a454-3114378ec620",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -1028,9 +962,6 @@
         {
           "name": "Create Review",
           "id": "cc8dc454-3ff1-4d9e-a765-b8ceda4c9e10",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -1070,9 +1001,6 @@
         {
           "name": "Get Reviews",
           "id": "a8070170-721e-4871-a63a-39021126017b",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -1101,9 +1029,6 @@
         {
           "name": "Get Review by ItemID",
           "id": "54b47e16-f048-4fe4-be13-e4bf9b1b253f",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -1124,94 +1049,78 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "dcf72cb4-b8ca-4955-937d-6029b634b53f"
     }
   ],
   "variable": [
     {
       "key": "baseUrlIdentity",
-      "value": "http://localhost:8081/identity",
-      "type": "default"
+      "value": "http://localhost:8081/identity"
     },
     {
       "key": "baseUrlOrders",
-      "value": "http://localhost:8083",
-      "type": "default"
+      "value": "http://localhost:8083"
     },
     {
       "key": "baseUrlInventory",
-      "value": "http://localhost:8082/inventory",
-      "type": "default"
+      "value": "http://localhost:8082/inventory"
     },
     {
       "key": "adminPassword",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "merchantPassword",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "userPassword",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "registrationPassword",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "newPassword",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "userId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "registeredUserId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "registeredMerchantId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "registeredAdminId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "itemId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "userToken",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "registeredUserToken",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "adminToken",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "merchantToken",
-      "value": "",
-      "type": "default"
+      "value": ""
     }
   ]
 }
