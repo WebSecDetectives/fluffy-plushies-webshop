@@ -3,7 +3,8 @@ package com.sirmeows.fluffyinventoryservice.config;
 import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import com.sirmeows.fluffyinventoryservice.entity.Review;
-import com.sirmeows.fluffyinventoryservice.service.ItemDetailService;
+import com.sirmeows.fluffyinventoryservice.security.AuthUser;
+import com.sirmeows.fluffyinventoryservice.security.Role;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
 import com.sirmeows.fluffyinventoryservice.service.ReviewService;
 import jakarta.annotation.PostConstruct;
@@ -26,9 +27,8 @@ import java.util.stream.Stream;
 public class DataInitializer {
 
     private static final int NUMBER_OF_ITEMS = 10 ;
-    // Seeded sample items are owned by a placeholder merchant (no real merchant account).
-    // Real ownership/visibility flows are exercised by merchants creating items via the API.
     private static final UUID SEED_MERCHANT_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID SEED_USER_ID = UUID.fromString("00000000-0000-0000-0000-0000000000a1");
     private final ItemService itemService;
     private final ReviewService reviewService;
     private final Faker faker;
@@ -43,10 +43,11 @@ public class DataInitializer {
                 .map(item -> itemService.createItem(item, SEED_MERCHANT_ID))
                 .toList();
 
+        var seedUser = new AuthUser(SEED_USER_ID, "user", Role.USER);
         items.forEach(item -> {
             int n = RG.nextInt(1, 4);
             IntStream.range(0, n).forEach(i -> {
-                reviewService.createReview(item.getId(), buildRandomReview(), null);
+                reviewService.createReview(item.getId(), buildRandomReview(), seedUser);
             });
         });
 

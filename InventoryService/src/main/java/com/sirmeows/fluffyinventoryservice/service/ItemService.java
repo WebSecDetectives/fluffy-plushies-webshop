@@ -70,7 +70,10 @@ public class ItemService {
      */
     public Item updateItem(UUID id, ItemUpdateDto patch, AuthUser caller) {
         var item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
+
         assertCanModify(item, caller);
+
+        log.info("Updating item {} for {} {}", item, caller.role().name(), caller.id());
 
         if (patch.getName() != null) item.setName(patch.getName());
         if (patch.getPrice() != null) item.setPrice(patch.getPrice());

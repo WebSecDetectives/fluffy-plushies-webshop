@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Check;
 
+import java.util.UUID;
+
 @Data
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
@@ -27,4 +29,8 @@ public class Review extends AbstractIdentifiable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
+
+    // The author (JWT subject of the user who created the review). Set server-side.
+    @Column(nullable = false)
+    private UUID reviewerId;
 }

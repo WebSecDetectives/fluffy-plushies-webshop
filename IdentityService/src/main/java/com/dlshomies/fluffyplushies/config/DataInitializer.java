@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +21,13 @@ import java.net.URL;
 public class DataInitializer {
 
     private final UserService userService;
+
+    /**
+     * Fixed id for the seeded normal user so other services (e.g. InventoryService seed data)
+     * can attribute records to this real, loginable account. Must match
+     * InventoryService DataInitializer.SEED_USER_ID.
+     */
+    public static final UUID SEED_USER_ID = UUID.fromString("00000000-0000-0000-0000-0000000000a1");
 
     @Value("${identity.admin.password}")
     private String adminPassword;
@@ -68,6 +76,7 @@ public class DataInitializer {
         log.info("Merchant user created successfully");
 
         var user = User.builder()
+                .id(SEED_USER_ID)
                 .username("user")
                 .email("user@user.com")
                 .phone("1234567890")
