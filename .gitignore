@@ -40,20 +40,22 @@ buildNumber.properties
 
 .vscode/
 
-# Claude Code
+# Agent instructions
 .claude/
 .mcp.json
 CLAUDE.md
+AGENTS.md
 
-# local working notes
-REPORT_NOTES.md
-agent-preferences.local.md
+# local secrets / tokens (never commit)
+.gh_pat
+.gh_pat.txt
 
 # local docs
 */exam-project-2026.pdf
-AGENTS.md
 */TODO.md
 */AccessControlMatrix_v01.pdf
 */FluffyPlushiesWebShopUserStories_v01.pdf
 */integration_contract_email_service.yaml
 */message_queue_communication_contract.yml
+REPORT_NOTES.md
+agent-preferences.local.md
