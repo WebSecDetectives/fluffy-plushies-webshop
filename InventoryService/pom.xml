@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>4.0.6</version>
         <relativePath/>
     </parent>
 
@@ -16,16 +16,20 @@
     <packaging>jar</packaging>
     <properties>
         <java.version>24</java.version>
+        <javadoc.version>3.11.2</javadoc.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <springboot.version>3.4.4</springboot.version>
-        <spring.security.version>6.4.4</spring.security.version>
-        <mysql.version>9.2.0</mysql.version>
-        <h2.version>2.3.232</h2.version>
-        <datafaker.version>2.4.2</datafaker.version>
-        <jsonwebtoken.version>0.12.6</jsonwebtoken.version>
-        <javadoc.version>3.11.2</javadoc.version>
-        <lombok.version>1.18.38</lombok.version>
+        <springboot.version>4.0.6</springboot.version>
+        <spring.security.version>7.0.5</spring.security.version>
+        <hibernate.validator.version>9.0.1.Final</hibernate.validator.version>
+        <mysql.version>9.7.0</mysql.version>
+        <h2.version>2.4.240</h2.version>
+        <modelmapper.version>3.2.6</modelmapper.version>
+        <datafaker.version>2.5.1</datafaker.version>
+        <jsonwebtoken.version>0.12.7</jsonwebtoken.version>
+        <lombok.version>1.18.42</lombok.version>
+        <passay.version>1.6.6</passay.version>
+        <uuid.creator.version>6.1.1</uuid.creator.version>
     </properties>
 
     <dependencies>
@@ -61,13 +65,13 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.2.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.passay/passay -->
         <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
-            <version>1.6.6</version>
+            <version>${passay.version}</version>
         </dependency>
 
         <!-- Database -->
@@ -136,7 +140,7 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.2.2</version>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <!-- Library for generating UUIDv7 -->
@@ -144,7 +148,7 @@
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
-            <version>6.1.0</version>
+            <version>${uuid.creator.version}</version>
         </dependency>
 
         <!-- Message Queue -->
@@ -157,7 +161,8 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+            <version>${springboot.version}</version>
         </dependency>
     </dependencies>
 
@@ -196,7 +201,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.38</version>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
