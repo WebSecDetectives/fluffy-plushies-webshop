@@ -2,6 +2,7 @@ package com.sirmeows.fluffyinventoryservice.api;
 
 import com.sirmeows.fluffyinventoryservice.dto.ReviewRequestDto;
 import com.sirmeows.fluffyinventoryservice.dto.ReviewResponseDto;
+import com.sirmeows.fluffyinventoryservice.dto.ReviewUpdateDto;
 import com.sirmeows.fluffyinventoryservice.entity.Review;
 import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.service.ReviewService;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +55,22 @@ public class ReviewController {
                                           @Valid @RequestBody ReviewRequestDto reviewRequestDto) {
         var review = reviewService.createReview(itemId, modelMapper.map(reviewRequestDto, Review.class), user);
         return modelMapper.map(review, ReviewResponseDto.class);
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public ReviewResponseDto updateReview(@PathVariable UUID id,
+                                          @AuthenticationPrincipal AuthUser user,
+                                          @Valid @RequestBody ReviewUpdateDto reviewUpdateDto) {
+        log.info("{} updating review {}", user.id(), id);
+        return modelMapper.map(reviewService.updateReview(id, reviewUpdateDto, user), ReviewResponseDto.class);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReview(@PathVariable UUID id, @AuthenticationPrincipal AuthUser user) {
+        log.info("{} deleting review {}", user.id(), id);
+        reviewService.deleteReview(id, user);
     }
 }

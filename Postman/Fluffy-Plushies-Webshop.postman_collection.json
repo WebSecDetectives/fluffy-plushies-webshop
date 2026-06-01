@@ -1056,755 +1056,1287 @@
       "name": "Access Control",
       "item": [
         {
-          "name": "Login Registered Merchant",
-          "event": [
+          "name": "Items - Visibility",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const jsonData = pm.response.json();",
-                  "pm.collectionVariables.set(\"registeredMerchantToken\", jsonData.token);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "id": "552d7466-5e49-9f07-c72e-ea76eceb735d",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"bigpanther\",\n  \"password\": \"{{registrationPassword}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "name": "Login Registered Merchant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"registeredMerchantToken\", jsonData.token);"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlIdentity}}/auth/login",
-              "host": [
-                "{{baseUrlIdentity}}"
               ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Private Item as Merchant",
-          "event": [
-            {
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const jsonData = pm.response.json();",
-                  "pm.test(\"Visibility is PRIVATE\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));",
-                  "pm.test(\"merchantId is set\", () => pm.expect(jsonData.merchant_id).to.be.a(\"string\"));",
-                  "pm.collectionVariables.set(\"privateItemId\", jsonData.id);"
-                ]
+              "id": "552d7466-5e49-9f07-c72e-ea76eceb735d",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"bigpanther\",\n  \"password\": \"{{registrationPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlIdentity}}/auth/login",
+                  "host": [
+                    "{{baseUrlIdentity}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "b6cef03d-97eb-204c-769e-5addb9a67cb9",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/secret-panther.jpg\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Public Item as Merchant",
-          "event": [
             {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const jsonData = pm.response.json();",
-                  "pm.test(\"Visibility is PUBLIC\", () => pm.expect(jsonData.visibility).to.eql(\"PUBLIC\"));",
-                  "pm.collectionVariables.set(\"publicItemId\", jsonData.id);"
-                ]
-              }
-            }
-          ],
-          "id": "0652d38c-3b4a-708c-5a9b-13b10962498b",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              "name": "Create Private Item as Merchant",
+              "event": [
                 {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Visibility is PRIVATE\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));",
+                      "pm.test(\"merchantId is set\", () => pm.expect(jsonData.merchant_id).to.be.a(\"string\"));",
+                      "pm.collectionVariables.set(\"privateItemId\", jsonData.id);"
+                    ]
+                  },
+                  "listen": "test"
                 }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/public-panther.jpg\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
               ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Private Item as Anonymous Not Found",
-          "event": [
-            {
-              "script": {
-                "exec": [
-                  "pm.test(\"Private item is hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
-                ],
-                "type": "text/javascript"
+              "id": "b6cef03d-97eb-204c-769e-5addb9a67cb9",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/secret-panther.jpg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "dc41686f-08ed-0b36-b3b7-a6b0c848875f",
-          "request": {
-            "auth": {
-              "type": "noauth"
+              "response": []
             },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items",
-                "{{privateItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Items as Anonymous Excludes Private",
-          "event": [
             {
-              "script": {
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const ids = pm.response.json().map(i => i.id);",
-                  "pm.test(\"Private item not in public list\", () => pm.expect(ids).to.not.include(pm.collectionVariables.get(\"privateItemId\")));",
-                  "pm.test(\"Public item is in public list\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"publicItemId\")));"
-                ],
-                "type": "text/javascript"
+              "name": "Create Public Item as Merchant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Visibility is PUBLIC\", () => pm.expect(jsonData.visibility).to.eql(\"PUBLIC\"));",
+                      "pm.collectionVariables.set(\"publicItemId\", jsonData.id);"
+                    ]
+                  }
+                }
+              ],
+              "id": "0652d38c-3b4a-708c-5a9b-13b10962498b",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/public-panther.jpg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "5272129d-e738-fab3-8bc2-9ceba4d486de",
-          "request": {
-            "auth": {
-              "type": "noauth"
+              "response": []
             },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Own Items as Merchant",
-          "event": [
             {
-              "script": {
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const ids = pm.response.json().map(i => i.id);",
-                  "pm.test(\"Own private item appears in /mine\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"privateItemId\")));"
-                ],
-                "type": "text/javascript"
+              "name": "Get Private Item as Anonymous Not Found",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Private item is hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "dc41686f-08ed-0b36-b3b7-a6b0c848875f",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{privateItemId}}"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "be87f8c8-aa01-71f0-eb8d-fa2c181fc03b",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/mine",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items",
-                "mine"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Item as User Forbidden",
-          "event": [
             {
-              "script": {
-                "exec": [
-                  "pm.test(\"USER is forbidden from creating items (403)\", () => pm.response.to.have.status(403));"
-                ],
-                "type": "text/javascript"
+              "name": "List Items as Anonymous Excludes Private",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const ids = pm.response.json().map(i => i.id);",
+                      "pm.test(\"Private item not in public list\", () => pm.expect(ids).to.not.include(pm.collectionVariables.get(\"privateItemId\")));",
+                      "pm.test(\"Public item is in public list\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"publicItemId\")));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "5272129d-e738-fab3-8bc2-9ceba4d486de",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "1460ce55-e191-0a43-b04e-c672700a9487",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{userToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/nope.jpg\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Item as Admin Forbidden",
-          "event": [
             {
-              "script": {
-                "exec": [
-                  "pm.test(\"ADMIN is forbidden from creating items (403) - RBAC is role-specific\", () => pm.response.to.have.status(403));"
-                ],
-                "type": "text/javascript"
+              "name": "List Own Items as Merchant",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const ids = pm.response.json().map(i => i.id);",
+                      "pm.test(\"Own private item appears in /mine\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"privateItemId\")));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "be87f8c8-aa01-71f0-eb8d-fa2c181fc03b",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/mine",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "mine"
+                  ]
+                }
               },
-              "listen": "test"
+              "response": []
             }
           ],
-          "id": "56818282-e56a-ccac-99e0-7c5afa26f2df",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/admin-nope.jpg\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
+          "id": "3af0ddfd-26d7-4a3f-82f1-6f85200830fe"
         },
         {
-          "name": "Update Public Item as Other Merchant Forbidden",
-          "event": [
+          "name": "Items - CRUD RBAC",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Non-owner merchant cannot edit a visible (public) item (403)\", () => pm.response.to.have.status(403));"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "id": "0feb421a-6af1-ad70-aa83-45be97eb77d6",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              "name": "Create Item as User Forbidden",
+              "event": [
                 {
-                  "key": "token",
-                  "value": "{{registeredMerchantToken}}",
-                  "type": "string"
+                  "script": {
+                    "exec": [
+                      "pm.test(\"USER is forbidden from creating items (403)\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
                 }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"price\": 1.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/{{publicItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
               ],
-              "path": [
-                "items",
-                "{{publicItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Own Item as Merchant",
-          "event": [
-            {
-              "script": {
-                "exec": [
-                  "pm.test(\"Owner can update own item (200)\", () => pm.response.to.have.status(200));",
-                  "const jsonData = pm.response.json();",
-                  "pm.test(\"Price was updated\", () => pm.expect(Number(jsonData.price)).to.eql(49.99));",
-                  "pm.test(\"Still PRIVATE (unchanged field preserved)\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));"
-                ],
-                "type": "text/javascript"
+              "id": "1460ce55-e191-0a43-b04e-c672700a9487",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/nope.jpg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "f9156284-e21f-12ac-9a36-215fb8305de6",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"price\": 49.99\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items",
-                "{{privateItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Review on Private Item as User Not Found",
-          "event": [
             {
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Cannot review a private item the caller can't see (404)\", () => pm.response.to.have.status(404));"
-                ]
+              "name": "Create Item as Admin Forbidden",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"ADMIN is forbidden from creating items (403) - RBAC is role-specific\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "56818282-e56a-ccac-99e0-7c5afa26f2df",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/admin-nope.jpg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "0b7bfa0f-e270-94ae-3665-6673eba5655c",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{userToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"review_text\": \"Trying to review a hidden item\",\n  \"rating\": 5\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{privateItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews",
-                "item",
-                "{{privateItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Own Item as Merchant",
-          "event": [
             {
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Owner can delete own item (204)\", () => pm.response.to.have.status(204));"
-                ]
+              "name": "Update Public Item as Other Merchant Forbidden",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Non-owner merchant cannot edit a visible (public) item (403)\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "0feb421a-6af1-ad70-aa83-45be97eb77d6",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{registeredMerchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price\": 1.00\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{publicItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{publicItemId}}"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "d7f080d0-c43d-4bbf-599d-3d2e59e033c4",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items",
-                "{{privateItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Private Item as Merchant for Review Tests",
-          "event": [
             {
-              "script": {
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const jsonData = pm.response.json();",
-                  "pm.collectionVariables.set(\"privateReviewItemId\", jsonData.id);"
-                ],
-                "type": "text/javascript"
+              "name": "Update Own Item as Merchant",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Owner can update own item (200)\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Price was updated\", () => pm.expect(Number(jsonData.price)).to.eql(49.99));",
+                      "pm.test(\"Still PRIVATE (unchanged field preserved)\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "f9156284-e21f-12ac-9a36-215fb8305de6",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price\": 49.99\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{privateItemId}}"
+                  ]
+                }
               },
-              "listen": "test"
-            }
-          ],
-          "id": "a3de7d41-f510-82ac-7a02-0362154c5176",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
+              "response": []
             },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/private-review-subject.jpg\"\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/items",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Private Item Reviews as Anonymous Not Found",
-          "event": [
             {
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Reviews of a private item are hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
-                ]
+              "name": "Delete Own Item as Merchant",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Owner can delete own item (204)\", () => pm.response.to.have.status(204));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "d7f080d0-c43d-4bbf-599d-3d2e59e033c4",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{privateItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{privateItemId}}"
+                  ]
+                }
               },
-              "listen": "test"
+              "response": []
             }
           ],
-          "id": "d46e3648-2a8c-7a93-27f1-1a3dc8ff4d09",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews",
-                "item",
-                "{{privateReviewItemId}}"
-              ]
-            }
-          },
-          "response": []
+          "id": "6738aefc-dd6f-445d-bcb9-23810c241421"
         },
         {
-          "name": "List Private Item Reviews as Other Merchant Not Found",
-          "event": [
+          "name": "Reviews - Visibility",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Reviews of another merchant's private item are hidden (404)\", () => pm.response.to.have.status(404));"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "id": "f485c6b1-8976-b5bf-eb36-f925cf6f0de3",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              "name": "Create Private Item as Merchant for Review Tests",
+              "event": [
                 {
-                  "key": "token",
-                  "value": "{{registeredMerchantToken}}",
-                  "type": "string"
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"privateReviewItemId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
                 }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
               ],
-              "path": [
-                "reviews",
-                "item",
-                "{{privateReviewItemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Own Private Item Reviews as Merchant",
-          "event": [
-            {
-              "script": {
-                "exec": [
-                  "pm.test(\"Owner can list reviews of own private item (200) - confirms gating, not blanket block\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
-                ],
-                "type": "text/javascript"
+              "id": "a3de7d41-f510-82ac-7a02-0362154c5176",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/private-review-subject.jpg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
               },
-              "listen": "test"
+              "response": []
+            },
+            {
+              "name": "Create Review on Private Item as User Not Found",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Cannot review a private item the caller can't see (404)\", () => pm.response.to.have.status(404));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "0b7bfa0f-e270-94ae-3665-6673eba5655c",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"review_text\": \"Trying to review a hidden item\",\n  \"rating\": 5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{privateReviewItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Private Item Reviews as Anonymous Not Found",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Reviews of a private item are hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "d46e3648-2a8c-7a93-27f1-1a3dc8ff4d09",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{privateReviewItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Private Item Reviews as Other Merchant Not Found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Reviews of another merchant's private item are hidden (404)\", () => pm.response.to.have.status(404));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "f485c6b1-8976-b5bf-eb36-f925cf6f0de3",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{registeredMerchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{privateReviewItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Own Private Item Reviews as Merchant",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Owner can list reviews of own private item (200) - confirms gating, not blanket block\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "8f3aea9e-c6f0-0a0f-9e89-bb731136977d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{privateReviewItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Private Item as Merchant for Review Tests",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Cleanup: owner deletes the review-test item (204)\", () => pm.response.to.have.status(204));"
+                    ]
+                  }
+                }
+              ],
+              "id": "4392a642-a089-4b8d-56c7-8658645bd9c9",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{privateReviewItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{privateReviewItemId}}"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "id": "8f3aea9e-c6f0-0a0f-9e89-bb731136977d",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{privateReviewItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews",
-                "item",
-                "{{privateReviewItemId}}"
-              ]
-            }
-          },
-          "response": []
+          "id": "1a891789-b673-47eb-8857-fc525a8c37d0"
         },
         {
-          "name": "Delete Private Review Item as Merchant Cleanup",
-          "event": [
+          "name": "Reviews - CRUD RBAC",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Cleanup: owner deletes the review-test item (204)\", () => pm.response.to.have.status(204));"
-                ]
-              }
+              "name": "Register Review Tester User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "5fdec40b-19de-8012-10bc-75f57638f13c",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"email\":  \"review.tester@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"img_url\":  \"https://kittydomain.fluffy.com/review-tester\",\n    \"address\":  {\n                    \"street\":  \"Critique Court\",\n                    \"postal_code\":  \"501\",\n                    \"city\":  \"Reviewville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlIdentity}}/users",
+                  "host": [
+                    "{{baseUrlIdentity}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login Review Tester User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"secondUserToken\", jsonData.token);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "4ee808c4-c1a7-38a5-791b-ab0ba9dbac6d",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"password\":  \"{{registrationPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlIdentity}}/auth/login",
+                  "host": [
+                    "{{baseUrlIdentity}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Review as User",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"reviewId\", jsonData.id);",
+                      "pm.test(\"Reviewer is the authenticated user\", () => pm.expect(jsonData.reviewer_id).to.eql(pm.collectionVariables.get(\"userId\")));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "ddceca46-8535-f754-32fa-7e7c069dc779",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"review_text\": \"Lovely public plushie, would hug again.\",\n  \"rating\": 5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{publicItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{publicItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Item Reviews Shows Reviewer",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const reviews = pm.response.json();",
+                      "const mine = reviews.find(r => r.id === pm.collectionVariables.get(\"reviewId\"));",
+                      "pm.test(\"Created review is listed\", () => pm.expect(mine).to.be.an(\"object\"));",
+                      "pm.test(\"Listed review exposes reviewer_id\", () => pm.expect(mine.reviewer_id).to.eql(pm.collectionVariables.get(\"userId\")));"
+                    ]
+                  }
+                }
+              ],
+              "id": "aef5990c-4c96-7ab2-da28-736369a64ab8",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{publicItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{publicItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Own Review as User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Author can update own review (200)\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Text updated\", () => pm.expect(jsonData.review_text).to.eql(\"Edited by the author.\"));",
+                      "pm.test(\"Rating updated\", () => pm.expect(jsonData.rating).to.eql(4));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "a09ef2fc-9775-f34e-3ff2-1c61d7103cd0",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"review_text\": \"Edited by the author.\",\n  \"rating\": 4\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Review as Other User Forbidden",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"A non-author user cannot edit another's review (403)\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "efdf8754-fcab-da6e-b9a0-8b4227b24847",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{secondUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"review_text\": \"Trying to edit someone else's review.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Review as Merchant Forbidden",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Merchants cannot edit reviews (403) - endpoint is USER/ADMIN only\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "0a4ca7c5-b379-1de4-a8ac-b2d18ad92184",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"review_text\": \"Merchant trying to edit a review.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Review as Admin",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Admin can moderate any review (200)\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Rating moderated\", () => pm.expect(jsonData.rating).to.eql(1));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "a282f081-be78-cdae-6bc3-f8f7062a8d19",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rating\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Review as Other User Forbidden",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"A non-author user cannot delete another's review (403)\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "2538dfb2-b3d5-fb0c-d5df-0341563508f0",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{secondUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Own Review as User",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Author can delete own review (204)\", () => pm.response.to.have.status(204));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "cc37139d-f508-847f-f326-28a84ad78c82",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Deleted Review Not Found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Updating a deleted/nonexistent review returns 404\", () => pm.response.to.have.status(404));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "55d52a69-bd90-c8fa-16d2-db5be5893203",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rating\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/{{reviewId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "{{reviewId}}"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "id": "4392a642-a089-4b8d-56c7-8658645bd9c9",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{merchantToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/items/{{privateReviewItemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "items",
-                "{{privateReviewItemId}}"
-              ]
-            }
-          },
-          "response": []
+          "id": "9717889a-0a7f-4c20-a565-4c4c5aed2790"
         }
       ],
       "id": "66317dda-60f7-41fe-bdd2-53fd433f0851"
@@ -1893,6 +2425,14 @@
     },
     {
       "key": "privateReviewItemId",
+      "value": ""
+    },
+    {
+      "key": "secondUserToken",
+      "value": ""
+    },
+    {
+      "key": "reviewId",
       "value": ""
     }
   ]

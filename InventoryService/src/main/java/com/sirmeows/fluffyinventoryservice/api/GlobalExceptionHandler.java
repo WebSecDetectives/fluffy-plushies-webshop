@@ -2,6 +2,8 @@ package com.sirmeows.fluffyinventoryservice.api;
 
 import com.sirmeows.fluffyinventoryservice.exception.ItemAccessDeniedException;
 import com.sirmeows.fluffyinventoryservice.exception.ItemNotFoundException;
+import com.sirmeows.fluffyinventoryservice.exception.ReviewAccessDeniedException;
+import com.sirmeows.fluffyinventoryservice.exception.ReviewNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleItemAccessDenied(final ItemAccessDeniedException ex) {
         log.debug("Item access denied: {}", ex.getMessage());
         // Return a generic message; don't reveal item details or why access was denied.
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(FORBIDDEN, GENERIC_SECURITY_MESSAGE));
+    }
+
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleReviewNotFound(final ReviewNotFoundException ex) {
+        log.debug("Review not found: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(NOT_FOUND, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ReviewAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleReviewAccessDenied(final ReviewAccessDeniedException ex) {
+        log.debug("Review access denied: {}", ex.getMessage());
+        // Generic message; don't reveal review details or why access was denied.
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(FORBIDDEN, GENERIC_SECURITY_MESSAGE));

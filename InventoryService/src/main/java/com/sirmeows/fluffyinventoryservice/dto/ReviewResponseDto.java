@@ -7,12 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@JsonDeserialize(builder = ReviewRequestDto.ReviewRequestDtoBuilderImpl.class)
+@JsonDeserialize(builder = ReviewResponseDto.ReviewResponseDtoBuilderImpl.class)
 public class ReviewResponseDto {
+    private UUID id;
+    private UUID reviewerId;
     private String reviewText;
     private int rating;
 
