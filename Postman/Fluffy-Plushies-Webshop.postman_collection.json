@@ -918,7 +918,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Teddy Bear\",\r\n  \"price\": 29.99,\r\n  \"stock\": 50,\r\n  \"details\": {\r\n    \"description\": \"Soft and cuddly teddy bear\",\r\n    \"age_group\": \"3-12\",\r\n    \"item_type\": \"Plush Toy\",\r\n    \"material\": \"Cotton\",\r\n    \"img_link\": \"https://example.com/teddy-bear.jpg\"\r\n  }\r\n}\r\n",
+              "raw": "{\r\n  \"name\": \"Teddy Bear\",\r\n  \"price\": 29.99,\r\n  \"stock\": 50,\r\n  \"details\": {\r\n    \"description\": \"Soft and cuddly teddy bear\",\r\n    \"age_group\": \"3-12\",\r\n    \"item_type\": \"Plush Toy\",\r\n    \"material\": \"Cotton\",\r\n    \"img_url\": \"https://example.com/teddy-bear.jpg\"\r\n  }\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1135,7 +1135,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/secret-panther.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_url\": \"https://example.com/secret-panther.jpg\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1186,7 +1186,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/public-panther.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/public-panther.jpg\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1350,7 +1350,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/nope.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/nope.jpg\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1398,7 +1398,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_link\": \"https://example.com/admin-nope.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/admin-nope.jpg\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1595,7 +1595,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_link\": \"https://example.com/private-review-subject.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_url\": \"https://example.com/private-review-subject.jpg\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2357,23 +2357,23 @@
     },
     {
       "key": "adminPassword",
-      "value": ""
+      "value": "PLACEHOLDER_TO_BE_REPLACED"
     },
     {
       "key": "merchantPassword",
-      "value": ""
+      "value": "PLACEHOLDER_TO_BE_REPLACED"
     },
     {
       "key": "userPassword",
-      "value": ""
+      "value": "PLACEHOLDER_TO_BE_REPLACED"
     },
     {
       "key": "registrationPassword",
-      "value": ""
+      "value": "Reg1strati0n-Pass!"
     },
     {
       "key": "newPassword",
-      "value": ""
+      "value": "N3w-Passw0rd!Chg"
     },
     {
       "key": "userId",

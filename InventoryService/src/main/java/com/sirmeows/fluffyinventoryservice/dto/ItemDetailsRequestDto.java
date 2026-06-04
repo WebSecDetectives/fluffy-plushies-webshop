@@ -31,7 +31,7 @@ public class ItemDetailsRequestDto {
     @NotBlank
     @URL(protocol = "https")
     @Size(max = 2048)
-    private String imgLink;
+    private String imgUrl;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ItemDetailsRequestDtoBuilderImpl extends ItemDetailsRequestDto.ItemDetailsRequestDtoBuilder<ItemDetailsRequestDto, ItemDetailsRequestDto.ItemDetailsRequestDtoBuilderImpl> {

@@ -40,7 +40,7 @@ public class ItemDetailsUpdateDto {
 
     @URL(protocol = "https")
     @Size(max = 2048)
-    private String imgLink;
+    private String imgUrl;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ItemDetailsUpdateDtoBuilderImpl extends ItemDetailsUpdateDto.ItemDetailsUpdateDtoBuilder<ItemDetailsUpdateDto, ItemDetailsUpdateDtoBuilderImpl> {

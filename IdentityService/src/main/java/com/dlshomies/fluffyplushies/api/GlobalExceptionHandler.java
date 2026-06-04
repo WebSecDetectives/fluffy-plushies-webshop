@@ -4,7 +4,6 @@ import com.dlshomies.fluffyplushies.exception.DataInitializationException;
 import com.dlshomies.fluffyplushies.exception.UnexpectedUserTypeException;
 import com.dlshomies.fluffyplushies.exception.UserDeletedException;
 import com.dlshomies.fluffyplushies.exception.UserNotFoundException;
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -78,7 +78,7 @@ public class DataInitializer {
                 .ageGroup(AgeGroup.random().label())
                 .itemType("YY")
                 .material("ZZ")
-                .imgLink(randomUrl())
+                .imgUrl(randomUrl())
                 .build();
     }
 

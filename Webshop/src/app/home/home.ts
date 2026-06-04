@@ -13,7 +13,7 @@ import { storage } from '../../enviroments/firebase.config';
   styleUrls: ['./home.css']
 })
 export class Home{
-imageUrl: string | null = null;
+imgUrl: string | null = null;
 
   async onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement)?.files?.[0];
@@ -24,8 +24,8 @@ imageUrl: string | null = null;
 
     try {
       await uploadBytes(fileRef, file);
-      this.imageUrl = await getDownloadURL(fileRef);
-      console.log('Upload successful:', this.imageUrl);
+      this.imgUrl = await getDownloadURL(fileRef);
+      console.log('Upload successful:', this.imgUrl);
     } catch (error) {
       console.error('Upload failed:', error);
     }

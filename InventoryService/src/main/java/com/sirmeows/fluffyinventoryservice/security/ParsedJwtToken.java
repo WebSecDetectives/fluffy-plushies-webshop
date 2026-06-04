@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -16,10 +15,6 @@ public class ParsedJwtToken {
 
     private JwsHeader jwsHeader;
     private Claims claims;
-
-    public Date getExpiration() {
-        return claims.getExpiration();
-    }
 
     public UUID getSubject() {
         return UUID.fromString(claims.getSubject());
@@ -32,9 +27,5 @@ public class ParsedJwtToken {
 
     public String getUsername() {
         return claims.get("username", String.class);
-    }
-
-    private boolean isExpiredToken() {
-        return getExpiration().before(new Date());
     }
 }

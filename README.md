@@ -4,10 +4,22 @@
 
 ## How to run the project
 
-1. Pull `https://github.com/WebSecDetectives/fluffy-plushies-webshop`.
+## Environment
 
-2. Put the `.env` file in the root of the repo directory or otherwise set environment variables.
+See `dotenv-template` in the project root for required environment variables.
 
-3. Run `docker-compose --file docker-compose.yml up --build --detach`.
+## Docker
 
-Databases are initialized on first start.
+The applications and their dependencies are dockerized, so no local database or service installation is needed. Create a local `.env` file using `dotenv-template` as reference, then start the system with Docker Compose from parent repo.
+
+To start the system:
+```bash
+docker compose up -d
+```
+
+To do a clean restart including database reset:
+
+```bash
+docker compose down -v
+docker compose up --build -d
+```

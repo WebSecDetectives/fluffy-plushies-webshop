@@ -1,5 +1,7 @@
 package com.sirmeows.fluffyinventoryservice.config;
 
+import com.sirmeows.fluffyinventoryservice.api.RestAccessDeniedHandler;
+import com.sirmeows.fluffyinventoryservice.api.RestAuthenticationEntryPoint;
 import com.sirmeows.fluffyinventoryservice.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final RestAuthenticationEntryPoint authEntryPoint;
+    private final RestAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,6 +37,10 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(authEntryPoint) // 401 when unauthenticated
+                        .accessDeniedHandler(accessDeniedHandler)  // 403 when authenticated but forbidden
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/**", "/reviews/item/*").permitAll()
