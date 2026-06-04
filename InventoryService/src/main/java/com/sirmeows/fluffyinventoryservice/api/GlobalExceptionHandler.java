@@ -7,21 +7,22 @@ import com.sirmeows.fluffyinventoryservice.exception.ReviewNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     public record ErrorResponse(String error, String message) {}
-    private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     private static final String BAD_REQUEST = "BAD_REQUEST";
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String FORBIDDEN = "FORBIDDEN";
-    private static final String LOCKED = "LOCKED";
-    private static final String INITIALIZATION_ERROR = "INITIALIZATION_ERROR";
 
-    private static final String GENERIC_ERROR_MESSAGE = "An internal server error occurred";
     private static final String GENERIC_SECURITY_MESSAGE = "Access denied";
     private static final String GENERIC_VALIDATION_MESSAGE = "Invalid input provided";
 
@@ -57,5 +58,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(FORBIDDEN, GENERIC_SECURITY_MESSAGE));
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(BindException ex) {
+        log.debug("Validation failed: {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
+        log.debug("Bad request: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(BAD_REQUEST, GENERIC_VALIDATION_MESSAGE));
     }
 }

@@ -1,12 +1,14 @@
 package com.dlshomies.fluffyplushies.security;
 
 import com.dlshomies.fluffyplushies.domain.ParsedJwtToken;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -59,27 +61,58 @@ public class JwtFilter extends OncePerRequestFilter {
     private void extractTokenFromHeader(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
-            var token = authorizationHeader.substring(BEARER_PREFIX.length());
+        if (!hasBearerToken(authorizationHeader)) {
+            return;
+        }
 
+        var token = authorizationHeader.substring(BEARER_PREFIX.length());
+        authenticateFromToken(token, request);
+    }
+
+    private boolean hasBearerToken(String authorizationHeader) {
+        return authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX);
+    }
+
+    /**
+     * Validates the token (signature + expiry, enforced by jjwt) and, if valid, populates the
+     * security context. A malformed, expired, or otherwise invalid token is swallowed here so the
+     * request continues unauthenticated: Spring Security then returns a clean 401 via
+     * {@link com.dlshomies.fluffyplushies.api.RestAuthenticationEntryPoint} for protected endpoints,
+     * while public endpoints still work. A bad token must never throw out of the filter.
+     */
+    private void authenticateFromToken(String token, HttpServletRequest request) {
+        try {
             var parsedToken = jwtUtil.parseToken(token);
-
             setUserDetails(parsedToken, request);
+        } catch (JwtException e) {
+            log.warn("Rejected invalid JWT: {}", e.getClass().getSimpleName());
         }
     }
 
     private void setUserDetails(ParsedJwtToken token, HttpServletRequest request) {
+        var username = token.getUsername();
+        if (!shouldAuthenticate(username)) {
+            return;
+        }
+        loadAndAuthenticate(username, request);
+    }
+
+    private boolean shouldAuthenticate(String username) {
+        return username != null && SecurityContextHolder.getContext().getAuthentication() == null;
+    }
+
+    /**
+     * Loads the user named in the (already validated) token and authenticates the request.
+     * If the subject no longer maps to a user — e.g. the account was deleted after the token was
+     * issued — the request continues unauthenticated (→ 401 for protected endpoints) rather than
+     * surfacing a 500. Any other failure (e.g. a real datastore error) is left to propagate.
+     */
+    private void loadAndAuthenticate(String username, HttpServletRequest request) {
         try {
-
-            var username = token.getUsername();
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                var userDetails = userDetailsService.loadUserByUsername(username);
-
-                setAuthentication(userDetails, request);
-            }
-        } catch (Exception e) {
-            log.error("Failed to process JWT token", e);
+            var userDetails = userDetailsService.loadUserByUsername(username);
+            setAuthentication(userDetails, request);
+        } catch (UsernameNotFoundException e) {
+            log.warn("JWT subject no longer maps to an existing user");
         }
     }
 

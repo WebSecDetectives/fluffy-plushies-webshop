@@ -21,9 +21,9 @@ import java.math.BigDecimal;
  * field IS present (most Jakarta constraints treat null as valid).
  *
  * Deliberately excludes merchantId and id: ownership/identity are server-controlled and
- * must never be settable from a request body (mass-assignment protection). It also omits
- * fields that aren't editable here (e.g. nested details), so clients can only change what
- * this DTO exposes.
+ * must never be settable from a request body (mass-assignment protection), so clients can
+ * only change what this DTO exposes. Nested details are editable via {@link ItemDetailsUpdateDto}
+ * (also partial, also id-less); the {@code @Valid} below cascades validation into them.
  */
 @Data
 @NoArgsConstructor

@@ -28,5 +28,5 @@ public class ItemDetails extends AbstractIdentifiable {
 
     @NotBlank
     @Column(nullable = false, length = 2048)
-    private String imgLink;
+    private String imgUrl;
 }

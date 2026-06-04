@@ -1,5 +1,6 @@
 package com.sirmeows.fluffyinventoryservice.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,31 +60,50 @@ public class JwtFilter extends OncePerRequestFilter {
     private void extractTokenFromHeader(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
-            var token = authorizationHeader.substring(BEARER_PREFIX.length());
+        if (!hasBearerToken(authorizationHeader)) {
+            return;
+        }
 
+        var token = authorizationHeader.substring(BEARER_PREFIX.length());
+        authenticateFromToken(token, request);
+    }
+
+    private boolean hasBearerToken(String authorizationHeader) {
+        return authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX);
+    }
+
+    /**
+     * Validates the token (signature + expiry, enforced by jjwt) and, if valid, populates the
+     * security context. A malformed, expired, or otherwise invalid token — or one whose claims
+     * don't map to a valid principal (bad subject UUID / unknown role) — is swallowed here so the
+     * request continues unauthenticated: Spring Security then returns a clean 401 via
+     * {@link com.sirmeows.fluffyinventoryservice.api.RestAuthenticationEntryPoint} for protected
+     * endpoints, while public endpoints still work. A bad token must never throw out of the filter.
+     */
+    private void authenticateFromToken(String token, HttpServletRequest request) {
+        try {
             var parsedToken = jwtUtil.parseToken(token);
-
             setUserDetails(parsedToken, request);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("Rejected invalid JWT: {}", e.getClass().getSimpleName());
         }
     }
 
     private void setUserDetails(ParsedJwtToken token, HttpServletRequest request) {
-        try {
-
-            var username = token.getUsername();
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // Build the authenticated principal straight from the signed JWT (no DB/Identity call).
-                // AuthUser carries the user's UUID (token subject) so controllers can make
-                // ownership decisions (e.g. set an item's merchantId) without re-parsing the token.
-                var authUser = new AuthUser(token.getSubject(), username, token.getRole());
-                var authorities = AuthorityUtils.createAuthorityList(token.getRole().name());
-                setAuthentication(authUser, authorities, request);
-            }
-        } catch (Exception e) {
-            log.error("Failed to process JWT token", e);
+        var username = token.getUsername();
+        if (!shouldAuthenticate(username)) {
+            return;
         }
+        // Build the authenticated principal straight from the signed JWT (no DB/Identity call).
+        // AuthUser carries the user's UUID (token subject) so controllers can make ownership
+        // decisions (e.g. set an item's merchantId) without re-parsing the token.
+        var authUser = new AuthUser(token.getSubject(), username, token.getRole());
+        var authorities = AuthorityUtils.createAuthorityList(token.getRole().name());
+        setAuthentication(authUser, authorities, request);
+    }
+
+    private boolean shouldAuthenticate(String username) {
+        return username != null && SecurityContextHolder.getContext().getAuthentication() == null;
     }
 
     private void setAuthentication(AuthUser principal,

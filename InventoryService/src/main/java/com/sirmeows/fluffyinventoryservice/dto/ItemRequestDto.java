@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import com.sirmeows.fluffyinventoryservice.entity.Visibility;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,6 +39,7 @@ public class ItemRequestDto {
     private Visibility visibility;
 
     @NotNull
+    @Valid
     private ItemDetailsRequestDto details;
 
     @JsonPOJOBuilder(withPrefix = "")

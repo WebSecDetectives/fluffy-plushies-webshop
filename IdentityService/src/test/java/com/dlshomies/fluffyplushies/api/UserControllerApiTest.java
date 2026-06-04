@@ -24,6 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -32,6 +33,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -69,6 +72,9 @@ class UserControllerApiTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     @BeforeEach
     void seedAdmin() {
@@ -260,6 +266,59 @@ class UserControllerApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testDataUtil.userRequestWithUsername("newAdmin"))))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getUser_givenExpiredToken_returnUnauthorized() throws Exception {
+        mvc.perform(get("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer " + JwtTestUtil.expiredToken(savedUser, jwtSecret)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void getUser_givenMalformedToken_returnUnauthorized() throws Exception {
+        mvc.perform(get("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer abc.def.ghi"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void getUser_givenTamperedSignature_returnUnauthorized() throws Exception {
+        var tampered = JwtTestUtil.tamperSignature(userToken);
+
+        mvc.perform(get("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer " + tampered))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void getUser_givenValidlySignedTokenForUnknownUser_returnUnauthorized() throws Exception {
+        var ghostToken = JwtTestUtil.signedToken(UUID.randomUUID(), "nonexistent-user", Role.USER,
+                Instant.now(), Instant.now().plus(1, ChronoUnit.HOURS), jwtSecret);
+
+        mvc.perform(get("/users/{id}", savedUser.getId())
+                        .header("Authorization", "Bearer " + ghostToken))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void login_givenExpiredBearerToken_stillProcesses() throws Exception {
+        var authRequest = AuthRequest.builder()
+                .username(savedUser.getUsername())
+                .password(STRONG_PASSWORD)
+                .build();
+
+        // Public endpoint: a stale token in the header must not break the request
+        mvc.perform(post("/auth/login")
+                        .header("Authorization", "Bearer " + JwtTestUtil.expiredToken(savedUser, jwtSecret))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test

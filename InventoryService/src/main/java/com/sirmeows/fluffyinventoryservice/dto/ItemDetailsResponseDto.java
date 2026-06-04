@@ -19,7 +19,7 @@ public class ItemDetailsResponseDto {
     private String ageGroup;
     private String itemType;
     private String material;
-    private String imgLink;
+    private String imgUrl;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ItemDetailsResponseDtoBuilderImpl extends ItemDetailsResponseDto.ItemDetailsResponseDtoBuilder<ItemDetailsResponseDto, ItemDetailsResponseDto.ItemDetailsResponseDtoBuilderImpl> {

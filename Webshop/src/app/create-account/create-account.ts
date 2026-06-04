@@ -18,7 +18,7 @@ export class CreateAccount {
   baseUrlIdentity = `${environment.baseUrlIdentity}/users`;
   registerForm: FormGroup;
   selectedFile: File | null = null;
-  imageUrl: string | null = null;
+  imgUrl: string | null = null;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.registerForm = this.fb.group({
@@ -27,10 +27,10 @@ export class CreateAccount {
       phone: ['', Validators.required],
       password: ['', Validators.required],
       street: ['', Validators.required],
-      postal_code: ['', Validators.required],
+      postalCode: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
-      image_url: [null]
+      imgUrl: [null]
     });
 
     // Optional: Redirect if not authenticated
@@ -61,7 +61,7 @@ export class CreateAccount {
       const fileRef: StorageReference = ref(storage, path);
       try {
         await uploadBytes(fileRef, this.selectedFile);
-        this.imageUrl = await getDownloadURL(fileRef);
+        this.imgUrl = await getDownloadURL(fileRef);
         console.log('Image uploaded: ', fileRef);
       } catch (error) {
         console.error('Upload failed:', error);
@@ -70,7 +70,7 @@ export class CreateAccount {
       }
     }
 
-    // 2) Prepare payload including imageUrl
+    // 2) Prepare payload including imgUrl
     const v = this.registerForm.value;
     const payload = {
       username: v.username,
@@ -79,11 +79,11 @@ export class CreateAccount {
       password: v.password,
       address: {
         street: v.street,
-        postal_code: v.postal_code,
+        postal_code: v.postalCode,
         city: v.city,
         country: v.country
       },
-      image_url: this.imageUrl
+      img_url: this.imgUrl
     };
 
     // 3) Call backend API
