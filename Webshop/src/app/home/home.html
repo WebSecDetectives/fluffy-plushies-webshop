@@ -36,32 +36,23 @@ friend</p>
 <hr class="width-100">
 </div>
 <div class="width-50  d-flex  d-flex-column  margin-right-left-auto">
-  <p>Most popular</p>
-  @for (i of [1, 2, 3]; track i) {
-  <div class="width-100 d-flex d-flex-row d-flex-space-between">
-    <div >
-      <img class="card" src="toy-805814_1920.jpg" alt="">
-      <div class="width-100 d-flex d-flex-row d-flex-space-between">
-        <p>Name</p>
-        <p>100 DKK</p>
-      </div>
-    </div>
-    <div>
-      <img class="card" src="toy-805814_1920.jpg" alt="">
-       <div class="width-100 d-flex d-flex-row d-flex-space-between">
-        <p>Name</p>
-        <p>100 DKK</p>
-      </div>
-    </div>
-    <div>
-      <img class="card" src="toy-805814_1920.jpg" alt="">
-       <div class="width-100 d-flex d-flex-row d-flex-space-between">
-        <p>Name</p>
-        <p>100 DKK</p>
-      </div>
-    </div>
-  </div>
+  <p>Our plushies</p>
+  @if (loadFailed()) {
+    <p class="error-message">Could not load products. Please try again later.</p>
+  } @else if (items().length === 0) {
+    <p>No products available right now.</p>
   }
+  <div class="width-100 d-flex d-flex-row d-flex-wrap item-grid">
+    @for (item of items(); track item.id) {
+      <div class="item-card">
+        <img class="card" [src]="item.details.imgUrl" [alt]="item.name" (error)="useFallbackImage($event)">
+        <div class="width-100 d-flex d-flex-row d-flex-space-between">
+          <p>{{ item.name }}</p>
+          <p>{{ item.price }} DKK</p>
+        </div>
+      </div>
+    }
+  </div>
 </div>
 
 <br><br><br><br>
