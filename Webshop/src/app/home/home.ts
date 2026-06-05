@@ -1,33 +1,39 @@
-
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../enviroments/firebase.config';
+import { Component, effect, inject, signal } from '@angular/core';
+import { ItemService } from '../items/item.service';
+import { Item } from '../items/item.model';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [
-    CommonModule
-  ],
+  imports: [],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class Home{
-imgUrl: string | null = null;
+export class Home {
+  private itemService = inject(ItemService);
+  private authService = inject(AuthService);
 
-  async onFileSelected(event: Event) {
-    const file = (event.target as HTMLInputElement)?.files?.[0];
-    if (!file) return;
+  readonly items = signal<Item[]>([]);
+  readonly loadFailed = signal(false);
 
-    const path = `user/${file.name}`;
-    const fileRef = ref(storage, path);
+  constructor() {
+    // Reload the list whenever the logged-in user changes (login/logout),
+    // so items the new auth state may not see don't linger on screen
+    effect(() => {
+      this.authService.currentUser();
+      this.loadItems();
+    });
+  }
 
-    try {
-      await uploadBytes(fileRef, file);
-      this.imgUrl = await getDownloadURL(fileRef);
-      console.log('Upload successful:', this.imgUrl);
-    } catch (error) {
-      console.error('Upload failed:', error);
-    }
+  private loadItems(): void {
+    this.loadFailed.set(false);
+    this.itemService.getItems().subscribe({
+      next: items => this.items.set(items),
+      error: () => this.loadFailed.set(true)
+    });
+  }
+
+  useFallbackImage(event: Event): void {
+    (event.target as HTMLImageElement).src = 'toy-805814_1920.jpg';
   }
 }
