@@ -1,11 +1,12 @@
 import { Component, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ItemService } from '../items/item.service';
 import { Item } from '../items/item.model';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })

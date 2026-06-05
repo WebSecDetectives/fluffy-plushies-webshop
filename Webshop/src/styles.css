@@ -209,3 +209,28 @@ input[type="submit"] {
   font-family: Arial, Helvetica, sans-serif;
   font-size: x-large;
 }
+
+/* Product cards */
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  width: 200px;
+  height: 180px;
+  object-fit: cover;
+}
+
+.item-card {
+  width: 220px;
+  display: block;
+  color: #000;
+  font-size: medium;
+}
+
+.visibility-badge {
+  color: #c0392b;
+  font-weight: bold;
+}

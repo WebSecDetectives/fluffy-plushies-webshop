@@ -1,0 +1,67 @@
+<div>
+  <br><br><br>
+  <h1 class="d-flex d-flex-center">New product</h1>
+  <br>
+  <div class="d-flex d-flex-justify-center d-flex-align-top">
+    <form [formGroup]="productForm" (submit)="onSubmit($event)" class="d-flex d-flex-row">
+      <div class="margin-right-50">
+        <p>Name</p>
+        <input type="text" class="input-field" formControlName="name" placeholder="product name">
+        @if (errorFor('name'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Price (DKK)</p>
+        <input type="number" class="input-field" formControlName="price" placeholder="0.00" min="0" step="0.01">
+        @if (errorFor('price'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Stock</p>
+        <input type="number" class="input-field" formControlName="stock" min="0">
+        @if (errorFor('stock'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Visibility</p>
+        <select class="input-field" formControlName="visibility">
+          <option value="PUBLIC">Public — visible to everyone</option>
+          <option value="PRIVATE">Private — only you and admins</option>
+        </select>
+      </div>
+      <div>
+        <p>Description</p>
+        <input type="text" class="input-field" formControlName="description" placeholder="description">
+        @if (errorFor('description'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Age group</p>
+        <input type="text" class="input-field" formControlName="ageGroup" placeholder="e.g. 3+">
+        @if (errorFor('ageGroup'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Type</p>
+        <input type="text" class="input-field" formControlName="itemType" placeholder="e.g. bear">
+        @if (errorFor('itemType'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Material</p>
+        <input type="text" class="input-field" formControlName="material" placeholder="e.g. plush">
+        @if (errorFor('material'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Image URL</p>
+        <input type="text" class="input-field" formControlName="imgUrl" placeholder="https://...">
+        @if (errorFor('imgUrl'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+
+        @if (errorMessage(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+
+        <br><br>
+        <input type="submit" class="login-button-anchor" style="border: none; color: white;"
+               value="Create product" [disabled]="submitting()">
+      </div>
+    </form>
+  </div>
+  <br><br><br>
+</div>

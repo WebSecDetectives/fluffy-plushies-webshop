@@ -6,6 +6,9 @@
       <h1 class="text-bold text-color-white" >Fluffy Plushies</h1>
     </div>
     <div>
+      @if (authService.isMerchant()) {
+        <a [routerLink]="['/my-products']" class="margin-right-50 btn btn-link">My products</a>
+      }
       <a [routerLink]="['/update']" class="margin-right-50 btn btn-link">Edit account</a>
       <a [routerLink]="['/about']" class="margin-right-50 btn btn-link">About</a>
       <a [routerLink]="['/contact']" class="margin-right-50 btn btn-link">Contact</a>
