@@ -143,6 +143,12 @@ input[type="file"] {
   background-color: #5B94EB;
 }
 
+.error-message {
+  color: #c0392b;
+  font-size: 0.9rem;
+  max-width: 250px;
+}
+
 /* Style for displaying selected file name */
 .file-name {
   margin-left: 1rem;

@@ -37,7 +37,8 @@ friend</p>
 </div>
 <div class="width-50  d-flex  d-flex-column  margin-right-left-auto">
   <p>Most popular</p>
-  <div class="width-100 d-flex d-flex-row d-flex-space-between" *ngFor="let i of [1, 2, 3]">
+  @for (i of [1, 2, 3]; track i) {
+  <div class="width-100 d-flex d-flex-row d-flex-space-between">
     <div >
       <img class="card" src="toy-805814_1920.jpg" alt="">
       <div class="width-100 d-flex d-flex-row d-flex-space-between">
@@ -60,6 +61,7 @@ friend</p>
       </div>
     </div>
   </div>
+  }
 </div>
 
 <br><br><br><br>

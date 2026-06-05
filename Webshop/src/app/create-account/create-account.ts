@@ -2,10 +2,23 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { environment } from '../../enviroments/enviroment';
 import { getDownloadURL, ref, StorageReference, uploadBytes } from 'firebase/storage';
 import { storage } from '../../enviroments/firebase.config';
+
+// 12-100 chars with at least one lowercase, uppercase, digit and special character; no whitespace
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{12,100}$/;
+
+const VALIDATION_MESSAGES: Record<string, string> = {
+  username: 'Username must be between 3 and 30 characters.',
+  password: 'Password must be 12-100 characters and contain an uppercase letter, a lowercase letter, a digit and a special character, without spaces.',
+  email: 'Enter a valid email address.',
+  phone: 'Phone number is required.',
+  street: 'Street is required.',
+  postalCode: 'Postal code is required.',
+  city: 'City is required.',
+  country: 'Country is required.'
+};
 
 @Component({
   selector: 'app-create-account',
@@ -22,25 +35,24 @@ export class CreateAccount {
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.registerForm = this.fb.group({
-      username: ['', Validators.required],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
       street: ['', Validators.required],
       postalCode: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
       imgUrl: [null]
     });
+  }
 
-    // Optional: Redirect if not authenticated
-    const auth = getAuth();
-    onAuthStateChanged(auth, user => {
-      if (!user) {
-        // Handle unauthenticated state (e.g., navigate to login)
-        console.warn('User not authenticated. Redirecting to login.');
-      }
-    });
+  errorFor(controlName: string): string | null {
+    const control = this.registerForm.get(controlName);
+    if (control && control.invalid && (control.dirty || control.touched)) {
+      return VALIDATION_MESSAGES[controlName];
+    }
+    return null;
   }
 
   onFileSelected(event: Event): void {
@@ -51,7 +63,8 @@ export class CreateAccount {
   async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
     if (this.registerForm.invalid) {
-      alert('Please fill in all required fields.');
+      // Reveal per-field error messages for fields the user hasn't visited yet
+      this.registerForm.markAllAsTouched();
       return;
     }
 
@@ -79,11 +92,11 @@ export class CreateAccount {
       password: v.password,
       address: {
         street: v.street,
-        postal_code: v.postalCode,
+        postalCode: v.postalCode,
         city: v.city,
         country: v.country
       },
-      img_url: this.imgUrl
+      imgUrl: this.imgUrl
     };
 
     // 3) Call backend API

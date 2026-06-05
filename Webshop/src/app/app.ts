@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,20 +11,16 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 })
 export class App {
   protected title = 'Fluffy Plushies';
-  loggedIn: boolean = false;
 
-  constructor(private router: Router) {
-  }
-  login() {
-    this.loggedIn = true;
+  constructor(private router: Router, protected authService: AuthService) {
   }
 
   logout() {
-    this.loggedIn = false;
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   home() {
-    console.log('Navigating to home');
     this.router.navigate(['/']);
   }
 }
