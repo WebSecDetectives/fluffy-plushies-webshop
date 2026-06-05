@@ -3,6 +3,7 @@ package com.sirmeows.fluffyinventoryservice.config;
 import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import com.sirmeows.fluffyinventoryservice.entity.Review;
+import com.sirmeows.fluffyinventoryservice.entity.Visibility;
 import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.security.Role;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
@@ -38,6 +39,8 @@ public class DataInitializer {
     public void init() {
         log.info("Starting data initialization...");
 
+        itemService.createItem(buildPrivateItem(), SEED_MERCHANT_ID);
+
         var items = Stream.generate(this::buildRandomItem)
                 .limit(NUMBER_OF_ITEMS)
                 .map(item -> itemService.createItem(item, SEED_MERCHANT_ID))
@@ -51,7 +54,7 @@ public class DataInitializer {
             });
         });
 
-        log.info("Created {} items with reviews. Finished data initialization...", NUMBER_OF_ITEMS);
+        log.info("Created {} public items with reviews and 1 private item. Finished data initialization...", NUMBER_OF_ITEMS);
     }
 
     private Review buildRandomReview() {
@@ -68,6 +71,18 @@ public class DataInitializer {
                 .name(randomName())
                 .price(randomPrice())
                 .stock(randomStock())
+                .details(createRandomDetails())
+                .build();
+    }
+
+    // Fixed PRIVATE item so the visibility rules are demonstrable on every fresh start:
+    // visible to the seed merchant (owner) and admin, hidden from users/anonymous
+    private Item buildPrivateItem() {
+        return Item.builder()
+                .name("secret prototype plushie")
+                .price(randomPrice())
+                .stock(1)
+                .visibility(Visibility.PRIVATE)
                 .details(createRandomDetails())
                 .build();
     }

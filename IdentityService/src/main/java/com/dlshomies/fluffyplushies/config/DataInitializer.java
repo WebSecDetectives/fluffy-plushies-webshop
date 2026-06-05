@@ -23,11 +23,12 @@ public class DataInitializer {
     private final UserService userService;
 
     /**
-     * Fixed id for the seeded normal user so other services (e.g. InventoryService seed data)
-     * can attribute records to this real, loginable account. Must match
-     * InventoryService DataInitializer.SEED_USER_ID.
+     * Fixed ids for the seeded user and merchant so other services (e.g. InventoryService
+     * seed data) can attribute records to these real, loginable accounts. Must match
+     * InventoryService DataInitializer.SEED_USER_ID / SEED_MERCHANT_ID.
      */
     public static final UUID SEED_USER_ID = UUID.fromString("00000000-0000-0000-0000-0000000000a1");
+    public static final UUID SEED_MERCHANT_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     @Value("${identity.admin.password}")
     private String adminPassword;
@@ -64,6 +65,7 @@ public class DataInitializer {
         log.info("Admin user created successfully");
 
         var merchantUser = User.builder()
+                .id(SEED_MERCHANT_ID)
                 .username("merchant")
                 .email("merchant@merchant.com")
                 .phone("+35834343434")
