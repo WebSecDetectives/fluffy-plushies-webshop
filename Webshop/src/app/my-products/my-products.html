@@ -1,0 +1,31 @@
+<div class="width-50 margin-right-left-auto">
+  <br><br><br>
+
+  <div class="d-flex d-flex-row d-flex-space-between d-flex-align-center">
+    <h1 class="text-color-purple text-size-2-5-rem">My products</h1>
+    <a [routerLink]="['/my-products/new']" class="login-button-anchor">New product</a>
+  </div>
+
+  @if (loadFailed()) {
+    <p class="error-message">Could not load your products. Please try again later.</p>
+  } @else if (items().length === 0) {
+    <p>You have no products yet.</p>
+  }
+
+  <div class="width-100 d-flex d-flex-row d-flex-wrap">
+    @for (item of items(); track item.id) {
+      <a class="item-card" [routerLink]="['/items', item.id]">
+        <img class="card" [src]="item.details.imgUrl" [alt]="item.name" (error)="useFallbackImage($event)">
+        <div class="width-100 d-flex d-flex-row d-flex-space-between">
+          <p>{{ item.name }}</p>
+          <p>{{ item.price }} DKK</p>
+        </div>
+        @if (item.visibility === 'PRIVATE') {
+          <p class="visibility-badge">PRIVATE</p>
+        }
+      </a>
+    }
+  </div>
+
+  <br><br><br>
+</div>

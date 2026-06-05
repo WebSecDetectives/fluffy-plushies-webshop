@@ -1,0 +1,32 @@
+<div class="width-50 margin-right-left-auto">
+  <br><br><br>
+
+  @if (notFound()) {
+    <h1>Product not found</h1>
+    <p>The product does not exist or is not available.</p>
+  } @else if (item(); as item) {
+    <h1 class="text-color-purple text-size-2-5-rem">{{ item.name }}</h1>
+
+    <div class="d-flex d-flex-row d-flex-space-between d-flex-align-top">
+      <img class="detail-img" [src]="item.details.imgUrl" [alt]="item.name" (error)="useFallbackImage($event)">
+
+      <div class="margin-left-20">
+        <p class="text-size-1-5-rem text-color-purple">{{ item.price }} DKK</p>
+        <p>{{ item.details.description }}</p>
+        <table class="detail-table">
+          <tbody>
+            <tr><td>Age group</td><td>{{ item.details.ageGroup }}</td></tr>
+            <tr><td>Type</td><td>{{ item.details.itemType }}</td></tr>
+            <tr><td>Material</td><td>{{ item.details.material }}</td></tr>
+            <tr><td>In stock</td><td>{{ item.stock }}</td></tr>
+          </tbody>
+        </table>
+        @if (item.visibility === 'PRIVATE') {
+          <p class="visibility-badge">PRIVATE — visible only to the owner merchant and admins</p>
+        }
+      </div>
+    </div>
+  }
+
+  <br><br><br>
+</div>
