@@ -9,32 +9,56 @@
     <div class="margin-right-50">
       <p>Username</p>
       <input type="text" class=" input-field" formControlName="username" placeholder="username">
+      @if (errorFor('username'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <p>Password</p>
       <input type="password" class="input-field" formControlName="password" placeholder="password">
+      @if (errorFor('password'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <!-- <p>Repeat Password</p>
       <input type="text" class="input-field" formControlName="confirmPassword" placeholder="confirm password"> -->
       <p>Email</p>
       <input type="text" class="input-field" formControlName="email" placeholder="email@example.com">
+      @if (errorFor('email'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <p>Phone Number</p>
       <input type="text" class="input-field" formControlName="phone" placeholder="123-456-7890">
+      @if (errorFor('phone'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
     </div>
     <div>
       <p>Street</p>
       <input type="text" class=" input-field" formControlName="street" placeholder="street">
+      @if (errorFor('street'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <p>City</p>
       <input type="text" class="input-field" formControlName="city" placeholder="city of residence">
+      @if (errorFor('city'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <p>Postal code</p>
       <input type="text" class="input-field" formControlName="postalCode" placeholder="postal code">
+      @if (errorFor('postalCode'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
       <p>Country</p>
       <input type="text" class="input-field" formControlName="country" placeholder="country of residence" >
+      @if (errorFor('country'); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
 
       <br>  <br>
 
       <p>Upload image</p>
       <div class="file-upload">
-        <input type="file" class="input-field-file" formControlName="imgUrl" placeholder="profile image" style="width: 170px;" (change)="onFileSelected($event)">
-        <label for="fileInput" class="file-label">Upload fil</label>
-        <span class="file-name" id="fileName">Ingen fil valgt</span>
+        <input type="file" id="fileInput" class="input-field-file" formControlName="imgUrl" placeholder="profile image" style="width: 170px;" (change)="onFileSelected($event)">
+        <label for="fileInput" class="file-label">Upload file</label>
+        <span class="file-name" id="fileName">{{ selectedFile?.name ?? 'No file selected' }}</span>
       </div>
 
       <br><br><br><br>
