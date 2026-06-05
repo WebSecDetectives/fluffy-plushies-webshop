@@ -26,6 +26,53 @@
         }
       </div>
     </div>
+
+    <br>
+    <hr class="width-100">
+    <h3>Reviews</h3>
+
+    @if (reviews().length === 0) {
+      <p>No reviews yet.</p>
+    }
+    @for (review of reviews(); track review.id) {
+      <div class="review">
+        <p class="review-stars">{{ stars(review.rating) }}</p>
+        <p>{{ review.reviewText }}</p>
+        @if (canDelete(review)) {
+          <button type="button" class="review-delete" (click)="deleteReview(review)">Delete</button>
+        }
+      </div>
+    }
+
+    @if (canReview()) {
+      <br>
+      <h3>Write a review</h3>
+      <form [formGroup]="reviewForm" (submit)="submitReview($event)">
+        <textarea class="input-field review-text" formControlName="reviewText" rows="3"
+                  placeholder="What did you think of this plushie?"></textarea>
+        @if (reviewForm.get('reviewText')?.touched && reviewForm.get('reviewText')?.invalid) {
+          <p class="error-message">Review text is required.</p>
+        }
+        <div class="d-flex d-flex-row d-flex-align-center">
+          <p class="margin-right-10">Rating</p>
+          <select class="input-field margin-right-20" formControlName="rating">
+            <option [value]="5">5 - excellent</option>
+            <option [value]="4">4 - good</option>
+            <option [value]="3">3 - okay</option>
+            <option [value]="2">2 - poor</option>
+            <option [value]="1">1 - terrible</option>
+          </select>
+          <input type="submit" class="login-button-anchor review-submit" value="Submit review"
+                 [disabled]="submittingReview()">
+        </div>
+      </form>
+    } @else if (!authService.isLoggedIn()) {
+      <p>Log in to write a review.</p>
+    }
+
+    @if (reviewError(); as message) {
+      <p class="error-message">{{ message }}</p>
+    }
   }
 
   <br><br><br>
