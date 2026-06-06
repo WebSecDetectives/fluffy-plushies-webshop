@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../enviroments/enviroment';
+import { environment } from '../../environments/environment';
 import { getDownloadURL, ref, StorageReference, uploadBytes } from 'firebase/storage';
-import { storage } from '../../enviroments/firebase.config';
+import { storage } from '../../environments/firebase.config';
 import { PASSWORD_PATTERN } from '../forms/validation-patterns';
 
 const VALIDATION_MESSAGES: Record<string, string> = {
