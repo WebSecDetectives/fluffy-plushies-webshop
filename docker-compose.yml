@@ -1,35 +1,15 @@
 services:
-  caddy:
-    profiles:
-      - full
-      - web
-    image: caddy:2
-    container_name: caddy
-    hostname: caddy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    restart: unless-stopped
-
-  hello-nginx:
-    profiles:
-      - full
-      - web
-    hostname: nginx
-    container_name: nginx
-    image: nginx:alpine
-
-  webshop-nginx:
-    profiles:
-      - full
-      - web
+  webshop:
     hostname: webshop
     container_name: webshop
-    image: nginx:alpine
+    build:
+      context: ./Webshop
+    ports:
+      - "80:8080"
+    restart: unless-stopped
+    depends_on:
+      - identity-service
+      - inventory-service
 
   rabbitmq:
     image: docker.io/library/rabbitmq:management
@@ -202,5 +182,3 @@ volumes:
   identity-mysql:
   inventory-mysql:
   order-mongodb:
-  caddy_data:
-  caddy_config:

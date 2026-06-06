@@ -1,0 +1,10 @@
+{
+  "/identity": {
+    "target": "http://localhost:8081",
+    "secure": false
+  },
+  "/inventory": {
+    "target": "http://localhost:8082",
+    "secure": false
+  }
+}

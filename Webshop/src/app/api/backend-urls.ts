@@ -1,4 +1,4 @@
-import { environment } from '../../enviroments/enviroment';
+import { environment } from '../../environments/environment';
 
 /**
  * True if the URL targets one of our own backend services (Identity/Inventory).

@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { environment } from '../../enviroments/enviroment';
+import { environment } from '../../environments/environment';
 import { PASSWORD_PATTERN } from '../forms/validation-patterns';
 
 const VALIDATION_MESSAGES: Record<string, string> = {
