@@ -93,16 +93,11 @@ public class DataInitializer {
                 .ageGroup(AgeGroup.random().label())
                 .itemType("YY")
                 .material("ZZ")
-                .imgUrl(randomUrl())
                 .build();
     }
 
     private String randomName() {
         return faker.funnyName().name().toLowerCase(Locale.ROOT);
-    }
-
-    private String randomUrl() {
-        return faker.internet().url().replaceFirst("^http://", "https://");
     }
 
     private BigDecimal randomPrice() {

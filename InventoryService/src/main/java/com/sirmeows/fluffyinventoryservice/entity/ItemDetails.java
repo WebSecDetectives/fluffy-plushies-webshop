@@ -25,8 +25,4 @@ public class ItemDetails extends AbstractIdentifiable {
 
     @NotBlank
     private String material;
-
-    @NotBlank
-    @Column(nullable = false, length = 2048)
-    private String imgUrl;
 }

@@ -138,7 +138,6 @@ public class ItemService {
         if (patch.getAgeGroup() != null) details.setAgeGroup(patch.getAgeGroup());
         if (patch.getItemType() != null) details.setItemType(patch.getItemType());
         if (patch.getMaterial() != null) details.setMaterial(patch.getMaterial());
-        if (patch.getImgUrl() != null) details.setImgUrl(patch.getImgUrl());
     }
 
     private boolean isOwner(Item item, AuthUser caller) {

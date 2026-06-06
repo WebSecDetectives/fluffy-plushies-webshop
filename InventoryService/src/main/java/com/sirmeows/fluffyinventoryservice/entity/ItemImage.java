@@ -28,8 +28,10 @@ public class ItemImage extends AbstractIdentifiable {
     @Column(nullable = false)
     private String contentType;
 
+    // Length forces MEDIUMBLOB (16MB); Hibernate otherwise creates a 64KB BLOB, far too
+    // small for a re-encoded PNG.
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, length = 16_777_215)
     @ToString.Exclude
     private byte[] data;
 }
