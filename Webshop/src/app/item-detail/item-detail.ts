@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemService } from '../items/item.service';
 import { Item } from '../items/item.model';
@@ -9,12 +9,13 @@ import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-item-detail',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './item-detail.html',
   styleUrls: ['./item-detail.css']
 })
 export class ItemDetail {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private itemService = inject(ItemService);
   private reviewService = inject(ReviewService);
   private fb = inject(FormBuilder);
@@ -25,11 +26,22 @@ export class ItemDetail {
   readonly reviews = signal<Review[]>([]);
   readonly reviewError = signal<string | null>(null);
   readonly submittingReview = signal(false);
+  readonly itemError = signal<string | null>(null);
 
   /** Reviews can be written by users and admins, not merchants */
   readonly canReview = computed(() => {
     const role = this.authService.currentUser()?.role;
     return role === 'USER' || role === 'ADMIN';
+  });
+
+  /** Admin may modify any item, a merchant only their own (enforced server-side too) */
+  readonly canModifyItem = computed(() => {
+    const user = this.authService.currentUser();
+    const item = this.item();
+    if (!user || !item) {
+      return false;
+    }
+    return user.role === 'ADMIN' || (user.role === 'MERCHANT' && item.merchantId === user.userId);
   });
 
   reviewForm: FormGroup = this.fb.group({
@@ -91,6 +103,16 @@ export class ItemDetail {
     this.reviewService.deleteReview(review.id).subscribe({
       next: () => this.loadReviews(),
       error: () => this.reviewError.set('Could not delete the review.')
+    });
+  }
+
+  deleteItem(): void {
+    if (!this.itemId || !confirm('Delete this product?')) {
+      return;
+    }
+    this.itemService.deleteItem(this.itemId).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () => this.itemError.set('Could not delete the product.')
     });
   }
 

@@ -50,6 +50,22 @@ Seed data: 1 PRIVATE item ("secret prototype plushie", owned by `merchant`) + 10
 - [ ] Create PUBLIC product → lands on detail page, visible on home logged-out
 - [ ] Create PRIVATE product → visible to owner/admin only
 
+## Item edit/delete (item detail)
+
+- [ ] As `merchant` on own item → Edit + Delete buttons visible; on another merchant's item → hidden
+- [ ] As `admin` → Edit + Delete on every item
+- [ ] As `user`/logged out → no Edit/Delete buttons
+- [ ] Edit → form prefilled → save → detail shows updated values
+- [ ] Delete → confirm → item gone from home list
+- [ ] Backend check: `PATCH`/`DELETE /items/{id}` with a `user` token → 403; with another merchant's token → 404/403 (server-side ownership)
+
+## Admin: create merchant (`/admin/create-merchant`)
+
+- [ ] As `admin`: "New merchant" header link visible; form submits → success message
+- [ ] New merchant can log in, sees "My products" (empty), can create products
+- [ ] As `merchant`/`user`: no header link; URL redirects home (roleGuard)
+- [ ] Backend check: `POST /users/merchant` with non-admin token → 403
+
 ## Reviews (item detail)
 
 - [ ] Logged out → reviews visible on public items, "Log in to write a review"
@@ -64,3 +80,6 @@ Seed data: 1 PRIVATE item ("secret prototype plushie", owned by `merchant`) + 10
       renders as literal text, no dialog (full plan in `REPORT_NOTES.md` "XSS defence")
 - [ ] Same payload as username at registration → header shows literal text
 - [ ] Tampered JWT in localStorage (edit a character) → app treats you as logged out / backend 401s
+- [ ] CSRF PoC: while logged in, open a local `csrf-poc.html` that auto-submits
+      `POST /inventory/items` → backend 401 (no cookie to ride, header not attached by attacker page);
+      screenshot for report (see REPORT_NOTES "Session storage & CSRF")

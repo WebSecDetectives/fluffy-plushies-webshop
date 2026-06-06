@@ -1,0 +1,15 @@
+.error-message {
+  font-size: 0.9rem;
+  max-width: 250px;
+}
+
+.success-message {
+  color: #27ae60;
+  font-weight: bold;
+  max-width: 250px;
+}
+
+.merchant-submit {
+  border: none;
+  color: white;
+}

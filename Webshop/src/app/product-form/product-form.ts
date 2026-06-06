@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../items/item.service';
-import { ItemRequest } from '../items/item.model';
+import { Item, ItemRequest } from '../items/item.model';
 
 // https URL, max 2048 chars
 const IMG_URL_PATTERN = /^https:\/\/\S{1,2040}$/;
@@ -18,16 +18,24 @@ const VALIDATION_MESSAGES: Record<string, string> = {
   imgUrl: 'Image URL must be a valid https link.'
 };
 
+/**
+ * Shared form for creating ("/my-products/new") and editing ("/items/:id/edit")
+ * a product. Edit mode is active when the route carries an item id.
+ */
 @Component({
-  selector: 'app-create-product',
+  selector: 'app-product-form',
   imports: [ReactiveFormsModule],
-  templateUrl: './create-product.html',
-  styleUrls: ['./create-product.css']
+  templateUrl: './product-form.html',
+  styleUrls: ['./product-form.css']
 })
-export class CreateProduct {
+export class ProductForm {
   private fb = inject(FormBuilder);
   private itemService = inject(ItemService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  private readonly itemId = this.route.snapshot.paramMap.get('id');
+  readonly isEdit = this.itemId !== null;
 
   readonly errorMessage = signal<string | null>(null);
   readonly submitting = signal(false);
@@ -43,6 +51,15 @@ export class CreateProduct {
     material: ['', Validators.required],
     imgUrl: ['', [Validators.required, Validators.pattern(IMG_URL_PATTERN)]]
   });
+
+  constructor() {
+    if (this.itemId) {
+      this.itemService.getItem(this.itemId).subscribe({
+        next: item => this.prefill(item),
+        error: () => this.errorMessage.set('Could not load the product.')
+      });
+    }
+  }
 
   errorFor(controlName: string): string | null {
     const control = this.productForm.get(controlName);
@@ -62,8 +79,8 @@ export class CreateProduct {
     const v = this.productForm.value;
     const request: ItemRequest = {
       name: v.name,
-      price: v.price,
-      stock: v.stock,
+      price: Number(v.price),
+      stock: Number(v.stock),
       visibility: v.visibility,
       details: {
         description: v.description,
@@ -76,12 +93,31 @@ export class CreateProduct {
 
     this.submitting.set(true);
     this.errorMessage.set(null);
-    this.itemService.createItem(request).subscribe({
+
+    const save$ = this.itemId
+      ? this.itemService.updateItem(this.itemId, request)
+      : this.itemService.createItem(request);
+
+    save$.subscribe({
       next: item => this.router.navigate(['/items', item.id]),
       error: () => {
-        this.errorMessage.set('Could not create the product. Please try again.');
+        this.errorMessage.set('Could not save the product. Please try again.');
         this.submitting.set(false);
       }
+    });
+  }
+
+  private prefill(item: Item): void {
+    this.productForm.patchValue({
+      name: item.name,
+      price: item.price,
+      stock: item.stock,
+      visibility: item.visibility,
+      description: item.details.description,
+      ageGroup: item.details.ageGroup,
+      itemType: item.details.itemType,
+      material: item.details.material,
+      imgUrl: item.details.imgUrl
     });
   }
 }

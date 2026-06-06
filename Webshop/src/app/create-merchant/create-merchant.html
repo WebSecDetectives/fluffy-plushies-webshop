@@ -1,0 +1,65 @@
+<div>
+  <br><br><br>
+  <h1 class="d-flex d-flex-center">Create merchant account</h1>
+  <br>
+  <div class="d-flex d-flex-justify-center d-flex-align-top">
+    <form [formGroup]="merchantForm" (submit)="onSubmit($event)" class="d-flex d-flex-row">
+      <div class="margin-right-50">
+        <p>Username</p>
+        <input type="text" class="input-field" formControlName="username" placeholder="username">
+        @if (errorFor('username'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Password</p>
+        <input type="password" class="input-field" formControlName="password" placeholder="password">
+        @if (errorFor('password'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Email</p>
+        <input type="text" class="input-field" formControlName="email" placeholder="email@example.com">
+        @if (errorFor('email'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Phone Number</p>
+        <input type="text" class="input-field" formControlName="phone" placeholder="123-456-7890">
+        @if (errorFor('phone'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+      </div>
+      <div>
+        <p>Street</p>
+        <input type="text" class="input-field" formControlName="street" placeholder="street">
+        @if (errorFor('street'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>City</p>
+        <input type="text" class="input-field" formControlName="city" placeholder="city">
+        @if (errorFor('city'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Postal code</p>
+        <input type="text" class="input-field" formControlName="postalCode" placeholder="postal code">
+        @if (errorFor('postalCode'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        <p>Country</p>
+        <input type="text" class="input-field" formControlName="country" placeholder="country">
+        @if (errorFor('country'); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+
+        @if (errorMessage(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+        @if (successMessage(); as message) {
+          <p class="success-message">{{ message }}</p>
+        }
+
+        <br><br>
+        <input type="submit" class="login-button-anchor merchant-submit" value="Create merchant"
+               [disabled]="submitting()">
+      </div>
+    </form>
+  </div>
+  <br><br><br>
+</div>

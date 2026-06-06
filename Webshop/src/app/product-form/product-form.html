@@ -1,6 +1,6 @@
 <div>
   <br><br><br>
-  <h1 class="d-flex d-flex-center">New product</h1>
+  <h1 class="d-flex d-flex-center">{{ isEdit ? 'Edit product' : 'New product' }}</h1>
   <br>
   <div class="d-flex d-flex-justify-center d-flex-align-top">
     <form [formGroup]="productForm" (submit)="onSubmit($event)" class="d-flex d-flex-row">
@@ -23,7 +23,7 @@
         <p>Visibility</p>
         <select class="input-field" formControlName="visibility">
           <option value="PUBLIC">Public — visible to everyone</option>
-          <option value="PRIVATE">Private — only you and admins</option>
+          <option value="PRIVATE">Private — only owner and admins</option>
         </select>
       </div>
       <div>
@@ -58,8 +58,8 @@
         }
 
         <br><br>
-        <input type="submit" class="login-button-anchor" style="border: none; color: white;"
-               value="Create product" [disabled]="submitting()">
+        <input type="submit" class="login-button-anchor product-submit"
+               [value]="isEdit ? 'Save changes' : 'Create product'" [disabled]="submitting()">
       </div>
     </form>
   </div>

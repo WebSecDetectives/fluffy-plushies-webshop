@@ -5,9 +5,7 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../enviroments/enviroment';
 import { getDownloadURL, ref, StorageReference, uploadBytes } from 'firebase/storage';
 import { storage } from '../../enviroments/firebase.config';
-
-// 12-100 chars with at least one lowercase, uppercase, digit and special character; no whitespace
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{12,100}$/;
+import { PASSWORD_PATTERN } from '../forms/validation-patterns';
 
 const VALIDATION_MESSAGES: Record<string, string> = {
   username: 'Username must be between 3 and 30 characters.',

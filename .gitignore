@@ -50,6 +50,9 @@ AGENTS.md
 .gh_pat
 .gh_pat.txt
 
+# security PoC pages (kept local, not pushed)
+Documentation/poc/
+
 # local docs
 */exam-project-2026.pdf
 */TODO.md
