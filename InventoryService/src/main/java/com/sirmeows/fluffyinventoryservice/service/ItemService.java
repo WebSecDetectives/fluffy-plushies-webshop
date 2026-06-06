@@ -7,12 +7,14 @@ import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import com.sirmeows.fluffyinventoryservice.entity.Visibility;
 import com.sirmeows.fluffyinventoryservice.exception.ItemAccessDeniedException;
 import com.sirmeows.fluffyinventoryservice.exception.ItemNotFoundException;
+import com.sirmeows.fluffyinventoryservice.repository.ItemImageRepository;
 import com.sirmeows.fluffyinventoryservice.repository.ItemRepository;
 import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.security.Role;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Service
 public class ItemService {
     private ItemRepository itemRepository;
+    private ItemImageRepository itemImageRepository;
 
     /**
      * Returns the items the caller is allowed to see:
@@ -69,9 +72,7 @@ public class ItemService {
      * onto the existing managed instance.
      */
     public Item updateItem(UUID id, ItemUpdateDto patch, AuthUser caller) {
-        var item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
-
-        assertCanModify(item, caller);
+        var item = getModifiableItem(id, caller);
 
         log.info("Updating item {} for {} {}", item, caller.role().name(), caller.id());
 
@@ -84,10 +85,22 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
+    /** Deletes the item and its image atomically. */
+    @Transactional
     public void deleteItem(UUID id, AuthUser caller) {
+        var item = getModifiableItem(id, caller);
+        itemImageRepository.deleteByItemId(id);
+        itemRepository.delete(item);
+    }
+
+    /**
+     * Returns the item if the caller may modify it (ADMIN: any; MERCHANT: own only),
+     * applying the same 404-vs-403 semantics as {@link #assertCanModify}.
+     */
+    public Item getModifiableItem(UUID id, AuthUser caller) {
         var item = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
         assertCanModify(item, caller);
-        itemRepository.delete(item);
+        return item;
     }
 
     private boolean canView(Item item, AuthUser caller) {
