@@ -39,6 +39,14 @@
   padding: 4px 10px;
 }
 
+.item-action {
+  font-size: medium;
+}
+
+.item-delete {
+  background-color: #c0392b;
+}
+
 .review-submit {
   border: none;
   color: white;

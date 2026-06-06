@@ -24,6 +24,15 @@
         @if (item.visibility === 'PRIVATE') {
           <p class="visibility-badge">PRIVATE — visible only to the owner merchant and admins</p>
         }
+        @if (canModifyItem()) {
+          <div class="d-flex d-flex-row d-flex-align-center">
+            <a [routerLink]="['/items', item.id, 'edit']" class="login-button-anchor item-action margin-right-20">Edit</a>
+            <button type="button" class="item-delete" (click)="deleteItem()">Delete</button>
+          </div>
+          @if (itemError(); as message) {
+            <p class="error-message">{{ message }}</p>
+          }
+        }
       </div>
     </div>
 
