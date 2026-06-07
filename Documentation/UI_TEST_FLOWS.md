@@ -74,6 +74,21 @@ Seed data: 1 PRIVATE item ("secret prototype plushie", owned by `merchant`) + 10
 - [ ] As `admin` → delete button on every review
 - [ ] Delete own review → disappears from list
 
+## Image upload & rendering
+
+- [ ] Create product as `merchant` with a JPEG selected → detail page shows the uploaded image
+- [ ] Create product without an image → cards/detail show the fallback plushie
+- [ ] Edit product: current image shown as thumbnail above the file input
+- [ ] Edit product: choose a new PNG (thumbnail switches to preview) → save → image replaced
+- [ ] Edit product: leave file empty → save → existing image unchanged
+- [ ] Pick a `.txt` or >2MB file → rejected client-side with a message, no request sent
+- [ ] Rename a `.txt` to `.png` → rejected client-side by the magic-byte check ("file content is not a valid…")
+- [ ] Bypass the client entirely (Postman `POST /inventory/items/{id}/image` with `NOT_AN_IMG.jpg`) → backend 400
+- [ ] Server-side rejection through the form (e.g. >4096px JPEG under 2MB) → product saved, dismissible "image could not be uploaded" banner shown on the item page (✕ closes it)
+- [ ] PRIVATE item image: renders for owner `merchant` and `admin`; logged out/`user` → fallback (GET 404)
+- [ ] DevTools Network: `GET /inventory/items/{id}/image` carries `Authorization: Bearer`, returns `image/png`
+- [ ] Scroll the home list and navigate around → no growing blob memory (object URLs revoked)
+
 ## Security spot-checks
 
 - [ ] Stored XSS: submit `<img src=x onerror=alert(document.domain)>` as review text →

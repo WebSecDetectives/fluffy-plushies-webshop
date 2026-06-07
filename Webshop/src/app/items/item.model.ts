@@ -5,7 +5,6 @@ export interface ItemDetails {
   ageGroup: string;
   itemType: string;
   material: string;
-  imgUrl: string;
 }
 
 export interface Item {

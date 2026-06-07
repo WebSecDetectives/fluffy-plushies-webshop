@@ -6,10 +6,11 @@ import { Item } from '../items/item.model';
 import { ReviewService } from '../reviews/review.service';
 import { Review } from '../reviews/review.model';
 import { AuthService } from '../auth/auth.service';
+import { ItemImage } from '../items/item-image/item-image';
 
 @Component({
   selector: 'app-item-detail',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ItemImage],
   templateUrl: './item-detail.html',
   styleUrls: ['./item-detail.css']
 })
@@ -116,9 +117,6 @@ export class ItemDetail {
     });
   }
 
-  useFallbackImage(event: Event): void {
-    (event.target as HTMLImageElement).src = '/toy-805814_1920.jpg';
-  }
 
   private loadReviews(): void {
     if (!this.itemId) return;

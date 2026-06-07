@@ -8,7 +8,7 @@
     <h1 class="text-color-purple text-size-2-5-rem">{{ item.name }}</h1>
 
     <div class="d-flex d-flex-row d-flex-space-between d-flex-align-top">
-      <img class="detail-img" [src]="item.details.imgUrl" [alt]="item.name" (error)="useFallbackImage($event)">
+      <app-item-image [itemId]="item.id" [alt]="item.name" imgClass="detail-img" />
 
       <div class="margin-left-20">
         <p class="text-size-1-5-rem text-color-purple">{{ item.price }} DKK</p>

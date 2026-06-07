@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/auth.service';
+import { NoticeService } from './notice/notice.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import { AuthService } from './auth/auth.service';
 export class App {
   protected title = 'Fluffy Plushies';
 
-  constructor(private router: Router, protected authService: AuthService) {
+  constructor(private router: Router, protected authService: AuthService, protected notice: NoticeService) {
   }
 
   logout() {

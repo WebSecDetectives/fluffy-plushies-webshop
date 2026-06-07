@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 import { ItemService } from '../items/item.service';
 import { Item } from '../items/item.model';
 import { AuthService } from '../auth/auth.service';
+import { ItemImage } from '../items/item-image/item-image';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, ItemImage],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
@@ -34,7 +35,4 @@ export class Home {
     });
   }
 
-  useFallbackImage(event: Event): void {
-    (event.target as HTMLImageElement).src = 'toy-805814_1920.jpg';
-  }
 }
