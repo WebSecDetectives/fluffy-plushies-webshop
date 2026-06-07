@@ -164,17 +164,28 @@
           "name": "Register User",
           "event": [
             {
-              "listen": "test",
               "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Random per-run suffix so re-runs don't hit the unique username/email constraints (no DB reset needed)",
+                  "const suffix = Math.random().toString(36).slice(2, 6);",
+                  "pm.collectionVariables.set(\"registeredUsername\", `kitkat-${suffix}`);",
+                  "pm.collectionVariables.set(\"registeredEmail\", `kitty+${suffix}@cat.com`);"
+                ]
+              },
+              "listen": "prerequest"
+            },
+            {
+              "script": {
+                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                   "const jsonData = pm.response.json();",
                   "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));",
                   "pm.collectionVariables.set(\"registeredUserId\", jsonData.id);"
-                ],
-                "type": "text/javascript",
-                "id": "79471b8b-5908-4642-aa84-2c249488e66c"
-              }
+                ]
+              },
+              "listen": "test"
             }
           ],
           "id": "00889046-508d-42d6-ab41-9ae64ef41f5a",
@@ -189,7 +200,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"username\":  \"kitkat\",\n    \"email\":  \"kitty@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Dragonstone Castle Road\",\n                    \"postal_code\":  \"101\",\n                    \"city\":  \"King's Landing\",\n                    \"country\":  \"Westeros\"\n                }\n}",
+              "raw": "{\n    \"username\":  \"{{registeredUsername}}\",\n    \"email\":  \"{{registeredEmail}}\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Dragonstone Castle Road\",\n                    \"postal_code\":  \"101\",\n                    \"city\":  \"King's Landing\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -236,7 +247,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"password\":  \"{{registrationPassword}}\"\r\n}",
+              "raw": "{\n    \"username\":  \"{{registeredUsername}}\",\n    \"password\":  \"{{registrationPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -260,6 +271,19 @@
           "name": "Register Merchant as Admin",
           "event": [
             {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Random per-run suffix so re-runs don't hit the unique username/email constraints (no DB reset needed)",
+                  "const suffix = Math.random().toString(36).slice(2, 6);",
+                  "pm.collectionVariables.set(\"registeredMerchantUsername\", `bigpanther-${suffix}`);",
+                  "pm.collectionVariables.set(\"registeredMerchantEmail\", `big.panther+${suffix}@cat.com`);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
               "script": {
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
@@ -267,10 +291,8 @@
                   "pm.test(\"Role is MERCHANT\", () => pm.expect(jsonData.role).to.eql(\"MERCHANT\"));",
                   "pm.collectionVariables.set(\"registeredMerchantId\", jsonData.id);"
                 ],
-                "type": "text/javascript",
-                "id": "319089d2-91ca-4803-8deb-422e5fc63e8f"
-              },
-              "listen": "test"
+                "type": "text/javascript"
+              }
             }
           ],
           "id": "a5c70798-69f8-40f8-90ff-3db6978cd6cb",
@@ -292,7 +314,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"username\":  \"bigpanther\",\n    \"email\":  \"big.panther@cat.com\",\n    \"phone\":  \"+35834343434\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Moonlit Market Road\",\n                    \"postal_code\":  \"202\",\n                    \"city\":  \"Panthera\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
+              "raw": "{\n    \"username\":  \"{{registeredMerchantUsername}}\",\n    \"email\":  \"{{registeredMerchantEmail}}\",\n    \"phone\":  \"+35834343434\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Moonlit Market Road\",\n                    \"postal_code\":  \"202\",\n                    \"city\":  \"Panthera\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -316,17 +338,28 @@
           "name": "Register Admin as Admin",
           "event": [
             {
+              "listen": "prerequest",
               "script": {
-                "type": "text/javascript",
+                "exec": [
+                  "// Random per-run suffix so re-runs don't hit the unique username/email constraints (no DB reset needed)",
+                  "const suffix = Math.random().toString(36).slice(2, 6);",
+                  "pm.collectionVariables.set(\"registeredAdminUsername\", `scarylion-${suffix}`);",
+                  "pm.collectionVariables.set(\"registeredAdminEmail\", `scary.lion+${suffix}@cat.com`);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                   "const jsonData = pm.response.json();",
                   "pm.test(\"Role is ADMIN\", () => pm.expect(jsonData.role).to.eql(\"ADMIN\"));",
                   "pm.collectionVariables.set(\"registeredAdminId\", jsonData.id);"
                 ],
-                "id": "2002a984-3a8b-4964-9141-3043f92fdd77"
-              },
-              "listen": "test"
+                "type": "text/javascript"
+              }
             }
           ],
           "id": "1cfa07b9-0b16-4791-bc81-1085d5c0c580",
@@ -348,7 +381,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"username\":  \"scarylion\",\n    \"email\":  \"scary.lion@cat.com\",\n    \"phone\":  \"+4512345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Roaring Crown Avenue\",\n                    \"postal_code\":  \"303\",\n                    \"city\":  \"Lionhold\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
+              "raw": "{\n    \"username\":  \"{{registeredAdminUsername}}\",\n    \"email\":  \"{{registeredAdminEmail}}\",\n    \"phone\":  \"+4512345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Roaring Crown Avenue\",\n                    \"postal_code\":  \"303\",\n                    \"city\":  \"Lionhold\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -820,7 +853,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"password\":  \"{{newPassword}}\"\r\n}",
+              "raw": "{\n    \"username\":  \"{{registeredUsername}}\",\n    \"password\":  \"{{newPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1590,38 +1623,39 @@
               "name": "Upload Image as Other Merchant Forbidden",
               "event": [
                 {
-                  "listen": "prerequest",
                   "script": {
-                    "id": "68c5af8c-c590-4d86-abca-0db91d3f5586",
+                    "type": "text/javascript",
                     "exec": [
-                      "// Login the second merchant here: Access Control sets this token too, but that folder runs AFTER Inventory",
+                      "// Login the second merchant here: Access Control sets this token too, but that folder runs AFTER Inventory.",
+                      "// The username is suffixed per run; it is set when the Registration folder runs (collection vars persist in the app).",
+                      "const username = pm.collectionVariables.get(\"registeredMerchantUsername\");",
+                      "if (!username) {",
+                      "    console.warn(\"registeredMerchantUsername is not set - run the Registration folder first; this request will 401 instead of 403\");",
+                      "}",
                       "pm.sendRequest({",
                       "    url: pm.collectionVariables.get(\"baseUrlIdentity\") + \"/auth/login\",",
                       "    method: \"POST\",",
                       "    header: { \"Content-Type\": \"application/json\" },",
-                      "    body: { mode: \"raw\", raw: JSON.stringify({ username: \"bigpanther\", password: pm.collectionVariables.get(\"registrationPassword\") }) }",
+                      "    body: { mode: \"raw\", raw: JSON.stringify({ username: username, password: pm.collectionVariables.get(\"registrationPassword\") }) }",
                       "}, (err, res) => {",
                       "    if (!err && res.code === 200) {",
                       "        pm.collectionVariables.set(\"registeredMerchantToken\", res.json().token);",
+                      "    } else {",
+                      "        console.warn(\"Second-merchant login failed (\" + (err || res.code) + \") - registeredMerchantToken is stale or empty\");",
                       "    }",
                       "});"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
+                    ]
+                  },
+                  "listen": "prerequest"
                 },
                 {
-                  "listen": "test",
                   "script": {
-                    "id": "58e99dfc-1937-451a-b1bf-a79a1b3b7513",
+                    "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
+                    ]
+                  },
+                  "listen": "test"
                 }
               ],
               "id": "2b3ea9f5-5e80-e5a4-5774-084d3e19e011",
@@ -1911,7 +1945,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"username\": \"bigpanther\",\n  \"password\": \"{{registrationPassword}}\"\n}",
+                  "raw": "{\n  \"username\": \"{{registeredMerchantUsername}}\",\n  \"password\": \"{{registrationPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2724,15 +2758,26 @@
               "name": "Register Review Tester User",
               "event": [
                 {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// Random per-run suffix so re-runs don't hit the unique username/email constraints (no DB reset needed)",
+                      "const suffix = Math.random().toString(36).slice(2, 6);",
+                      "pm.collectionVariables.set(\"reviewTesterUsername\", `reviewtester-${suffix}`);",
+                      "pm.collectionVariables.set(\"reviewTesterEmail\", `review.tester+${suffix}@cat.com`);"
+                    ]
+                  }
+                },
+                {
                   "listen": "test",
                   "script": {
+                    "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                       "const jsonData = pm.response.json();",
                       "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));"
-                    ],
-                    "type": "text/javascript",
-                    "id": "9887fbcf-058e-4ebf-ac84-85905601a2d2"
+                    ]
                   }
                 }
               ],
@@ -2748,7 +2793,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"email\":  \"review.tester@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Critique Court\",\n                    \"postal_code\":  \"501\",\n                    \"city\":  \"Reviewville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
+                  "raw": "{\n    \"username\":  \"{{reviewTesterUsername}}\",\n    \"email\":  \"{{reviewTesterEmail}}\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Critique Court\",\n                    \"postal_code\":  \"501\",\n                    \"city\":  \"Reviewville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2795,7 +2840,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"password\":  \"{{registrationPassword}}\"\n}",
+                  "raw": "{\n    \"username\":  \"{{reviewTesterUsername}}\",\n    \"password\":  \"{{registrationPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -3378,6 +3423,38 @@
     },
     {
       "key": "imagePrivateItemId",
+      "value": ""
+    },
+    {
+      "key": "registeredUsername",
+      "value": ""
+    },
+    {
+      "key": "registeredEmail",
+      "value": ""
+    },
+    {
+      "key": "registeredMerchantUsername",
+      "value": ""
+    },
+    {
+      "key": "registeredMerchantEmail",
+      "value": ""
+    },
+    {
+      "key": "registeredAdminUsername",
+      "value": ""
+    },
+    {
+      "key": "registeredAdminEmail",
+      "value": ""
+    },
+    {
+      "key": "reviewTesterUsername",
+      "value": ""
+    },
+    {
+      "key": "reviewTesterEmail",
       "value": ""
     }
   ]

@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -36,8 +37,12 @@ public class JwtTestUtil {
     }
 
     public static String tamperSignature(String token) {
-        var lastChar = token.charAt(token.length() - 1);
-        var replacement = lastChar == 'A' ? 'B' : 'A';
-        return token.substring(0, token.length() - 1) + replacement;
+        var parts = token.split("\\.");
+        var signature = Base64.getUrlDecoder().decode(parts[2]);
+        // XOR with 0x01 flips the lowest bit of the first byte — the smallest possible
+        // corruption, proving any single-bit change invalidates the signature
+        signature[0] ^= 0x01;
+        return parts[0] + "." + parts[1] + "."
+                + Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
     }
 }
