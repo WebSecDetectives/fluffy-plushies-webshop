@@ -32,4 +32,16 @@ export class ItemService {
   deleteItem(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  /** Multipart upload; the backend validates and re-encodes the image (204 on success). */
+  uploadImage(itemId: string, file: File): Observable<void> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<void>(`${this.baseUrl}/${itemId}/image`, form);
+  }
+
+  /** Raw image bytes; sent with the JWT so private items' images load for owner/admin. 404 when hidden or absent. */
+  getItemImage(itemId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${itemId}/image`, { responseType: 'blob' });
+  }
 }

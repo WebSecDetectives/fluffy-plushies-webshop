@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ItemService } from '../items/item.service';
 import { Item } from '../items/item.model';
+import { ItemImage } from '../items/item-image/item-image';
 
 @Component({
   selector: 'app-my-products',
-  imports: [RouterLink],
+  imports: [RouterLink, ItemImage],
   templateUrl: './my-products.html',
   styleUrls: ['./my-products.css']
 })
@@ -22,7 +23,4 @@ export class MyProducts {
     });
   }
 
-  useFallbackImage(event: Event): void {
-    (event.target as HTMLImageElement).src = '/toy-805814_1920.jpg';
-  }
 }

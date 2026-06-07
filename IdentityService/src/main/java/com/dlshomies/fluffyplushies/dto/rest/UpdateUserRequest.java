@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.net.URI;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,8 +16,6 @@ public class UpdateUserRequest {
     private String phone;
 
     private AddressRequest address;
-
-    private URI imgUrl;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class UpdateUserRequestBuilderImpl extends UpdateUserRequest.UpdateUserRequestBuilder<UpdateUserRequest, UpdateUserRequest.UpdateUserRequestBuilderImpl> {

@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
-import { getDownloadURL, ref, StorageReference, uploadBytes } from 'firebase/storage';
-import { storage } from '../../environments/firebase.config';
 import { PASSWORD_PATTERN } from '../forms/validation-patterns';
 
 const VALIDATION_MESSAGES: Record<string, string> = {
@@ -28,8 +26,6 @@ const VALIDATION_MESSAGES: Record<string, string> = {
 export class CreateAccount {
   baseUrlIdentity = `${environment.baseUrlIdentity}/users`;
   registerForm: FormGroup;
-  selectedFile: File | null = null;
-  imgUrl: string | null = null;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.registerForm = this.fb.group({
@@ -40,8 +36,7 @@ export class CreateAccount {
       street: ['', Validators.required],
       postalCode: ['', Validators.required],
       city: ['', Validators.required],
-      country: ['', Validators.required],
-      imgUrl: [null]
+      country: ['', Validators.required]
     });
   }
 
@@ -53,12 +48,7 @@ export class CreateAccount {
     return null;
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.selectedFile = input.files?.[0] ?? null;
-  }
-
-  async onSubmit(event: Event): Promise<void> {
+  onSubmit(event: Event): void {
     event.preventDefault();
     if (this.registerForm.invalid) {
       // Reveal per-field error messages for fields the user hasn't visited yet
@@ -66,22 +56,6 @@ export class CreateAccount {
       return;
     }
 
-    // 1) Upload image if selected
-    if (this.selectedFile) {
-      const path = `user/${this.selectedFile.name}`;
-      const fileRef: StorageReference = ref(storage, path);
-      try {
-        await uploadBytes(fileRef, this.selectedFile);
-        this.imgUrl = await getDownloadURL(fileRef);
-        console.log('Image uploaded: ', fileRef);
-      } catch (error) {
-        console.error('Upload failed:', error);
-        alert('Image upload failed. Please try again.');
-        return;
-      }
-    }
-
-    // 2) Prepare payload including imgUrl
     const v = this.registerForm.value;
     const payload = {
       username: v.username,
@@ -93,11 +67,9 @@ export class CreateAccount {
         postalCode: v.postalCode,
         city: v.city,
         country: v.country
-      },
-      imgUrl: this.imgUrl
+      }
     };
 
-    // 3) Call backend API
     this.http.post(this.baseUrlIdentity, payload).subscribe({
       next: () => alert('Registration successful!'),
       error: err => {

@@ -35,7 +35,14 @@ public final class ImageSanitizationUtil {
      *         dimension limit, or cannot be decoded
      */
     public static byte[] sanitizeToPng(MultipartFile file) {
-        var bytes = readBytes(file);
+        return sanitizeToPng(readBytes(file));
+    }
+
+    /**
+     * Same pipeline for callers that already hold the bytes (e.g. seeding bundled images);
+     * the bytes are validated and re-encoded exactly like a user upload.
+     */
+    public static byte[] sanitizeToPng(byte[] bytes) {
         assertAllowedFormat(bytes);
         assertHeaderDimensionsWithinLimit(bytes);
         return reencodeAsPng(bytes);

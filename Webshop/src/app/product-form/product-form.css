@@ -7,3 +7,8 @@
   border: none;
   color: white;
 }
+
+.field-hint {
+  font-size: 0.85rem;
+  color: #777;
+}

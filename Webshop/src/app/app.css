@@ -8,6 +8,28 @@
   border-radius: 50%;
 }
 
+.notice-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 75%;
+  margin: 10px auto 0;
+  padding: 10px 16px;
+  background-color: #fff3cd;
+  color: #664d03;
+  border: 1px solid #ffecb5;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.notice-dismiss {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #664d03;
+}
+
 footer {
   color: white;
   font-weight: bold;

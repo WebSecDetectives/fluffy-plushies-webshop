@@ -19,8 +19,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -168,15 +166,7 @@ public class UserService {
 
         updateAddress(existingUser, patch.getAddress());
 
-        updateImgUrl(existingUser, patch.getImgUrl());
-
         return userRepository.save(existingUser);
-    }
-
-    private void updateImgUrl(User existingUser, URI patch) {
-        if (patch != null) {
-            existingUser.setImgUrl(patch);
-        }
     }
 
     public User updatePassword(UUID currentUserId, String password) {

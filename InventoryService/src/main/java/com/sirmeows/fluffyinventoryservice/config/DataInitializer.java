@@ -4,17 +4,24 @@ import com.sirmeows.fluffyinventoryservice.entity.Item;
 import com.sirmeows.fluffyinventoryservice.entity.ItemDetails;
 import com.sirmeows.fluffyinventoryservice.entity.Review;
 import com.sirmeows.fluffyinventoryservice.entity.Visibility;
+import com.sirmeows.fluffyinventoryservice.exception.InvalidImageException;
 import com.sirmeows.fluffyinventoryservice.security.AuthUser;
 import com.sirmeows.fluffyinventoryservice.security.Role;
+import com.sirmeows.fluffyinventoryservice.service.ItemImageService;
 import com.sirmeows.fluffyinventoryservice.service.ItemService;
 import com.sirmeows.fluffyinventoryservice.service.ReviewService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -30,7 +37,9 @@ public class DataInitializer {
     private static final int NUMBER_OF_ITEMS = 10 ;
     private static final UUID SEED_MERCHANT_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID SEED_USER_ID = UUID.fromString("00000000-0000-0000-0000-0000000000a1");
+    private static final String SEED_IMAGE_PATTERN = "classpath:img/*.jpg";
     private final ItemService itemService;
+    private final ItemImageService itemImageService;
     private final ReviewService reviewService;
     private final Faker faker;
     private static final RandomGenerator RG = RandomGenerator.of("L64X256MixRandom");
@@ -39,22 +48,76 @@ public class DataInitializer {
     public void init() {
         log.info("Starting data initialization...");
 
-        itemService.createItem(buildPrivateItem(), SEED_MERCHANT_ID);
+        var privateItem = seedPrivateItem();
+        var publicItems = seedPublicItems();
+        var allItems = Stream.concat(Stream.of(privateItem), publicItems.stream()).toList();
+        seedImages(allItems);
+        seedReviews(publicItems);
 
-        var items = Stream.generate(this::buildRandomItem)
+        log.info("Created {} public items with reviews and 1 private item. Finished data initialization...", NUMBER_OF_ITEMS);
+    }
+
+    private Item seedPrivateItem() {
+        return itemService.createItem(buildPrivateItem(), SEED_MERCHANT_ID);
+    }
+
+    /** Seeds {@value #NUMBER_OF_ITEMS} public items; returns all of them. */
+    private List<Item> seedPublicItems() {
+        return Stream.generate(this::buildRandomItem)
                 .limit(NUMBER_OF_ITEMS)
                 .map(item -> itemService.createItem(item, SEED_MERCHANT_ID))
                 .toList();
+    }
 
+    /** Adds 1-3 random reviews to each item; call with public items only (the seed user may not see private ones). */
+    private void seedReviews(List<Item> items) {
         var seedUser = new AuthUser(SEED_USER_ID, "user", Role.USER);
         items.forEach(item -> {
             int n = RG.nextInt(1, 4);
-            IntStream.range(0, n).forEach(i -> {
-                reviewService.createReview(item.getId(), buildRandomReview(), seedUser);
-            });
+            IntStream.range(0, n).forEach(i ->
+                    reviewService.createReview(item.getId(), buildRandomReview(), seedUser));
         });
+    }
 
-        log.info("Created {} public items with reviews and 1 private item. Finished data initialization...", NUMBER_OF_ITEMS);
+    /**
+     * Gives every seeded item a real bundled photo (cycling when there are more items than
+     * images). The bytes go through the same sanitization pipeline as user uploads; a bad
+     * bundled image is logged and skipped so seeding never blocks startup.
+     */
+    private void seedImages(List<Item> items) {
+        var images = loadSeedImages();
+        if (images.isEmpty()) {
+            log.warn("No seed images found under {}; seeded items will use the frontend fallback", SEED_IMAGE_PATTERN);
+            return;
+        }
+        IntStream.range(0, items.size()).forEach(i -> {
+            var itemId = items.get(i).getId();
+            try {
+                itemImageService.storeSeedImage(itemId, images.get(i % images.size()));
+            } catch (InvalidImageException e) {
+                log.warn("Skipping seed image for item {}: {}", itemId, e.getMessage());
+            }
+        });
+    }
+
+    private List<byte[]> loadSeedImages() {
+        var resolver = new PathMatchingResourcePatternResolver();
+        try {
+            return Arrays.stream(resolver.getResources(SEED_IMAGE_PATTERN))
+                    .map(this::readResource)
+                    .toList();
+        } catch (IOException | UncheckedIOException e) {
+            log.warn("Could not load seed images: {}", e.getMessage());
+            return List.of();
+        }
+    }
+
+    private byte[] readResource(Resource resource) {
+        try {
+            return resource.getContentAsByteArray();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not read seed image " + resource.getFilename(), e);
+        }
     }
 
     private Review buildRandomReview() {

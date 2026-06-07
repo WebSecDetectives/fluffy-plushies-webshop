@@ -47,10 +47,18 @@
         @if (errorFor('material'); as message) {
           <p class="error-message">{{ message }}</p>
         }
-        <p>Image URL</p>
-        <input type="text" class="input-field" formControlName="imgUrl" placeholder="https://...">
-        @if (errorFor('imgUrl'); as message) {
+        <p>Image (JPEG/PNG, max 2 MB)</p>
+        @if (previewUrl(); as preview) {
+          <img class="form-thumb" [src]="preview" alt="Selected image preview">
+        } @else if (isEdit && itemId) {
+          <app-item-image [itemId]="itemId" imgClass="form-thumb" alt="Current product image" />
+        }
+        <input type="file" class="input-field" accept=".jpg,.jpeg,.png" (change)="onFileChange($event)">
+        @if (fileError(); as message) {
           <p class="error-message">{{ message }}</p>
+        }
+        @if (isEdit) {
+          <p class="field-hint">Leave empty to keep the current image.</p>
         }
 
         @if (errorMessage(); as message) {

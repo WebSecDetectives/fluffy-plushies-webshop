@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.net.URI;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +15,4 @@ public class UserInformationResponse {
     private Integer postalCode;
     private String city;
     private String country;
-    private URI imgUrl;
 }

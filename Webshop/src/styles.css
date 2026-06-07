@@ -223,6 +223,27 @@ input[type="submit"] {
   object-fit: cover;
 }
 
+/* Image classes live here (not in component CSS) so they reach the <img>
+   rendered inside <app-item-image>, which has its own style scope. */
+.detail-img {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  width: 350px;
+  height: 300px;
+  object-fit: cover;
+}
+
+.form-thumb {
+  display: block;
+  max-width: 160px;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
 .item-card {
   width: 220px;
   display: block;

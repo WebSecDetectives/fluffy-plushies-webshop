@@ -45,7 +45,7 @@ friend</p>
   <div class="width-100 d-flex d-flex-row d-flex-wrap item-grid">
     @for (item of items(); track item.id) {
       <a class="item-card" [routerLink]="['/items', item.id]">
-        <img class="card" [src]="item.details.imgUrl" [alt]="item.name" (error)="useFallbackImage($event)">
+        <app-item-image [itemId]="item.id" [alt]="item.name" imgClass="card" />
         <div class="width-100 d-flex d-flex-row d-flex-space-between">
           <p>{{ item.name }}</p>
           <p>{{ item.price }} DKK</p>

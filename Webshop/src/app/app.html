@@ -43,6 +43,12 @@
   </div>
   }
 </div>
+@if (notice.message(); as message) {
+  <div class="notice-banner">
+    <span>{{ message }}</span>
+    <button type="button" class="notice-dismiss" (click)="notice.clear()">✕</button>
+  </div>
+}
 <router-outlet></router-outlet>
 
  <footer>All rights reserved. Fluffy Plushies A/S. CVR - 23343243243</footer>

@@ -22,5 +22,4 @@ public class UserHistory extends BaseEntity {
     private UUID addressId;
     private String encodedPassword;
     private Role role;
-    private URI imgUrl;
 }

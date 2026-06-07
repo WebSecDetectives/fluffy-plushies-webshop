@@ -52,15 +52,6 @@
         <p class="error-message">{{ message }}</p>
       }
 
-      <br>  <br>
-
-      <p>Upload image</p>
-      <div class="file-upload">
-        <input type="file" id="fileInput" class="input-field-file" formControlName="imgUrl" placeholder="profile image" style="width: 170px;" (change)="onFileSelected($event)">
-        <label for="fileInput" class="file-label">Upload file</label>
-        <span class="file-name" id="fileName">{{ selectedFile?.name ?? 'No file selected' }}</span>
-      </div>
-
       <br><br><br><br>
       <div>
 

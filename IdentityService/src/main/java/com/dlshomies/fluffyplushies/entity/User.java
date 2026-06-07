@@ -42,8 +42,6 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    private URI imgUrl;
-
     // Required by Spring UserDetails which is used for authentication and authorization
     // AuthorityList is a derived in-memory view that changes based on role
     @Override
