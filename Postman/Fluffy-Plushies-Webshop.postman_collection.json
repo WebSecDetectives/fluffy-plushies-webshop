@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "f7d6b89e-1648-435b-ab46-a1f5d896b47f",
+    "_postman_id": "91879a4c-8c1c-460a-bd5d-0ae3304edd70",
     "name": "Fluffy-Plushies-Webshop",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "19470254"
@@ -22,12 +22,16 @@
                   "const paddedPayload = base64Payload.padEnd(base64Payload.length + (4 - base64Payload.length % 4) % 4, \"=\");",
                   "const payload = JSON.parse(atob(paddedPayload));",
                   "pm.collectionVariables.set(\"userId\", payload.sub);"
-                ]
+                ],
+                "id": "78b236ef-f9c1-4ddf-b9c5-bbd6efaa98eb"
               },
               "listen": "test"
             }
           ],
-          "id": "5aa5da57-6d9b-4c1e-8317-0813aa8563ee",
+          "id": "21571228-6c8b-45aa-9f90-5ae672f52bfb",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -65,12 +69,16 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"adminToken\", jsonData.token);"
-                ]
+                ],
+                "id": "18b179e8-c940-4608-8f0d-fa6ea94ade8c"
               },
               "listen": "test"
             }
           ],
-          "id": "f6daef28-dd56-4ba1-995d-399e9dfb0174",
+          "id": "241d59e1-80a6-4174-8b7b-0097e761980e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -108,12 +116,16 @@
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"merchantToken\", jsonData.token);"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "69f081c7-f0f5-46b3-9295-7ed1c02a4564"
               },
               "listen": "test"
             }
           ],
-          "id": "ef7c74cb-bbcf-43c8-89d5-a46c367ef820",
+          "id": "0bd863f9-34f7-4183-a6ce-85ebeb466e58",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -143,7 +155,7 @@
           "response": []
         }
       ],
-      "id": "4ef9c61a-fc8b-4adc-899a-5d5a1a564219"
+      "id": "6b2b9e39-cbe2-42ac-a9b1-1f25c0823d54"
     },
     {
       "name": "Registration",
@@ -160,11 +172,15 @@
                   "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));",
                   "pm.collectionVariables.set(\"registeredUserId\", jsonData.id);"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "79471b8b-5908-4642-aa84-2c249488e66c"
               }
             }
           ],
-          "id": "91eb954f-4451-455f-bda2-66dab0df0161",
+          "id": "00889046-508d-42d6-ab41-9ae64ef41f5a",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -173,7 +189,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"kitkat\",\r\n    \"email\":  \"kitty@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com\",\r\n    \"address\":  {\r\n                    \"street\":  \"Dragonstone Castle Road\",\r\n                    \"postal_code\":  \"101\",\r\n                    \"city\":  \"King's Landing\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"kitkat\",\n    \"email\":  \"kitty@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Dragonstone Castle Road\",\n                    \"postal_code\":  \"101\",\n                    \"city\":  \"King's Landing\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -202,12 +218,16 @@
                   "pm.test(\"Status is OK\", () => pm.response.to.have.status(200));",
                   "const jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
-                ]
+                ],
+                "id": "415a1b06-bb7d-43a6-8024-a49a4e05a102"
               },
               "listen": "test"
             }
           ],
-          "id": "bd353d9d-0fcd-4e2a-8fe6-3fe70b48768f",
+          "id": "e6cb1d9b-ab20-45f2-8633-0a4f0e8bf78f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -247,12 +267,16 @@
                   "pm.test(\"Role is MERCHANT\", () => pm.expect(jsonData.role).to.eql(\"MERCHANT\"));",
                   "pm.collectionVariables.set(\"registeredMerchantId\", jsonData.id);"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "319089d2-91ca-4803-8deb-422e5fc63e8f"
               },
               "listen": "test"
             }
           ],
-          "id": "ef8b8372-6433-43a7-826e-85159b8a6f05",
+          "id": "a5c70798-69f8-40f8-90ff-3db6978cd6cb",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -268,7 +292,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"bigpanther\",\r\n    \"email\":  \"big.panther@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/big-panther\",\r\n    \"address\":  {\r\n                    \"street\":  \"Moonlit Market Road\",\r\n                    \"postal_code\":  \"202\",\r\n                    \"city\":  \"Panthera\",\r\n                    \"country\":  \"Feline Realm\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"bigpanther\",\n    \"email\":  \"big.panther@cat.com\",\n    \"phone\":  \"+35834343434\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Moonlit Market Road\",\n                    \"postal_code\":  \"202\",\n                    \"city\":  \"Panthera\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -299,12 +323,16 @@
                   "const jsonData = pm.response.json();",
                   "pm.test(\"Role is ADMIN\", () => pm.expect(jsonData.role).to.eql(\"ADMIN\"));",
                   "pm.collectionVariables.set(\"registeredAdminId\", jsonData.id);"
-                ]
+                ],
+                "id": "2002a984-3a8b-4964-9141-3043f92fdd77"
               },
               "listen": "test"
             }
           ],
-          "id": "9a7e7293-d404-4863-83a3-a769b3b32d8d",
+          "id": "1cfa07b9-0b16-4791-bc81-1085d5c0c580",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -320,7 +348,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"scarylion\",\r\n    \"email\":  \"scary.lion@cat.com\",\r\n    \"phone\":  \"+4512345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/scary-lion\",\r\n    \"address\":  {\r\n                    \"street\":  \"Roaring Crown Avenue\",\r\n                    \"postal_code\":  \"303\",\r\n                    \"city\":  \"Lionhold\",\r\n                    \"country\":  \"Feline Realm\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"scarylion\",\n    \"email\":  \"scary.lion@cat.com\",\n    \"phone\":  \"+4512345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Roaring Crown Avenue\",\n                    \"postal_code\":  \"303\",\n                    \"city\":  \"Lionhold\",\n                    \"country\":  \"Feline Realm\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -348,12 +376,16 @@
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "f73dc938-1333-4b55-8d07-14bf77ff4a3a"
               },
               "listen": "test"
             }
           ],
-          "id": "dd79dca9-164a-46e3-96cf-0486bb29ce9d",
+          "id": "ecfaa341-e13b-415f-aa3b-0d563720d36e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -369,7 +401,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"usercantmerchant\",\r\n    \"email\":  \"user.cant.merchant@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/user-cant-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Tiny Paw Road\",\r\n                    \"postal_code\":  \"401\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"usercantmerchant\",\n    \"email\":  \"user.cant.merchant@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Tiny Paw Road\",\n                    \"postal_code\":  \"401\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -397,12 +429,16 @@
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "da347232-a993-4d6b-bdf5-099c92656090"
               },
               "listen": "test"
             }
           ],
-          "id": "c10e1b9e-16bf-42b9-b15f-27a8a5cced30",
+          "id": "8cf8cd76-e8a9-49a8-b8c0-ff3664fed58e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -418,7 +454,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"usercantadmin\",\r\n    \"email\":  \"user.cant.admin@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/user-cant-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Small Claw Street\",\r\n                    \"postal_code\":  \"402\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"usercantadmin\",\n    \"email\":  \"user.cant.admin@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Small Claw Street\",\n                    \"postal_code\":  \"402\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -446,12 +482,16 @@
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "bdcc169e-55e6-4491-8c8e-07979da34626"
               },
               "listen": "test"
             }
           ],
-          "id": "8aa788cc-7ffe-442f-b053-f549e1a6a98e",
+          "id": "23e35230-83d6-46de-a569-8a6a50b7fe1d",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -467,7 +507,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"merchantcantmerchant\",\r\n    \"email\":  \"merchant.cant.merchant@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/merchant-cant-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Velvet Paw Plaza\",\r\n                    \"postal_code\":  \"403\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"merchantcantmerchant\",\n    \"email\":  \"merchant.cant.merchant@cat.com\",\n    \"phone\":  \"+35834343434\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Velvet Paw Plaza\",\n                    \"postal_code\":  \"403\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -495,12 +535,16 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
-                ]
+                ],
+                "id": "3d1c76f0-72c0-47e6-baf9-3f56fa9d32a2"
               },
               "listen": "test"
             }
           ],
-          "id": "fb91dc26-ecb2-487e-b1f6-7280cf39da4d",
+          "id": "cda796a3-b788-4332-ab28-137cb75ff136",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -516,7 +560,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"merchantcantadmin\",\r\n    \"email\":  \"merchant.cant.admin@cat.com\",\r\n    \"phone\":  \"+35834343434\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/merchant-cant-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Velvet Claw Plaza\",\r\n                    \"postal_code\":  \"404\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"merchantcantadmin\",\n    \"email\":  \"merchant.cant.admin@cat.com\",\n    \"phone\":  \"+35834343434\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Velvet Claw Plaza\",\n                    \"postal_code\":  \"404\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -544,12 +588,16 @@
                 "exec": [
                   "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "f9dbfe11-d91c-4018-bf81-1fe9e9c6c8cb"
               },
               "listen": "test"
             }
           ],
-          "id": "5b79b04c-5223-48f0-beff-44938010ca23",
+          "id": "e75f5c25-6781-40c6-9752-7e2c9422c2db",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -558,7 +606,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"notokenmerchant\",\r\n    \"email\":  \"no.token.merchant@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/no-token-merchant\",\r\n    \"address\":  {\r\n                    \"street\":  \"Locked Gate Road\",\r\n                    \"postal_code\":  \"405\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"notokenmerchant\",\n    \"email\":  \"no.token.merchant@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Locked Gate Road\",\n                    \"postal_code\":  \"405\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -586,12 +634,16 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
-                ]
+                ],
+                "id": "ec4c7c67-d023-4631-8218-de4d7ccb1ea2"
               },
               "listen": "test"
             }
           ],
-          "id": "d52d39bf-51ff-43cd-84fd-93488282e51f",
+          "id": "a57161ec-de3c-46e1-9f5b-5e10f894c7be",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -600,7 +652,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"username\":  \"notokenadmin\",\r\n    \"email\":  \"no.token.admin@cat.com\",\r\n    \"phone\":  \"12345678\",\r\n    \"password\":  \"{{registrationPassword}}\",\r\n    \"img_url\":  \"https://kittydomain.fluffy.com/no-token-admin\",\r\n    \"address\":  {\r\n                    \"street\":  \"Locked Castle Road\",\r\n                    \"postal_code\":  \"406\",\r\n                    \"city\":  \"Nopeville\",\r\n                    \"country\":  \"Westeros\"\r\n                }\r\n}",
+              "raw": "{\n    \"username\":  \"notokenadmin\",\n    \"email\":  \"no.token.admin@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Locked Castle Road\",\n                    \"postal_code\":  \"406\",\n                    \"city\":  \"Nopeville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -621,14 +673,17 @@
           "response": []
         }
       ],
-      "id": "7103c8c0-1402-480e-84bd-30e053ef3a19"
+      "id": "429e3931-c915-46ec-b63b-eaf78a18c3c2"
     },
     {
       "name": "Identity",
       "item": [
         {
           "name": "Get Seeded User by ID",
-          "id": "c73adddf-ccf5-4de2-9bc1-a454f0bdd41a",
+          "id": "44994320-0fef-478c-94e3-3f36d0834923",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -657,7 +712,10 @@
         },
         {
           "name": "Update Registered User",
-          "id": "2340ab67-ed66-4ae7-b087-b864e742a06b",
+          "id": "baae5f18-3611-4588-a544-92f2d9675c30",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -673,7 +731,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"phone\": \"34343434\",\r\n  \"img_url\": \"https://dk.pinterest.com/pin/1500/\",\r\n  \"address\": {\r\n    \"street\": \"Unicorn Castle Rd\",\r\n    \"postal_code\": \"10\",\r\n    \"city\": \"King's Landing\",\r\n    \"country\": \"Westeros\"\r\n  }\r\n}",
+              "raw": "{\n  \"phone\": \"34343434\",\n  \"address\": {\n    \"street\": \"Unicorn Castle Rd\",\n    \"postal_code\": \"10\",\n    \"city\": \"King's Landing\",\n    \"country\": \"Westeros\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -695,7 +753,10 @@
         },
         {
           "name": "Update Registered User Password",
-          "id": "73ff0aa5-b372-4727-84e7-b3934b8d0ebc",
+          "id": "f8c1e3b8-dda1-4452-a334-02a61887daad",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -741,12 +802,16 @@
                   "var jsonData = pm.response.json();",
                   "pm.collectionVariables.set(\"registeredUserToken\", jsonData.token);"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "id": "ee5390c7-e480-42d0-9c64-4a62f6734012"
               },
               "listen": "test"
             }
           ],
-          "id": "28572c81-5889-48e1-9140-fac443881e74",
+          "id": "a359ef05-d1f9-48fe-9d5c-f3b5a73f2d68",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -777,7 +842,10 @@
         },
         {
           "name": "Get Users",
-          "id": "0387e051-14bd-4764-ac0d-528e191befe4",
+          "id": "d0ed20ac-9b19-4fc3-9eca-99868babe0cf",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -805,7 +873,10 @@
         },
         {
           "name": "Invalid Token",
-          "id": "5bfa9fc1-61bd-42ff-8d46-ab2ced36e690",
+          "id": "3a772893-4307-41a9-a6d2-86b6df89107d",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -834,7 +905,10 @@
         },
         {
           "name": "Delete Registered User",
-          "id": "cc9ddd51-e0e5-45bb-83ad-7666b57d1a01",
+          "id": "b2652ad5-5202-4964-bf9a-18d2ab3136d6",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -862,14 +936,848 @@
           "response": []
         }
       ],
-      "id": "9180525d-22cb-44ef-b539-bda013cdcbc6"
+      "id": "cec30ee7-0fde-4d12-b08d-e9aade96bfa7"
     },
     {
       "name": "Inventory",
       "item": [
         {
+          "name": "Image",
+          "item": [
+            {
+              "name": "Create Item for Image Tests",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.collectionVariables.set(\"imageItemId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "a6feaa69-db6f-d124-58b8-7e53444bcdd8",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Image Test Plush\",\n  \"price\": 12.50,\n  \"stock\": 5,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"Item used by the image upload tests\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Image as Merchant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "9ed6542b-e850-476a-9540-cc903ea82933",
+                    "exec": [
+                      "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "a34e9053-d183-96a7-6b27-b72cdd70125c",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "c0921f87-cb43-423e-afd5-130e0cc414ae",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/WB558.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                },
+                "description": "Requires a file: select a JPEG/PNG (< 2MB, <= 4096px) in the form-data 'file' field before running."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Item Image as Anonymous",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Content-Type is image/png\", () => pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"image/png\"));",
+                      "pm.test(\"nosniff header set\", () => pm.expect(pm.response.headers.get(\"X-Content-Type-Options\")).to.eql(\"nosniff\"));"
+                    ]
+                  }
+                }
+              ],
+              "id": "ecfc2fa2-967b-daf4-d1a9-d16ea2d0c220",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Image as User Forbidden",
+              "event": [
+                {
+                  "script": {
+                    "id": "c9f5e33c-e3c3-4235-bf76-1fd2a274e8cc",
+                    "exec": [
+                      "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "9195d2ae-cf63-e6b0-79d2-e7bf04929f0d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "659cce7a-d3e0-4fda-8aba-9121ed00fa9e",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/GP725.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                },
+                "description": "Requires a file: select any JPEG/PNG (the request must be a well-formed multipart upload; an empty form part gives a misleading status). USER role may not upload product images => 403."
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Image as Anonymous Unauthorized",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "7027588f-4800-4a33-a19d-8836ee3731e2",
+                    "exec": [
+                      "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "226415ea-b3eb-a671-4e6a-44a171f253dc",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "152554a1-7375-4bc7-8780-6fefbf7bf0a0",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/GP761.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Non-Image File Rejected",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "7b0b6603-f5a3-425f-9ca9-d0bb38976928",
+                    "exec": [
+                      "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Rejection explains allowed formats\", () => pm.expect(jsonData.message).to.include(\"JPEG\"));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "4039ff26-5b09-c0d6-a65e-5c2965f37acd",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "575f8801-63df-450e-a685-3b798df8876c",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/NOT_AN_IMG.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                },
+                "description": "Requires a file: select any non-image file (e.g. .txt, even renamed to .png). The backend decides by magic bytes, not filename or Content-Type."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Image for Nonexistent Item Not Found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));"
+                    ]
+                  }
+                }
+              ],
+              "id": "ae3fa5c4-6a02-e189-22fc-62fac31468e4",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/00000000-0000-0000-0000-000000000000/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "00000000-0000-0000-0000-000000000000",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Private Item for Image Tests",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "const jsonData = pm.response.json();",
+                      "pm.test(\"Visibility is PRIVATE\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));",
+                      "pm.collectionVariables.set(\"imagePrivateItemId\", jsonData.id);"
+                    ]
+                  }
+                }
+              ],
+              "id": "e2917fbf-7d73-bffb-39f8-9ba2257c5b7c",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Private Image Test Plush\",\n  \"price\": 99.99,\n  \"stock\": 1,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used by the image visibility tests\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Image to Private Item as Merchant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "96edb603-4faa-431d-b21a-70478c103159",
+                    "exec": [
+                      "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "0ad2494f-769c-4246-2835-8a86d527248b",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "f716e78d-ff90-42ed-a13a-f9e5d3990a0c",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/WD338.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imagePrivateItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imagePrivateItemId}}",
+                    "image"
+                  ]
+                },
+                "description": "Requires a file: select a JPEG/PNG (< 2MB, <= 4096px) in the form-data 'file' field before running."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Private Item Image as Anonymous Not Found",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 404 (existence not leaked)\", () => pm.response.to.have.status(404));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "985f837d-fea8-a0c4-b46f-8abb93e5c4f5",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imagePrivateItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imagePrivateItemId}}",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Private Item Image as Owner Merchant",
+              "event": [
+                {
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Content-Type is image/png\", () => pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"image/png\"));"
+                    ],
+                    "type": "text/javascript"
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "21d18b8d-379f-17c6-5dee-a98c20911245",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imagePrivateItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imagePrivateItemId}}",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Public Image Test Item",
+              "event": [
+                {
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                    ]
+                  },
+                  "listen": "test"
+                }
+              ],
+              "id": "9290e768-ddca-c082-a02f-ae69dbba87a9",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Deleted Item Image Not Found",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 404 (image removed with item)\", () => pm.response.to.have.status(404));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "737f1c82-5d45-5a56-e49f-6f57421470b0",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Private Image Test Item",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "8acc9c3f-2cf4-05b7-ee78-88578edb8d20",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{merchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imagePrivateItemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imagePrivateItemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Image as Other Merchant Forbidden",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "68c5af8c-c590-4d86-abca-0db91d3f5586",
+                    "exec": [
+                      "// Login the second merchant here: Access Control sets this token too, but that folder runs AFTER Inventory",
+                      "pm.sendRequest({",
+                      "    url: pm.collectionVariables.get(\"baseUrlIdentity\") + \"/auth/login\",",
+                      "    method: \"POST\",",
+                      "    header: { \"Content-Type\": \"application/json\" },",
+                      "    body: { mode: \"raw\", raw: JSON.stringify({ username: \"bigpanther\", password: pm.collectionVariables.get(\"registrationPassword\") }) }",
+                      "}, (err, res) => {",
+                      "    if (!err && res.code === 200) {",
+                      "        pm.collectionVariables.set(\"registeredMerchantToken\", res.json().token);",
+                      "    }",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "58e99dfc-1937-451a-b1bf-a79a1b3b7513",
+                    "exec": [
+                      "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "2b3ea9f5-5e80-e5a4-5774-084d3e19e011",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{registeredMerchantToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "15f6ae75-4824-4491-9411-a2cbed7bda67",
+                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/WB530-1.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "items",
+                    "{{imageItemId}}",
+                    "image"
+                  ]
+                },
+                "description": "Requires a file (any JPEG/PNG). Self-sufficient: the pre-request script logs in the registered merchant (bigpanther, created by the Registration folder) and sets {{registeredMerchantToken}}. A merchant must not upload images to another merchant's item (public item => 403, not 404)."
+              },
+              "response": []
+            }
+          ],
+          "id": "90bf921e-1e79-4e85-8391-213acc8c7074"
+        },
+        {
+          "name": "Review",
+          "item": [
+            {
+              "name": "Create Review",
+              "id": "501afbff-fba6-4d0d-b97a-b02533f45b9c",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{userToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"review_text\": \"I've n ever had such a lovely fluffy plushie ever in my whole life and it's so soft that I'm going to diiiieeeeee!\",\r\n  \"rating\": 5\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{itemId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Reviews",
+              "id": "51cc8ff7-5556-4cce-9091-e9b0b3ae662e",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Review by ItemID",
+              "id": "a304eb2a-abf4-4dbf-a811-3507c53e7dc3",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
+                  "host": [
+                    "{{baseUrlInventory}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    "item",
+                    "{{itemId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "4df3e85b-cd44-4f53-ab39-3ae818b770cd"
+        },
+        {
           "name": "Get Items",
-          "id": "eda85ba8-ccb1-4403-8063-9405ff9e5f09",
+          "id": "cd2d4285-7129-43ec-b93f-89e472ef1522",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -897,12 +1805,16 @@
                 "exec": [
                   "const body = pm.response.json();",
                   "pm.collectionVariables.set(\"itemId\", body.id);"
-                ]
+                ],
+                "id": "b2d1f8da-4cbc-444f-8d4f-210a9de95c6c"
               },
               "listen": "test"
             }
           ],
-          "id": "6d8cfe07-ca8e-40d0-99a8-28a60de210c1",
+          "id": "11f36e94-bb74-47a9-8946-cc5da0d93e8c",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "bearer",
@@ -918,7 +1830,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Teddy Bear\",\r\n  \"price\": 29.99,\r\n  \"stock\": 50,\r\n  \"details\": {\r\n    \"description\": \"Soft and cuddly teddy bear\",\r\n    \"age_group\": \"3-12\",\r\n    \"item_type\": \"Plush Toy\",\r\n    \"material\": \"Cotton\",\r\n    \"img_url\": \"https://example.com/teddy-bear.jpg\"\r\n  }\r\n}\r\n",
+              "raw": "{\n  \"name\": \"Teddy Bear\",\n  \"price\": 29.99,\n  \"stock\": 50,\n  \"details\": {\n    \"description\": \"Soft and cuddly teddy bear\",\n    \"age_group\": \"3-12\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -939,7 +1851,10 @@
         },
         {
           "name": "Get Item by ID",
-          "id": "80c497fb-dfec-435a-a454-3114378ec620",
+          "id": "ecaf08df-d4b5-4c51-ba2c-e9cec57a8e23",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "auth": {
               "type": "noauth"
@@ -958,99 +1873,9 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "Create Review",
-          "id": "cc8dc454-3ff1-4d9e-a765-b8ceda4c9e10",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{userToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"review_text\": \"I've n ever had such a lovely fluffy plushie ever in my whole life and it's so soft that I'm going to diiiieeeeee!\",\r\n  \"rating\": 5\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews",
-                "item",
-                "{{itemId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Reviews",
-          "id": "a8070170-721e-4871-a63a-39021126017b",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{adminToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Review by ItemID",
-          "id": "54b47e16-f048-4fe4-be13-e4bf9b1b253f",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrlInventory}}/reviews/item/{{itemId}}",
-              "host": [
-                "{{baseUrlInventory}}"
-              ],
-              "path": [
-                "reviews",
-                "item",
-                "{{itemId}}"
-              ]
-            }
-          },
-          "response": []
         }
       ],
-      "id": "dcf72cb4-b8ca-4955-937d-6029b634b53f"
+      "id": "4a242918-87d4-4a16-be56-002bd0d0cf4e"
     },
     {
       "name": "Access Control",
@@ -1069,11 +1894,15 @@
                       "const jsonData = pm.response.json();",
                       "pm.collectionVariables.set(\"registeredMerchantToken\", jsonData.token);"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "205a270a-abff-41b8-b0c6-5b7e45a568f3"
                   }
                 }
               ],
-              "id": "552d7466-5e49-9f07-c72e-ea76eceb735d",
+              "id": "636c909d-2c03-4090-85cb-6f5df34ec63e",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1114,12 +1943,16 @@
                       "pm.test(\"Visibility is PRIVATE\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));",
                       "pm.test(\"merchantId is set\", () => pm.expect(jsonData.merchant_id).to.be.a(\"string\"));",
                       "pm.collectionVariables.set(\"privateItemId\", jsonData.id);"
-                    ]
+                    ],
+                    "id": "777e1dea-fead-47eb-afc4-4fa8c8af78c2"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "b6cef03d-97eb-204c-769e-5addb9a67cb9",
+              "id": "71cecb2e-1f20-4857-8a54-c622a55b073b",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1135,7 +1968,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_url\": \"https://example.com/secret-panther.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Secret Panther Plush\",\n  \"price\": 42.00,\n  \"stock\": 3,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"A hidden, members-only plush\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1166,11 +1999,15 @@
                       "const jsonData = pm.response.json();",
                       "pm.test(\"Visibility is PUBLIC\", () => pm.expect(jsonData.visibility).to.eql(\"PUBLIC\"));",
                       "pm.collectionVariables.set(\"publicItemId\", jsonData.id);"
-                    ]
+                    ],
+                    "id": "bdb20e5f-64d7-4e1e-bd3d-83bddda5a2f7"
                   }
                 }
               ],
-              "id": "0652d38c-3b4a-708c-5a9b-13b10962498b",
+              "id": "71d7e1f1-200f-4d31-a2a0-e445b787fd38",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1186,7 +2023,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/public-panther.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Public Panther Plush\",\n  \"price\": 19.99,\n  \"stock\": 25,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"A lovely plush available to everyone\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1213,12 +2050,16 @@
                     "exec": [
                       "pm.test(\"Private item is hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "469a21a4-ab51-4b69-8ab9-6b3ca8f0d81e"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "dc41686f-08ed-0b36-b3b7-a6b0c848875f",
+              "id": "641574ee-730f-4835-9e77-f053231f3059",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1249,12 +2090,16 @@
                       "pm.test(\"Private item not in public list\", () => pm.expect(ids).to.not.include(pm.collectionVariables.get(\"privateItemId\")));",
                       "pm.test(\"Public item is in public list\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"publicItemId\")));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "34d98ad1-df1a-42c6-8d6f-1061ddaa43d1"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "5272129d-e738-fab3-8bc2-9ceba4d486de",
+              "id": "ed04cf4d-572b-4b6b-b25a-4bf3a77943ad",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1283,12 +2128,16 @@
                       "const ids = pm.response.json().map(i => i.id);",
                       "pm.test(\"Own private item appears in /mine\", () => pm.expect(ids).to.include(pm.collectionVariables.get(\"privateItemId\")));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "9daaf257-a66f-4000-811f-71af048c104b"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "be87f8c8-aa01-71f0-eb8d-fa2c181fc03b",
+              "id": "106f984f-930b-4d97-8c9c-a1194f96a048",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1316,7 +2165,7 @@
               "response": []
             }
           ],
-          "id": "3af0ddfd-26d7-4a3f-82f1-6f85200830fe"
+          "id": "b57b1796-38a8-4735-8f17-0615bc7df71d"
         },
         {
           "name": "Items - CRUD RBAC",
@@ -1329,12 +2178,16 @@
                     "exec": [
                       "pm.test(\"USER is forbidden from creating items (403)\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "462d0661-ea6b-4130-b29c-654881743916"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "1460ce55-e191-0a43-b04e-c672700a9487",
+              "id": "52996b4e-d307-439c-8727-d1329664fb46",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1350,7 +2203,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/nope.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"User Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"nope\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1377,12 +2230,16 @@
                     "exec": [
                       "pm.test(\"ADMIN is forbidden from creating items (403) - RBAC is role-specific\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "dab5fbac-661c-48f8-87aa-59ca0f009986"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "56818282-e56a-ccac-99e0-7c5afa26f2df",
+              "id": "fd274f21-d5d6-4d54-ad15-10a05401b72b",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1398,7 +2255,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\",\n    \"img_url\": \"https://example.com/admin-nope.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Admin Should Not Create This\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"details\": {\n    \"description\": \"admin is not a merchant\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1426,11 +2283,15 @@
                     "exec": [
                       "pm.test(\"Non-owner merchant cannot edit a visible (public) item (403)\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "5c810a9b-ceda-4108-beb4-91052488ac27"
                   }
                 }
               ],
-              "id": "0feb421a-6af1-ad70-aa83-45be97eb77d6",
+              "id": "802901cc-9b6d-4dda-a17f-09362000e069",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1477,12 +2338,16 @@
                       "pm.test(\"Price was updated\", () => pm.expect(Number(jsonData.price)).to.eql(49.99));",
                       "pm.test(\"Still PRIVATE (unchanged field preserved)\", () => pm.expect(jsonData.visibility).to.eql(\"PRIVATE\"));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "8ad10db2-5e39-4556-8db4-13fcf2e2660b"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "f9156284-e21f-12ac-9a36-215fb8305de6",
+              "id": "a84c091e-91c7-4a63-bd6b-6fbddb31a99a",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1526,12 +2391,16 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Owner can delete own item (204)\", () => pm.response.to.have.status(204));"
-                    ]
+                    ],
+                    "id": "b64194fb-48f3-4856-986a-538b17dcf11c"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "d7f080d0-c43d-4bbf-599d-3d2e59e033c4",
+              "id": "60b66b8f-9f8b-4bce-b3a2-67f6913dbf30",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1559,7 +2428,7 @@
               "response": []
             }
           ],
-          "id": "6738aefc-dd6f-445d-bcb9-23810c241421"
+          "id": "43e41900-871a-4683-9eb6-7f56717a4bce"
         },
         {
           "name": "Reviews - Visibility",
@@ -1574,12 +2443,16 @@
                       "const jsonData = pm.response.json();",
                       "pm.collectionVariables.set(\"privateReviewItemId\", jsonData.id);"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "e3c10091-bcfd-431f-a02b-22a47d20ac0d"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "a3de7d41-f510-82ac-7a02-0362154c5176",
+              "id": "b2a05ebf-6fee-4620-8c52-12b86133d582",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1595,7 +2468,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\",\n    \"img_url\": \"https://example.com/private-review-subject.jpg\"\n  }\n}",
+                  "raw": "{\n  \"name\": \"Private Review Subject Plush\",\n  \"price\": 30.00,\n  \"stock\": 5,\n  \"visibility\": \"PRIVATE\",\n  \"details\": {\n    \"description\": \"Private item used to test review visibility\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Velvet\"\n  }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1622,12 +2495,16 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Cannot review a private item the caller can't see (404)\", () => pm.response.to.have.status(404));"
-                    ]
+                    ],
+                    "id": "ea9a97f2-4fd2-4355-aae7-116719d66eb9"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "0b7bfa0f-e270-94ae-3665-6673eba5655c",
+              "id": "d518dcf7-735d-457b-ba1f-513c544dcd16",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1672,12 +2549,16 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Reviews of a private item are hidden from anonymous (404)\", () => pm.response.to.have.status(404));"
-                    ]
+                    ],
+                    "id": "83e39e98-db66-41c9-bef8-006d71a341c2"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "d46e3648-2a8c-7a93-27f1-1a3dc8ff4d09",
+              "id": "14274ce3-38d5-40d0-8cd4-7677cd3324b7",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1707,11 +2588,15 @@
                     "exec": [
                       "pm.test(\"Reviews of another merchant's private item are hidden (404)\", () => pm.response.to.have.status(404));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "383b2b62-89e8-4937-8922-a790c6adb894"
                   }
                 }
               ],
-              "id": "f485c6b1-8976-b5bf-eb36-f925cf6f0de3",
+              "id": "f16861c1-24ea-4365-a79b-9e64383d3bc6",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1748,12 +2633,16 @@
                       "pm.test(\"Owner can list reviews of own private item (200) - confirms gating, not blanket block\", () => pm.response.to.have.status(200));",
                       "pm.test(\"Response is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "748f6ce6-7f55-412b-8c4a-0faf802043a8"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "8f3aea9e-c6f0-0a0f-9e89-bb731136977d",
+              "id": "b4bc70e6-4646-4aa7-a747-ab9e5c0975bb",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1790,11 +2679,15 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Cleanup: owner deletes the review-test item (204)\", () => pm.response.to.have.status(204));"
-                    ]
+                    ],
+                    "id": "374e335c-1267-4039-8393-6714a21d8788"
                   }
                 }
               ],
-              "id": "4392a642-a089-4b8d-56c7-8658645bd9c9",
+              "id": "07f7923b-bac2-49bc-a228-300c376e5d91",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1822,7 +2715,7 @@
               "response": []
             }
           ],
-          "id": "1a891789-b673-47eb-8857-fc525a8c37d0"
+          "id": "8d800780-3319-49ed-bc97-d3d83653a01d"
         },
         {
           "name": "Reviews - CRUD RBAC",
@@ -1838,11 +2731,15 @@
                       "const jsonData = pm.response.json();",
                       "pm.test(\"Role is USER\", () => pm.expect(jsonData.role).to.eql(\"USER\"));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "9887fbcf-058e-4ebf-ac84-85905601a2d2"
                   }
                 }
               ],
-              "id": "5fdec40b-19de-8012-10bc-75f57638f13c",
+              "id": "df9d9e71-b24a-46ae-9fae-839defa86094",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1851,7 +2748,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"email\":  \"review.tester@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"img_url\":  \"https://kittydomain.fluffy.com/review-tester\",\n    \"address\":  {\n                    \"street\":  \"Critique Court\",\n                    \"postal_code\":  \"501\",\n                    \"city\":  \"Reviewville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
+                  "raw": "{\n    \"username\":  \"reviewtester\",\n    \"email\":  \"review.tester@cat.com\",\n    \"phone\":  \"12345678\",\n    \"password\":  \"{{registrationPassword}}\",\n    \"address\":  {\n                    \"street\":  \"Critique Court\",\n                    \"postal_code\":  \"501\",\n                    \"city\":  \"Reviewville\",\n                    \"country\":  \"Westeros\"\n                }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1881,11 +2778,15 @@
                       "const jsonData = pm.response.json();",
                       "pm.collectionVariables.set(\"secondUserToken\", jsonData.token);"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "7edb44e5-7848-4b1f-90ca-fa3226f07cb1"
                   }
                 }
               ],
-              "id": "4ee808c4-c1a7-38a5-791b-ab0ba9dbac6d",
+              "id": "80adb2e5-4f5c-48c2-a0e5-20371779c785",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -1925,12 +2826,16 @@
                       "const jsonData = pm.response.json();",
                       "pm.collectionVariables.set(\"reviewId\", jsonData.id);",
                       "pm.test(\"Reviewer is the authenticated user\", () => pm.expect(jsonData.reviewer_id).to.eql(pm.collectionVariables.get(\"userId\")));"
-                    ]
+                    ],
+                    "id": "d4950fda-1875-4fef-bdb0-0b627263da40"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "ddceca46-8535-f754-32fa-7e7c069dc779",
+              "id": "46dad0e7-2b39-410d-a5ac-9a8d6caffeb8",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1980,11 +2885,15 @@
                       "const mine = reviews.find(r => r.id === pm.collectionVariables.get(\"reviewId\"));",
                       "pm.test(\"Created review is listed\", () => pm.expect(mine).to.be.an(\"object\"));",
                       "pm.test(\"Listed review exposes reviewer_id\", () => pm.expect(mine.reviewer_id).to.eql(pm.collectionVariables.get(\"userId\")));"
-                    ]
+                    ],
+                    "id": "851fbbf5-1f4f-4d73-852a-1db8941da718"
                   }
                 }
               ],
-              "id": "aef5990c-4c96-7ab2-da28-736369a64ab8",
+              "id": "2127962e-eea7-4d04-9775-7c3c2153cccf",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "noauth"
@@ -2017,11 +2926,15 @@
                       "pm.test(\"Text updated\", () => pm.expect(jsonData.review_text).to.eql(\"Edited by the author.\"));",
                       "pm.test(\"Rating updated\", () => pm.expect(jsonData.rating).to.eql(4));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "5aec46d5-d8bd-4844-813b-d52f9dd64acb"
                   }
                 }
               ],
-              "id": "a09ef2fc-9775-f34e-3ff2-1c61d7103cd0",
+              "id": "a54409fe-4c6b-4e41-9571-ac2ca1dcbcad",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2066,11 +2979,15 @@
                     "exec": [
                       "pm.test(\"A non-author user cannot edit another's review (403)\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "4824789d-299b-4df5-9ff0-1d29fbcfa5be"
                   }
                 }
               ],
-              "id": "efdf8754-fcab-da6e-b9a0-8b4227b24847",
+              "id": "f125cbf7-6be1-49d9-9bd1-5e1b9d8ca502",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2115,11 +3032,15 @@
                     "exec": [
                       "pm.test(\"Merchants cannot edit reviews (403) - endpoint is USER/ADMIN only\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "cec823d9-7898-4e87-a9ba-c2a4a4889c8a"
                   }
                 }
               ],
-              "id": "0a4ca7c5-b379-1de4-a8ac-b2d18ad92184",
+              "id": "05b16992-3776-4c34-9e2e-8a567a0f252d",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2165,12 +3086,16 @@
                       "const jsonData = pm.response.json();",
                       "pm.test(\"Rating moderated\", () => pm.expect(jsonData.rating).to.eql(1));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "facb7204-eda3-4038-9aac-8b06f593b718"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "a282f081-be78-cdae-6bc3-f8f7062a8d19",
+              "id": "f6c8c617-a48e-4b4d-8ff6-87ef7ab46d45",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2215,11 +3140,15 @@
                     "exec": [
                       "pm.test(\"A non-author user cannot delete another's review (403)\", () => pm.response.to.have.status(403));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "ebe1256f-5d03-4724-b5bb-e5d1c9af1b76"
                   }
                 }
               ],
-              "id": "2538dfb2-b3d5-fb0c-d5df-0341563508f0",
+              "id": "553a3715-eaa6-4f0c-b25f-a0526930f8b0",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2254,12 +3183,16 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"Author can delete own review (204)\", () => pm.response.to.have.status(204));"
-                    ]
+                    ],
+                    "id": "c03dac0f-c3b8-49d3-b517-c5118530b650"
                   },
                   "listen": "test"
                 }
               ],
-              "id": "cc37139d-f508-847f-f326-28a84ad78c82",
+              "id": "3d64e8cf-c564-4334-9912-62c726908af3",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2295,11 +3228,15 @@
                     "exec": [
                       "pm.test(\"Updating a deleted/nonexistent review returns 404\", () => pm.response.to.have.status(404));"
                     ],
-                    "type": "text/javascript"
+                    "type": "text/javascript",
+                    "id": "8e5b7f7a-4a92-472c-ad0e-cc02dbfd97c0"
                   }
                 }
               ],
-              "id": "55d52a69-bd90-c8fa-16d2-db5be5893203",
+              "id": "24c58045-25a5-476c-831c-5cfb76a7ba62",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -2336,10 +3273,10 @@
               "response": []
             }
           ],
-          "id": "9717889a-0a7f-4c20-a565-4c4c5aed2790"
+          "id": "1639add9-5d45-4747-9b6b-3d6c96d3f634"
         }
       ],
-      "id": "66317dda-60f7-41fe-bdd2-53fd433f0851"
+      "id": "1b14aa4a-ec52-44d9-bdfb-ba3fa53b4bba"
     }
   ],
   "variable": [
@@ -2357,23 +3294,23 @@
     },
     {
       "key": "adminPassword",
-      "value": "PLACEHOLDER_TO_BE_REPLACED"
+      "value": ""
     },
     {
       "key": "merchantPassword",
-      "value": "PLACEHOLDER_TO_BE_REPLACED"
+      "value": ""
     },
     {
       "key": "userPassword",
-      "value": "PLACEHOLDER_TO_BE_REPLACED"
+      "value": ""
     },
     {
       "key": "registrationPassword",
-      "value": "Reg1strati0n-Pass!"
+      "value": ""
     },
     {
       "key": "newPassword",
-      "value": "N3w-Passw0rd!Chg"
+      "value": ""
     },
     {
       "key": "userId",
@@ -2433,6 +3370,14 @@
     },
     {
       "key": "reviewId",
+      "value": ""
+    },
+    {
+      "key": "imageItemId",
+      "value": ""
+    },
+    {
+      "key": "imagePrivateItemId",
       "value": ""
     }
   ]

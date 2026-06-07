@@ -10,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.UUID;
 
 @Component
@@ -39,55 +36,67 @@ public class DataInitializer {
     @Value("${identity.user.password}")
     private String userPassword;
 
-    private final URI IMG_URL = URI.create("https://dk.pinterest.com/pin/736549714079317500/");
-
     @PostConstruct
-    public void init() throws MalformedURLException {
+    public void init() {
         log.info("Starting data initialization...");
 
-        var address = Address.builder()
+        seedUsers();
+
+        log.info("Finished data initialization...");
+    }
+
+    /** Seeds the three demo accounts (admin, merchant, user) sharing one address. */
+    private void seedUsers() {
+        var address = buildSharedAddress();
+
+        userService.registerAdminUser(buildAdminUser(address), adminPassword);
+        log.info("Admin user created successfully");
+
+        userService.registerMerchantUser(buildMerchantUser(address), merchantPassword);
+        log.info("Merchant user created successfully");
+
+        userService.registerUser(buildUser(address), userPassword);
+        log.info("User user created successfully");
+    }
+
+    private Address buildSharedAddress() {
+        return Address.builder()
                 .street("Main Street")
                 .city("Capital City")
                 .country("Canada")
                 .postalCode("12345")
                 .build();
+    }
 
-        var adminUser = User.builder()
+    private User buildAdminUser(Address address) {
+        return User.builder()
                 .username("admin")
                 .email("admin@admin.com")
                 .phone("1234567890")
                 .address(address)
                 .role(Role.ADMIN)
-                .imgUrl(IMG_URL)
                 .build();
+    }
 
-        userService.registerAdminUser(adminUser, adminPassword);
-        log.info("Admin user created successfully");
-
-        var merchantUser = User.builder()
+    private User buildMerchantUser(Address address) {
+        return User.builder()
                 .id(SEED_MERCHANT_ID)
                 .username("merchant")
                 .email("merchant@merchant.com")
                 .phone("+35834343434")
                 .address(address)
                 .role(Role.MERCHANT)
-                .imgUrl(IMG_URL)
                 .build();
+    }
 
-        userService.registerMerchantUser(merchantUser, merchantPassword);
-        log.info("Merchant user created successfully");
-
-        var user = User.builder()
+    private User buildUser(Address address) {
+        return User.builder()
                 .id(SEED_USER_ID)
                 .username("user")
                 .email("user@user.com")
                 .phone("1234567890")
                 .address(address)
                 .role(Role.USER)
-                .imgUrl(IMG_URL)
                 .build();
-
-        userService.registerUser(user, userPassword);
-        log.info("User user created successfully");
     }
 }

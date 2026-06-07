@@ -185,6 +185,14 @@
                     <include>**/*.properties</include>
                 </includes>
             </resource>
+            <!-- Seed images: separate non-filtered entry — filtering would corrupt binary files -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>img/**</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>

@@ -22,7 +22,7 @@ Seed data: 1 PRIVATE item ("secret prototype plushie", owned by `merchant`) + 10
 - [ ] Weak password → policy message (12–100, upper/lower/digit/special, no spaces)
 - [ ] Invalid email → format message
 - [ ] Valid form → "Registration successful", can log in with new account
-- [ ] Network tab: request body is snake_case (`postal_code`, `img_url`) — wire-format interceptor working
+- [ ] Network tab: request body is snake_case (`postal_code`) — wire-format interceptor working
 
 ## Product visibility (core RBAC demo)
 

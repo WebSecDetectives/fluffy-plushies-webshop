@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.net.URI;
 import java.util.UUID;
 
 @Data
@@ -21,7 +20,6 @@ public class UserResponse {
     private String username;
     private String email;
     private String phone;
-    private URI imgUrl;
     private AddressResponse address;
     private Role role;
 

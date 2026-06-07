@@ -60,6 +60,23 @@ public class ItemImageService {
         return itemImageRepository.findByItemId(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
+    /**
+     * Stores the image for a seeded item. Runs the same sanitization pipeline as user
+     * uploads but skips the ownership check — only called from startup seeding, where
+     * there is no authenticated caller.
+     *
+     * @param itemId the seeded item the image belongs to
+     * @param imageBytes the raw image bytes (e.g. a bundled classpath JPEG)
+     * @throws com.sirmeows.fluffyinventoryservice.exception.InvalidImageException if the
+     *         bytes fail sanitization
+     */
+    @Transactional
+    public void storeSeedImage(UUID itemId, byte[] imageBytes) {
+        var pngData = ImageSanitizationUtil.sanitizeToPng(imageBytes);
+        upsertImage(itemId, pngData);
+        log.info("Stored seed image ({} bytes) for item {}", pngData.length, itemId);
+    }
+
     /** Updates the item's existing image row or creates one (one image per item). */
     private void upsertImage(UUID itemId, byte[] pngData) {
         var image = itemImageRepository.findByItemId(itemId)

@@ -3,6 +3,7 @@ package com.sirmeows.fluffyinventoryservice.util;
 import com.sirmeows.fluffyinventoryservice.exception.InvalidImageException;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -60,7 +61,7 @@ class ImageSanitizationUtilTest {
 
     @Test
     void sanitizeToPng_nullFile_isRejected() {
-        assertThrows(InvalidImageException.class, () -> ImageSanitizationUtil.sanitizeToPng(null));
+        assertThrows(InvalidImageException.class, () -> ImageSanitizationUtil.sanitizeToPng((MultipartFile) null));
     }
 
     @Test
