@@ -50,9 +50,6 @@ AGENTS.md
 .gh_pat
 .gh_pat.txt
 
-# security PoC pages (kept local, not pushed)
-Documentation/poc/
-
 # local docs
 */exam-project-2026.pdf
 */TODO.md
@@ -62,3 +59,6 @@ Documentation/poc/
 */message_queue_communication_contract.yml
 REPORT_NOTES.md
 agent-preferences.local.md
+agent-memory.local.md
+Documentation/poc/
+Documentation/report/
