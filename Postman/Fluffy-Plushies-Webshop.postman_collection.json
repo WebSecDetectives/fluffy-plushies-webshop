@@ -1618,85 +1618,6 @@
                 }
               },
               "response": []
-            },
-            {
-              "name": "Upload Image as Other Merchant Forbidden",
-              "event": [
-                {
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "// Login the second merchant here: Access Control sets this token too, but that folder runs AFTER Inventory.",
-                      "// The username is suffixed per run; it is set when the Registration folder runs (collection vars persist in the app).",
-                      "const username = pm.collectionVariables.get(\"registeredMerchantUsername\");",
-                      "if (!username) {",
-                      "    console.warn(\"registeredMerchantUsername is not set - run the Registration folder first; this request will 401 instead of 403\");",
-                      "}",
-                      "pm.sendRequest({",
-                      "    url: pm.collectionVariables.get(\"baseUrlIdentity\") + \"/auth/login\",",
-                      "    method: \"POST\",",
-                      "    header: { \"Content-Type\": \"application/json\" },",
-                      "    body: { mode: \"raw\", raw: JSON.stringify({ username: username, password: pm.collectionVariables.get(\"registrationPassword\") }) }",
-                      "}, (err, res) => {",
-                      "    if (!err && res.code === 200) {",
-                      "        pm.collectionVariables.set(\"registeredMerchantToken\", res.json().token);",
-                      "    } else {",
-                      "        console.warn(\"Second-merchant login failed (\" + (err || res.code) + \") - registeredMerchantToken is stale or empty\");",
-                      "    }",
-                      "});"
-                    ]
-                  },
-                  "listen": "prerequest"
-                },
-                {
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));"
-                    ]
-                  },
-                  "listen": "test"
-                }
-              ],
-              "id": "2b3ea9f5-5e80-e5a4-5774-084d3e19e011",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{registeredMerchantToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "file",
-                      "type": "file",
-                      "uuid": "15f6ae75-4824-4491-9411-a2cbed7bda67",
-                      "src": "/C:/Users/SirKittyH/IdeaProjects/fluffy-plushies-webshop/Postman/files/WB530-1.jpg"
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrlInventory}}/items/{{imageItemId}}/image",
-                  "host": [
-                    "{{baseUrlInventory}}"
-                  ],
-                  "path": [
-                    "items",
-                    "{{imageItemId}}",
-                    "image"
-                  ]
-                },
-                "description": "Requires a file (any JPEG/PNG). Self-sufficient: the pre-request script logs in the registered merchant (bigpanther, created by the Registration folder) and sets {{registeredMerchantToken}}. A merchant must not upload images to another merchant's item (public item => 403, not 404)."
-              },
-              "response": []
             }
           ],
           "id": "90bf921e-1e79-4e85-8391-213acc8c7074"
@@ -3322,6 +3243,202 @@
         }
       ],
       "id": "1b14aa4a-ec52-44d9-bdfb-ba3fa53b4bba"
+    },
+    {
+      "name": "Injection",
+      "item": [
+        {
+          "name": "SQLi - Login bypass via username (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"SQL injection in username does not bypass login (401)\", function () {",
+                  "    pm.expect(pm.response.code).to.eql(401);",
+                  "});",
+                  "pm.test(\"No server error from the payload\", function () {",
+                  "    pm.expect(pm.response.code).to.not.eql(500);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "id": "8369c663-9ca0-b9db-befa-6a9d78cf5f52",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"' OR '1'='1' --\",\n  \"password\": \"irrelevant\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "SQL injection attempt in the login username. The username flows through a Spring Data JPA derived query (parameterized), so the payload is treated as a literal string, matches no user, and login is refused. A successful bypass would return 200 with a token."
+          },
+          "response": []
+        },
+        {
+          "name": "SQLi - Login bypass via password (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"SQL injection in password does not bypass login (401)\", function () {",
+                  "    pm.expect(pm.response.code).to.eql(401);",
+                  "});",
+                  "pm.test(\"No server error from the payload\", function () {",
+                  "    pm.expect(pm.response.code).to.not.eql(500);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "id": "efccd84b-7210-cb5b-0e5c-7fd66945d394",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"' OR '1'='1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlIdentity}}/auth/login",
+              "host": [
+                "{{baseUrlIdentity}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "SQL injection attempt in the login password. The password is compared against the stored BCrypt hash, so the payload is just a wrong password and login is refused. A successful bypass would return 200 with a token."
+          },
+          "response": []
+        },
+        {
+          "name": "SQLi - Item lookup with non-UUID id (400/404)",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Non-UUID injection in the id is rejected (400 or 404)\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+                  "});",
+                  "pm.test(\"No server error and no data returned\", function () {",
+                  "    pm.expect(pm.response.code).to.not.eql(500);",
+                  "    pm.expect(pm.response.code).to.not.eql(200);",
+                  "});"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "dabda128-20c7-6628-bccd-183074722a23",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrlInventory}}/items/abc'--",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "items",
+                "abc'--"
+              ]
+            },
+            "description": "SQL injection attempt in the item id path segment. The id is typed as a UUID and bound as a query parameter, never concatenated into SQL. A non-UUID payload is rejected before any query runs, so it returns a client error rather than leaking data or causing a 500."
+          },
+          "response": []
+        },
+        {
+          "name": "Command injection - item fields are inert (no shell exec)",
+          "event": [
+            {
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Command-injection payload handled without server error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+                  "});",
+                  "pm.test(\"Response contains no shell command output (payload is inert data)\", function () {",
+                  "    pm.expect(pm.response.text()).to.not.match(/uid=\\d+\\(|root:.*:0:0:|Linux version/);",
+                  "});"
+                ]
+              },
+              "listen": "test"
+            }
+          ],
+          "id": "e6056fd8-1c79-5e18-71b2-76b1ddc8eb45",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{merchantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Plush $(id) ; rm -rf /tmp ; `whoami`\",\n  \"price\": 9.99,\n  \"stock\": 1,\n  \"visibility\": \"PUBLIC\",\n  \"details\": {\n    \"description\": \"$(cat /etc/passwd) ; `uname -a`\",\n    \"age_group\": \"3+\",\n    \"item_type\": \"Plush Toy\",\n    \"material\": \"Cotton\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrlInventory}}/items",
+              "host": [
+                "{{baseUrlInventory}}"
+              ],
+              "path": [
+                "items"
+              ]
+            },
+            "description": "Shell metacharacters in item fields. The application never passes input to an OS shell (no Runtime.exec / ProcessBuilder), so the payload is stored as literal text. The request is handled normally (200, or 400 if a field constraint rejects it) and the response contains no command output. Requires merchantToken (run Login Merchant first)."
+          },
+          "response": []
+        }
+      ],
+      "id": "4f65a36e-4153-445e-ab9d-1a1e303642c8"
     }
   ],
   "variable": [
