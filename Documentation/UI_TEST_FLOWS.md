@@ -91,10 +91,18 @@ Seed data: 1 PRIVATE item ("secret prototype plushie", owned by `merchant`) + 10
 
 ## Security spot-checks
 
-- [ ] Stored XSS: submit `<img src=x onerror=alert(document.domain)>` as review text →
-      renders as literal text, no dialog (full plan in `REPORT_NOTES.md` "XSS defence")
-- [ ] Same payload as username at registration → header shows literal text
-- [ ] Tampered JWT in localStorage (edit a character) → app treats you as logged out / backend 401s
+Stored-XSS payloads (type the bare string into the field, no surrounding quotes; full plan in
+`REPORT_NOTES.md` "XSS defence"):
+
+- [ ] Review body — submit `<img src=x onerror=alert(document.domain)>` → renders as literal text, no dialog.
+      Then try `<script>alert(document.domain)</script>` → also inert.
+- [ ] Item name (merchant) — create a product named `<img src=x onerror=alert(document.domain)>` →
+      listing and detail page show literal text, no dialog.
+- [ ] Username (registration) — use the short variant `<img src=x onerror=alert(1)>` (28 chars; the full
+      payload is 42 chars and the username is capped at 30, so it would be a 400) → header shows literal text.
+- [ ] Evidence: after storing a payload, the DB row holds it raw/unescaped → proves the defence is output
+      encoding at render, not input stripping. Screenshot the literal-text render next to the raw stored row.
+- [ ] Tampered JWT in localStorage (edit a character) → app treats you as logged out
 - [ ] CSRF PoC: while logged in, open a local `csrf-poc.html` that auto-submits
       `POST /inventory/items` → backend 401 (no cookie to ride, header not attached by attacker page);
-      screenshot for report (see REPORT_NOTES "Session storage & CSRF")
+      screenshot for report (see REPORT_NOTES "Session storage & CSRF") 
